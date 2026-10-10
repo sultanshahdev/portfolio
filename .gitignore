@@ -1,0 +1,15 @@
+references/
+node_modules/
+dist/
+.env
+.env.local
+.env.*
+test-results/
+playwright-report/
+*.log
+
+# Private documents and downloaded reference snapshots, wherever stored.
+*.[pP][dD][fF]
+website/
+www.micheleriva.it*/
+www.micheleriva.it*.zip

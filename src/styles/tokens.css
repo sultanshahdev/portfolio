@@ -1,0 +1,17 @@
+:root {
+  color-scheme: light;
+  --background: 40 33% 97%;
+  --foreground: 220 20% 18%;
+  --card: 40 25% 95%;
+  --primary: 220 40% 20%;
+  --secondary: 40 15% 92%;
+  --muted: 40 10% 90%;
+  /* Slightly darker than the reference's 46% for small-text contrast. */
+  --muted-foreground: 220 10% 42%;
+  --accent: 0 45% 35%;
+  --border: 40 15% 82%;
+  --radius: 0.25rem;
+  --font-serif: 'Lora Variable', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Source Sans 3 Variable', system-ui, sans-serif;
+  --content-width: 48rem;
+}
