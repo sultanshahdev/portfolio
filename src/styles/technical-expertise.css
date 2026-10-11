@@ -1,0 +1,96 @@
+.technical-expertise {
+  font-family: var(--font-sans);
+}
+
+.expertise-intro {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.4rem 1rem;
+  margin-bottom: 1.75rem;
+  color: hsl(var(--muted-foreground));
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.expertise-intro > span {
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+/* Newspaper reading order: down the first column, then down the second.
+   Keeping each category intact avoids gaps from unequal row heights. */
+.expertise-grid {
+  columns: 2;
+  column-gap: 2rem;
+  column-rule: 1px solid hsl(var(--border) / 0.55);
+}
+
+.expertise-category {
+  break-inside: avoid;
+  padding-bottom: 1.4rem;
+}
+
+.expertise-category-heading {
+  display: grid;
+  grid-template-columns: 19px minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 0.65rem;
+  padding-top: 0.9rem;
+  margin-bottom: 0.65rem;
+  border-top: 1px solid hsl(var(--border) / 0.7);
+}
+
+.expertise-icon {
+  margin-top: 0.1rem;
+  color: hsl(var(--primary));
+}
+
+.expertise-category-heading h3 {
+  font: 600 0.8125rem/1.5 var(--font-sans);
+  letter-spacing: 0.035em;
+  overflow-wrap: anywhere;
+}
+
+.expertise-number {
+  color: hsl(var(--muted-foreground));
+  font-size: 0.6875rem;
+  line-height: 1.8;
+  font-variant-numeric: tabular-nums;
+}
+
+.expertise-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 0;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  color: hsl(var(--muted-foreground));
+  font-size: 0.875rem;
+  line-height: 1.65;
+}
+
+.expertise-skills li {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.expertise-skills li:not(:last-child)::after {
+  content: '';
+  display: inline-block;
+  width: 2px;
+  height: 2px;
+  margin: 0 0.5rem;
+  vertical-align: middle;
+  border-radius: 50%;
+  background: hsl(var(--muted-foreground) / 0.65);
+}
+
+@media (max-width: 639px) {
+  .expertise-grid { columns: 1; }
+  .expertise-intro { margin-bottom: 1.25rem; }
+  .expertise-category { padding-bottom: 1.25rem; }
+  .expertise-category:last-child { padding-bottom: 0; }
+}

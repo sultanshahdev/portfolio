@@ -1,7 +1,7 @@
 import Intro from '../components/profile/Intro.jsx';
 import Experience from '../components/profile/Experience.jsx';
 import Education from '../components/profile/Education.jsx';
-import TechnicalFocus from '../components/profile/TechnicalFocus.jsx';
+import TechnicalExpertise from '../components/profile/TechnicalExpertise.jsx';
 import ContactLinks from '../components/profile/ContactLinks.jsx';
 import ProjectList from '../components/projects/ProjectList.jsx';
 import SectionHeading from '../components/ui/SectionHeading.jsx';
@@ -19,8 +19,8 @@ export default function HomePage() {
         <SectionHeading id="selected-work" action={<TextLink to="/projects" arrow>All projects</TextLink>}>Selected work</SectionHeading>
         <ProjectList projects={projects.filter((project) => project.featured)} headingLevel={3} />
       </section>
+      <TechnicalExpertise />
       <Experience entries={experience} />
-      <TechnicalFocus />
       <Education />
       <Experience entries={community} title="Community & leadership" id="community" />
       <section className="home-section contact-section" aria-labelledby="get-in-touch">
