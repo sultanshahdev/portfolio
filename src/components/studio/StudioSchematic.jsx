@@ -1,5 +1,5 @@
 import EngineeringPortrait from '../profile/EngineeringPortrait.jsx';
-import StudioMascot from './StudioMascot.jsx';
+import Mascot from '../mascots/Mascot.jsx';
 
 export default function StudioSchematic() {
   return (
@@ -15,7 +15,7 @@ export default function StudioSchematic() {
         <text x="166" y="447">BUILD / OBSERVE / REFINE</text>
       </svg>
       <EngineeringPortrait />
-      <div className="hero-bit"><StudioMascot /><span>BIT <i aria-hidden="true" /> studio assistant</span></div>
+      <div className="hero-resident"><Mascot character="archie" size="100%" label="Archie, a software architecture companion" /><span className="hero-resident-note">ARCHIE / field notes</span></div>
       <span className="schematic-note">A little curiosity.<br />A lot of connections.</span>
     </div>
   );

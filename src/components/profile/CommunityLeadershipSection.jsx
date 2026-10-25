@@ -1,3 +1,4 @@
+import Mascot from '../mascots/Mascot.jsx';
 import { Flag, Mic2, Network, Presentation } from 'lucide-react';
 import { community } from '../../data/experience.js';
 import SectionHeading from '../ui/SectionHeading.jsx';
@@ -57,7 +58,7 @@ function LeadershipEntry({ entry, index }) {
 export default function CommunityLeadershipSection() {
   return (
     <section className="home-section community-leadership canvas-standard" aria-labelledby="community">
-      <SectionHeading id="community" number="05" eyebrow="People / places / shared ideas">Community & leadership</SectionHeading>
+      <div className="resident-heading"><SectionHeading id="community" number="05" eyebrow="People / places / shared ideas">Community & leadership</SectionHeading><span className="heading-resident"><Mascot character="relay" pose="community" size="100%" /></span></div>
       <p className="journey-route"><span>Lahore</span><i aria-hidden="true" /><span>Karachi</span><i aria-hidden="true" /><span>Sukkur</span></p>
       <ol className="leadership-timeline">
         {community.map((entry, index) => <LeadershipEntry key={entry.id} entry={entry} index={index} />)}

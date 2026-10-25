@@ -8,6 +8,7 @@ import './styles/typography.css';
 import './styles/layout.css';
 import './styles/projects.css';
 import './styles/studio.css';
+import './styles/mascots.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

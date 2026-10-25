@@ -1,3 +1,5 @@
+import Mascot from '../mascots/Mascot.jsx';
+import { skillResidents } from '../../data/mascots.js';
 import { memo } from 'react';
 import SkillIcon from './SkillIcon.jsx';
 
@@ -9,6 +11,7 @@ function SkillCategory({ category, number, expanded, pinned, onPreview, onLeave,
     <section
       className={`expertise-category${expanded ? ' is-expanded' : ''}${pinned ? ' is-pinned' : ''}`}
       aria-labelledby={headingId}
+      data-mascot-scope
       // Physical pointer movement selects a preview; layout-driven pointerenter
       // events cannot cascade through headings as a previous layer contracts.
       onPointerMove={(event) => onPreview(category.id, event.pointerType)}
@@ -31,7 +34,8 @@ function SkillCategory({ category, number, expanded, pinned, onPreview, onLeave,
       </h3>
       <div id={panelId} className="expertise-reveal" aria-hidden={!expanded} inert={!expanded}>
         <div className="expertise-clip">
-          <div className="expertise-panel-body">
+          <div className={`expertise-panel-body${skillResidents[category.id] ? ' has-resident' : ''}`}>
+            {skillResidents[category.id] && <span className="skill-resident"><Mascot character={skillResidents[category.id]} size="100%" /></span>}
             <p className="expertise-panel-meta"><span>{category.skills.length} skills</span><span>{pinned ? 'Kept open' : ''}</span></p>
             <ul className="expertise-skills" role="list">
               {category.skills.map((skill, index) => (

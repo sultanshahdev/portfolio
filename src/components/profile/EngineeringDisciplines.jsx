@@ -1,3 +1,4 @@
+import Mascot from '../mascots/Mascot.jsx';
 import { useState } from 'react';
 import { Network, PanelsTopLeft, Server, ShieldCheck } from 'lucide-react';
 import { profile } from '../../data/profile.js';
@@ -11,10 +12,11 @@ export default function EngineeringDisciplines() {
   const active = hovered || focused || selected;
 
   return (
-    <div className="engineering-disciplines" data-active={active}>
+    <div className="engineering-disciplines" data-active={active} data-mascot-scope>
       <div className="disciplines-heading">
         <h2 id="disciplines-title">Engineering <br />disciplines</h2>
         <p>Connected layers.<br />One engineering practice.</p>
+        <span className="discipline-resident"><Mascot character="pixel" size="100%" label="Pixel, a frontend engineering companion" /></span>
       </div>
       <div className="disciplines-content">
         <div className="disciplines-graph" role="group" aria-labelledby="disciplines-title">

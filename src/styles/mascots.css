@@ -1,0 +1,130 @@
+/* Filled editorial vectors: shared materials, independent character construction. */
+.mascot-cameo {
+  --resident-ink: hsl(var(--primary));
+  --resident-paper: hsl(var(--background));
+  --resident-coat: hsl(40 13% 83%);
+  --resident-shade: hsl(220 9% 70%);
+  --resident-accent: hsl(var(--accent));
+  display: inline-block; width: var(--mascot-size, 96px); max-width: 100%;
+  aspect-ratio: 1; vertical-align: middle; line-height: 0;
+  flex-shrink: 0; isolation: isolate;
+}
+.engineering-mascot { display: block; width: 100%; height: 100%; overflow: visible; }
+.engineering-mascot .ink-fill { fill: var(--resident-ink); }
+.engineering-mascot .ink-line { stroke: var(--resident-ink); }
+.engineering-mascot .paper-fill { fill: var(--resident-paper); }
+.engineering-mascot .paper-line { stroke: var(--resident-paper); }
+.engineering-mascot .coat-fill { fill: var(--resident-coat); }
+.engineering-mascot .shade-fill { fill: var(--resident-shade); }
+.engineering-mascot .accent-fill { fill: var(--resident-accent); }
+.engineering-mascot .accent-line { stroke: var(--resident-accent); }
+.engineering-mascot .muted-line { stroke: var(--resident-ink); stroke-opacity: 0.35; }
+.engineering-mascot .highlight-line { stroke: var(--resident-paper); stroke-width: 3; stroke-opacity: 0.85; }
+.engineering-mascot .fine-line { stroke-width: 1.3; }
+.engineering-mascot .limb-line { stroke-width: 4; }
+.engineering-mascot .soft-shade { fill: var(--resident-ink); opacity: 0.12; }
+.engineering-mascot .lens-fill { fill: var(--resident-shade); fill-opacity: 0.5; }
+.engineering-mascot .ground-shadow { fill: var(--resident-ink); opacity: 0.11; }
+.engineering-mascot .resident-blush { fill: var(--resident-accent); opacity: 0.18; }
+.engineering-mascot .scout-match { opacity: 0.4; }
+/* Positioning is deliberately separate from the artwork. */
+.hero-resident { position: absolute; left: 0; bottom: 13%; width: 25%; }
+.hero-resident > .mascot-cameo { display: block; width: 100%; }
+.hero-resident-note { display: block; color: hsl(var(--muted-foreground)); font: 0.55rem/1.5 var(--font-sans); text-align: center; letter-spacing: 0.04em; white-space: nowrap; }
+.disciplines-heading { position: relative; }
+.discipline-resident { position: absolute; right: -0.5rem; bottom: -0.2rem; width: 72px; }
+.exhibit-art-frame { position: relative; display: flow-root; }
+.project-resident { position: absolute; top: 0.9rem; right: 0; width: clamp(64px, 18.5%, 110px); }
+.project-resident > .mascot-cameo { display: block; width: 100%; }
+.exhibit-compact .project-resident { width: clamp(56px, 18.5%, 90px); }
+.expertise-panel-body.has-resident { position: relative; }
+.has-resident .expertise-skills { padding-right: 3.4rem; }
+.skill-resident { position: absolute; right: 0; top: 1.75rem; width: 52px; }
+.resident-heading { position: relative; }
+.resident-heading .section-heading { padding-right: 6rem; }
+.heading-resident { position: absolute; right: 0; top: -0.75rem; width: 96px; }
+.community-leadership .heading-resident { top: -0.5rem; }
+.mascot-scene { display: inline-grid; grid-template-columns: 1fr 1fr; align-items: end; width: 190px; max-width: 100%; position: relative; vertical-align: middle; }
+.mascot-scene > .mascot-cameo { position: relative; z-index: 1; }
+.mascot-scene > .resident-relay { transform: rotate(-6deg); }
+.mascot-scene > .resident-pixel { transform: translateY(-4px) rotate(4deg); }
+.scene-connection { position: absolute; left: 39%; right: 41%; top: 61%; display: flex; gap: 3px; }
+.scene-connection > i { width: 3px; height: 3px; background: hsl(var(--accent)); border-radius: 50%; opacity: 0.5; }
+.contact-page-opening .mascot-scene { flex-shrink: 0; width: 190px; }
+.footer-connection { position: relative; min-height: 1px; }
+.footer-resident { position: absolute; width: 52px; left: 44%; bottom: -0.25rem; }
+@media (min-width: 640px) and (max-width: 899px) {
+  .hero-resident { bottom: 0; width: 30%; left: -2%; }
+  .hero-resident-note { font-size: 0.45rem; }
+  .discipline-resident { width: 62px; bottom: -0.5rem; right: -1.4rem; }
+}
+@media (max-width: 639px) {
+  .hero-resident { bottom: 13%; left: -1%; width: 27%; }
+  .hero-resident-note { font-size: 0.45rem; letter-spacing: 0; }
+  .discipline-resident { width: 56px; top: -1.7rem; right: -0.2rem; bottom: auto; }
+  .disciplines-heading { padding-right: 4rem; }
+  .resident-heading .section-heading { padding-right: 4.5rem; }
+  .heading-resident { width: 72px; top: -0.5rem; }
+  .community-leadership .heading-resident { top: -0.5rem; }
+  .contact-companion .mascot-scene { width: 160px; flex-shrink: 0; }
+  .contact-page-opening .mascot-scene { width: 120px; }
+  .skill-resident { width: 48px; }
+  .has-resident .expertise-skills { padding-right: 3rem; }
+  .footer-connection { display: flex; width: 50px; max-width: 50px; min-height: 20px; flex: 0 0 50px; margin-right: auto; }
+  .footer-connection > i, .footer-connection > span:not(.footer-resident) { display: none; }
+  .footer-resident { left: 0; bottom: 0; width: 48px; }
+}
+/* Every gesture finishes; pointer/focus/entry use the same short vocabulary. */
+@media (prefers-reduced-motion: no-preference) {
+  [data-mascot-state="acting"] .pixel-tile-a { animation: pixel-arrange-a 900ms var(--ease-out) both; }
+  [data-mascot-state="acting"] .pixel-tile-b { animation: pixel-arrange-b 900ms var(--ease-out) both; }
+  [data-mascot-state="acting"] .daemon-request { animation: daemon-request 1000ms ease both; }
+  [data-mascot-state="acting"] .daemon-response { animation: daemon-response 1000ms ease both; }
+  [data-mascot-state="acting"] .daemon-status { animation: daemon-status 900ms ease both; }
+  [data-mascot-state="acting"] .relay-envelope { animation: relay-deliver 1000ms var(--ease-out) both; }
+  [data-mascot-state="acting"] .relay-signal { stroke-dasharray: 1; animation: relay-signal 1000ms ease both; }
+  [data-mascot-state="acting"] .relay-flag { transform-origin: 126px 98px; animation: resident-wave 950ms ease both; }
+  [data-mascot-state="acting"] .keeper-door { transform-origin: 64px 109px; animation: keeper-open 1000ms ease both; }
+  [data-mascot-state="acting"] .keeper-cube { animation: keeper-store 1000ms ease both; }
+  [data-mascot-state="acting"] .sentinel-lens { transform-origin: 40px 110px; animation: sentinel-inspect 1000ms ease both; }
+  [data-mascot-state="acting"] .sentinel-verdict { animation: sentinel-approve 1000ms ease both; }
+  [data-mascot-state="acting"] .archie-blueprint { transform-origin: 80px 114px; animation: archie-unfold 1000ms var(--ease-out) both; }
+  [data-mascot-state="acting"] .archie-blocks { animation: archie-align 1000ms ease both; }
+  [data-mascot-state="acting"] .archie-book { transform-origin: 80px 119px; animation: archie-read 1000ms ease both; }
+  [data-mascot-state="acting"] .scout-lens { transform-origin: 28px 112px; animation: scout-inspect 1000ms ease both; }
+  [data-mascot-state="acting"] .scout-match { animation: scout-match 1000ms ease both; }
+  [data-mascot-state="acting"] .forge-wrench { transform-origin: 27px 115px; animation: forge-tighten 1000ms ease both; }
+  [data-mascot-state="acting"] .forge-pipe-left { animation: forge-join-left 1000ms ease both; }
+  [data-mascot-state="acting"] .forge-pipe-right { animation: forge-join-right 1000ms ease both; }
+  [data-mascot-state="acting"] .forge-check { animation: scout-match 1000ms ease both; }
+  @keyframes pixel-arrange-a { 0%,100% { transform: none; } 35%,75% { transform: translate(-9px,5px) rotate(2deg); } }
+  @keyframes pixel-arrange-b { 0%,100% { transform: none; } 35%,75% { transform: translate(-15px,1px) rotate(-2deg); } }
+  @keyframes daemon-request { 0%,100% { transform: none; opacity: 1; } 40%,55% { transform: translateX(23px); opacity: 0.15; } }
+  @keyframes daemon-response { 0%,35%,100% { transform: none; } 65%,80% { transform: translate(7px,-5px); } }
+  @keyframes daemon-status { 0%,100% { opacity: 1; } 40% { opacity: 0.2; } 70% { opacity: 1; } }
+  @keyframes relay-deliver { 0%,100% { transform: none; } 45%,75% { transform: translate(11px,-5px) rotate(-4deg); } }
+  @keyframes relay-signal { 0%,35% { stroke-dashoffset: 1; opacity: 0.3; } 80%,100% { stroke-dashoffset: 0; opacity: 1; } }
+  @keyframes resident-wave { 0%,100% { transform: none; } 35% { transform: rotate(-8deg); } 65% { transform: rotate(4deg); } }
+  @keyframes keeper-open { 0%,100% { transform: none; } 30%,65% { transform: scaleX(0.2); } }
+  @keyframes keeper-store { 0%,100% { transform: none; } 45%,65% { transform: translate(-22px,3px) scale(0.85); opacity: 0.3; } }
+  @keyframes sentinel-inspect { 0%,100% { transform: none; } 40%,65% { transform: rotate(-16deg); } }
+  @keyframes sentinel-approve { 0%,100% { transform: none; } 65%,80% { transform: translateY(-7px); } }
+  @keyframes archie-unfold { 0%,100% { transform: none; } 20% { transform: scaleX(0.78); } 55%,80% { transform: scaleX(1.03); } }
+  @keyframes archie-align { 0%,100% { transform: none; } 20% { transform: translateY(5px); } 55%,80% { transform: none; } }
+  @keyframes archie-read { 0%,100% { transform: none; } 45%,75% { transform: rotate(-5deg); } }
+  @keyframes scout-inspect { 0%,100% { transform: none; } 40%,75% { transform: translate(12px,-2px) rotate(11deg); } }
+  @keyframes scout-match { 0%,100% { opacity: 0.4; } 50%,80% { opacity: 1; } }
+  @keyframes forge-tighten { 0%,100% { transform: none; } 35% { transform: rotate(14deg); } 65% { transform: rotate(-8deg); } }
+  @keyframes forge-join-left { 0%,100% { transform: none; } 45%,80% { transform: translateX(4px); } }
+  @keyframes forge-join-right { 0%,100% { transform: none; } 45%,80% { transform: translateX(-3px); } }
+}
+[data-mascot-motion="off"] *, [data-mascot-motion="off"] *::before { animation: none !important; transition: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  .mascot-cameo *, .mascot-cameo *::before { animation: none !important; transition: none !important; }
+}
+/* Preserve the existing contact column: its caption rule also targets spans. */
+.contact-companion > .mascot-scene { display: inline-grid; margin-top: 0; }
+@media (max-width: 639px) {
+  .resident-heading .section-heading { padding-right: 0; }
+  .heading-resident, .community-leadership .heading-resident { top: -3rem; width: 80px; }
+}

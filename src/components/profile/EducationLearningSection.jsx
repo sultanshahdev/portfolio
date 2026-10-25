@@ -1,3 +1,4 @@
+import Mascot from '../mascots/Mascot.jsx';
 import { BookOpen, GraduationCap } from 'lucide-react';
 import { profile } from '../../data/profile.js';
 import { learning } from '../../data/experience.js';
@@ -47,7 +48,7 @@ function LearningEntry({ entry }) {
 export default function EducationLearningSection() {
   return (
     <section id="journey" data-section className="home-section education-learning canvas-standard" aria-labelledby="education">
-      <SectionHeading id="education" number="04" eyebrow="An ongoing education">Education & learning</SectionHeading>
+      <div className="resident-heading"><SectionHeading id="education" number="04" eyebrow="An ongoing education">Education & learning</SectionHeading><span className="heading-resident"><Mascot character="archie" pose="reading" size="100%" /></span></div>
       {profile.education.map((entry) => <EducationEntry key={entry.id} entry={entry} />)}
       {learning.map((entry) => <LearningEntry key={entry.id} entry={entry} />)}
     </section>

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Play, RotateCcw, ShieldCheck } from 'lucide-react';
-import StudioMascot from '../studio/StudioMascot.jsx';
+import Mascot from '../mascots/Mascot.jsx';
+import { projectResidents } from '../../data/mascots.js';
 
 function Window({ x, y, width = 142, label, children, active = false }) {
   return <g className={active ? 'exhibit-node is-lit' : 'exhibit-node'} transform={`translate(${x} ${y})`}>
@@ -113,11 +114,10 @@ export default function ProjectExhibitDiagram({ project, compact = false }) {
     observer.observe(figure.current);
     return () => { observer.disconnect(); clearTimeout(timer.current); motion.removeEventListener('change', change); };
   }, [activate, project.slug, compact]);
-  return <div ref={figure} className={`project-exhibit exhibit-${project.slug}${compact ? ' exhibit-compact' : ''}`} data-phase={phase}>
+  return <div ref={figure} className={`project-exhibit exhibit-${project.slug}${compact ? ' exhibit-compact' : ''}`} data-phase={phase} data-mascot-scope>
     <figure className="exhibit-figure" aria-label={`${project.title}: ${title}`}>
     <div className="exhibit-caption"><span>{title}</span><span aria-hidden="true">FIG. {String(['c2g', 'clara', 'soar-lite', 'codecraft'].indexOf(project.slug) + 1).padStart(2, '0')}</span></div>
-    <div key={iteration} className={`exhibit-art${phase === 'running' ? ' is-running' : ''}`}><Component completed={phase === 'complete'} /></div>
-    {project.slug === 'c2g' && !compact && <div className="exhibit-packet"><StudioMascot kind="packet" /><span>PACKET / in transit</span></div>}
+    <div className="exhibit-art-frame"><div key={iteration} className={`exhibit-art${phase === 'running' ? ' is-running' : ''}`}><Component completed={phase === 'complete'} /></div><span className="project-resident"><Mascot character={projectResidents[project.slug]} size="100%" /></span></div>
     <ol className="diagram-stage-key" aria-label="Illustrated stages">{mobileStages[project.slug].map(stage => <li key={stage}>{stage}</li>)}</ol>
     <figcaption>{project.visual.caption}{project.slug === 'soar-lite' && <strong> No firewall or network traffic is blocked.</strong>}</figcaption>
     </figure>

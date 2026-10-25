@@ -1,0 +1,881 @@
+{
+  "results": [
+    {
+      "width": 1440,
+      "height": 8848,
+      "overflow": false,
+      "sections": [
+        {
+          "id": "about",
+          "height": 1204
+        },
+        {
+          "id": "work",
+          "height": 2890
+        },
+        {
+          "id": "skills",
+          "height": 964
+        },
+        {
+          "id": "journey",
+          "height": 641
+        },
+        {
+          "id": "community",
+          "height": 1669
+        },
+        {
+          "id": "contact",
+          "height": 435
+        }
+      ],
+      "cameos": [
+        {
+          "character": "archie",
+          "width": 135,
+          "hidden": false
+        },
+        {
+          "character": "pixel",
+          "width": 72,
+          "hidden": false
+        },
+        {
+          "character": "relay",
+          "width": 110,
+          "hidden": false
+        },
+        {
+          "character": "keeper",
+          "width": 110,
+          "hidden": false
+        },
+        {
+          "character": "sentinel",
+          "width": 110,
+          "hidden": false
+        },
+        {
+          "character": "scout",
+          "width": 110,
+          "hidden": false
+        },
+        {
+          "character": "pixel",
+          "width": 52,
+          "hidden": true
+        },
+        {
+          "character": "daemon",
+          "width": 52,
+          "hidden": true
+        },
+        {
+          "character": "keeper",
+          "width": 52,
+          "hidden": true
+        },
+        {
+          "character": "forge",
+          "width": 52,
+          "hidden": true
+        },
+        {
+          "character": "sentinel",
+          "width": 52,
+          "hidden": true
+        },
+        {
+          "character": "archie",
+          "width": 52,
+          "hidden": true
+        },
+        {
+          "character": "archie",
+          "width": 96,
+          "hidden": false
+        },
+        {
+          "character": "relay",
+          "width": 96,
+          "hidden": false
+        },
+        {
+          "character": "relay",
+          "width": 104.40966796875,
+          "hidden": true
+        },
+        {
+          "character": "pixel",
+          "width": 101.3955078125,
+          "hidden": true
+        },
+        {
+          "character": "forge",
+          "width": 52,
+          "hidden": true
+        }
+      ],
+      "growth": 0,
+      "growthPercent": 0,
+      "sectionDelta": [
+        {
+          "id": "about",
+          "delta": 0
+        },
+        {
+          "id": "work",
+          "delta": 0
+        },
+        {
+          "id": "skills",
+          "delta": 0
+        },
+        {
+          "id": "journey",
+          "delta": 0
+        },
+        {
+          "id": "community",
+          "delta": 0
+        },
+        {
+          "id": "contact",
+          "delta": 0
+        }
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 8613,
+      "overflow": false,
+      "sections": [
+        {
+          "id": "about",
+          "height": 1173
+        },
+        {
+          "id": "work",
+          "height": 2784
+        },
+        {
+          "id": "skills",
+          "height": 964
+        },
+        {
+          "id": "journey",
+          "height": 628
+        },
+        {
+          "id": "community",
+          "height": 1666
+        },
+        {
+          "id": "contact",
+          "height": 426
+        }
+      ],
+      "cameos": [
+        {
+          "character": "archie",
+          "width": 135,
+          "hidden": false
+        },
+        {
+          "character": "pixel",
+          "width": 72,
+          "hidden": false
+        },
+        {
+          "character": "relay",
+          "width": 110,
+          "hidden": false
+        },
+        {
+          "character": "keeper",
+          "width": 110,
+          "hidden": false
+        },
+        {
+          "character": "sentinel",
+          "width": 110,
+          "hidden": false
+        },
+        {
+          "character": "scout",
+          "width": 110,
+          "hidden": false
+        },
+        {
+          "character": "pixel",
+          "width": 52,
+          "hidden": true
+        },
+        {
+          "character": "daemon",
+          "width": 52,
+          "hidden": true
+        },
+        {
+          "character": "keeper",
+          "width": 52,
+          "hidden": true
+        },
+        {
+          "character": "forge",
+          "width": 52,
+          "hidden": true
+        },
+        {
+          "character": "sentinel",
+          "width": 52,
+          "hidden": true
+        },
+        {
+          "character": "archie",
+          "width": 52,
+          "hidden": true
+        },
+        {
+          "character": "archie",
+          "width": 96,
+          "hidden": false
+        },
+        {
+          "character": "relay",
+          "width": 96,
+          "hidden": false
+        },
+        {
+          "character": "relay",
+          "width": 104.40972900390625,
+          "hidden": true
+        },
+        {
+          "character": "pixel",
+          "width": 101.3955078125,
+          "hidden": true
+        },
+        {
+          "character": "forge",
+          "width": 52,
+          "hidden": true
+        }
+      ],
+      "growth": 0,
+      "growthPercent": 0,
+      "sectionDelta": [
+        {
+          "id": "about",
+          "delta": 0
+        },
+        {
+          "id": "work",
+          "delta": 0
+        },
+        {
+          "id": "skills",
+          "delta": 0
+        },
+        {
+          "id": "journey",
+          "delta": 0
+        },
+        {
+          "id": "community",
+          "delta": 0
+        },
+        {
+          "id": "contact",
+          "delta": 0
+        }
+      ]
+    },
+    {
+      "width": 1024,
+      "height": 7912,
+      "overflow": false,
+      "sections": [
+        {
+          "id": "about",
+          "height": 1163
+        },
+        {
+          "id": "work",
+          "height": 2329
+        },
+        {
+          "id": "skills",
+          "height": 957
+        },
+        {
+          "id": "journey",
+          "height": 568
+        },
+        {
+          "id": "community",
+          "height": 1648
+        },
+        {
+          "id": "contact",
+          "height": 403
+        }
+      ],
+      "cameos": [
+        {
+          "character": "archie",
+          "width": 108.34375,
+          "hidden": false
+        },
+        {
+          "character": "pixel",
+          "width": 72,
+          "hidden": false
+        },
+        {
+          "character": "relay",
+          "width": 77.890625,
+          "hidden": false
+        },
+        {
+          "character": "keeper",
+          "width": 77.890625,
+          "hidden": false
+        },
+        {
+          "character": "sentinel",
+          "width": 77.890625,
+          "hidden": false
+        },
+        {
+          "character": "scout",
+          "width": 77.890625,
+          "hidden": false
+        },
+        {
+          "character": "pixel",
+          "width": 52,
+          "hidden": true
+        },
+        {
+          "character": "daemon",
+          "width": 52,
+          "hidden": true
+        },
+        {
+          "character": "keeper",
+          "width": 52,
+          "hidden": true
+        },
+        {
+          "character": "forge",
+          "width": 52,
+          "hidden": true
+        },
+        {
+          "character": "sentinel",
+          "width": 52,
+          "hidden": true
+        },
+        {
+          "character": "archie",
+          "width": 52,
+          "hidden": true
+        },
+        {
+          "character": "archie",
+          "width": 96,
+          "hidden": false
+        },
+        {
+          "character": "relay",
+          "width": 96,
+          "hidden": false
+        },
+        {
+          "character": "relay",
+          "width": 104.4097900390625,
+          "hidden": true
+        },
+        {
+          "character": "pixel",
+          "width": 101.3955078125,
+          "hidden": true
+        },
+        {
+          "character": "forge",
+          "width": 52,
+          "hidden": true
+        }
+      ],
+      "growth": 0,
+      "growthPercent": 0,
+      "sectionDelta": [
+        {
+          "id": "about",
+          "delta": 0
+        },
+        {
+          "id": "work",
+          "delta": 0
+        },
+        {
+          "id": "skills",
+          "delta": 0
+        },
+        {
+          "id": "journey",
+          "delta": 0
+        },
+        {
+          "id": "community",
+          "delta": 0
+        },
+        {
+          "id": "contact",
+          "delta": 0
+        }
+      ]
+    },
+    {
+      "width": 768,
+      "height": 9760,
+      "overflow": false,
+      "sections": [
+        {
+          "id": "about",
+          "height": 1201
+        },
+        {
+          "id": "work",
+          "height": 4134
+        },
+        {
+          "id": "skills",
+          "height": 949
+        },
+        {
+          "id": "journey",
+          "height": 588
+        },
+        {
+          "id": "community",
+          "height": 1732
+        },
+        {
+          "id": "contact",
+          "height": 385
+        }
+      ],
+      "cameos": [
+        {
+          "character": "archie",
+          "width": 99.265625,
+          "hidden": false
+        },
+        {
+          "character": "pixel",
+          "width": 62,
+          "hidden": false
+        },
+        {
+          "character": "relay",
+          "width": 110,
+          "hidden": false
+        },
+        {
+          "character": "keeper",
+          "width": 110,
+          "hidden": false
+        },
+        {
+          "character": "sentinel",
+          "width": 110,
+          "hidden": false
+        },
+        {
+          "character": "scout",
+          "width": 110,
+          "hidden": false
+        },
+        {
+          "character": "pixel",
+          "width": 52,
+          "hidden": true
+        },
+        {
+          "character": "daemon",
+          "width": 52,
+          "hidden": true
+        },
+        {
+          "character": "keeper",
+          "width": 52,
+          "hidden": true
+        },
+        {
+          "character": "forge",
+          "width": 52,
+          "hidden": true
+        },
+        {
+          "character": "sentinel",
+          "width": 52,
+          "hidden": true
+        },
+        {
+          "character": "archie",
+          "width": 52,
+          "hidden": true
+        },
+        {
+          "character": "archie",
+          "width": 96,
+          "hidden": false
+        },
+        {
+          "character": "relay",
+          "width": 96,
+          "hidden": false
+        },
+        {
+          "character": "relay",
+          "width": 104.4097900390625,
+          "hidden": true
+        },
+        {
+          "character": "pixel",
+          "width": 101.3955078125,
+          "hidden": true
+        },
+        {
+          "character": "forge",
+          "width": 52,
+          "hidden": true
+        }
+      ],
+      "growth": 0,
+      "growthPercent": 0,
+      "sectionDelta": [
+        {
+          "id": "about",
+          "delta": 0
+        },
+        {
+          "id": "work",
+          "delta": 0
+        },
+        {
+          "id": "skills",
+          "delta": 0
+        },
+        {
+          "id": "journey",
+          "delta": 0
+        },
+        {
+          "id": "community",
+          "delta": 0
+        },
+        {
+          "id": "contact",
+          "delta": 0
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "height": 11953,
+      "overflow": false,
+      "sections": [
+        {
+          "id": "about",
+          "height": 1534
+        },
+        {
+          "id": "work",
+          "height": 4124
+        },
+        {
+          "id": "skills",
+          "height": 1628
+        },
+        {
+          "id": "journey",
+          "height": 782
+        },
+        {
+          "id": "community",
+          "height": 2671
+        },
+        {
+          "id": "contact",
+          "height": 451
+        }
+      ],
+      "cameos": [
+        {
+          "character": "archie",
+          "width": 94.5,
+          "hidden": false
+        },
+        {
+          "character": "pixel",
+          "width": 56,
+          "hidden": false
+        },
+        {
+          "character": "relay",
+          "width": 64,
+          "hidden": false
+        },
+        {
+          "character": "keeper",
+          "width": 64,
+          "hidden": false
+        },
+        {
+          "character": "sentinel",
+          "width": 64,
+          "hidden": false
+        },
+        {
+          "character": "scout",
+          "width": 64,
+          "hidden": false
+        },
+        {
+          "character": "pixel",
+          "width": 48,
+          "hidden": true
+        },
+        {
+          "character": "daemon",
+          "width": 48,
+          "hidden": true
+        },
+        {
+          "character": "keeper",
+          "width": 48,
+          "hidden": true
+        },
+        {
+          "character": "forge",
+          "width": 48,
+          "hidden": true
+        },
+        {
+          "character": "sentinel",
+          "width": 48,
+          "hidden": true
+        },
+        {
+          "character": "archie",
+          "width": 48,
+          "hidden": true
+        },
+        {
+          "character": "archie",
+          "width": 80,
+          "hidden": false
+        },
+        {
+          "character": "relay",
+          "width": 80,
+          "hidden": false
+        },
+        {
+          "character": "relay",
+          "width": 87.92402648925781,
+          "hidden": true
+        },
+        {
+          "character": "pixel",
+          "width": 85.3856430053711,
+          "hidden": true
+        },
+        {
+          "character": "forge",
+          "width": 48,
+          "hidden": true
+        }
+      ],
+      "growth": 1,
+      "growthPercent": 0.008366800535475234,
+      "sectionDelta": [
+        {
+          "id": "about",
+          "delta": 0
+        },
+        {
+          "id": "work",
+          "delta": 0
+        },
+        {
+          "id": "skills",
+          "delta": 0
+        },
+        {
+          "id": "journey",
+          "delta": 0
+        },
+        {
+          "id": "community",
+          "delta": 0
+        },
+        {
+          "id": "contact",
+          "delta": 1
+        }
+      ]
+    },
+    {
+      "width": 360,
+      "height": 12356,
+      "overflow": false,
+      "sections": [
+        {
+          "id": "about",
+          "height": 1583
+        },
+        {
+          "id": "work",
+          "height": 4174
+        },
+        {
+          "id": "skills",
+          "height": 1660
+        },
+        {
+          "id": "journey",
+          "height": 806
+        },
+        {
+          "id": "community",
+          "height": 2919
+        },
+        {
+          "id": "contact",
+          "height": 451
+        }
+      ],
+      "cameos": [
+        {
+          "character": "archie",
+          "width": 86.390625,
+          "hidden": false
+        },
+        {
+          "character": "pixel",
+          "width": 56,
+          "hidden": false
+        },
+        {
+          "character": "relay",
+          "width": 64,
+          "hidden": false
+        },
+        {
+          "character": "keeper",
+          "width": 64,
+          "hidden": false
+        },
+        {
+          "character": "sentinel",
+          "width": 64,
+          "hidden": false
+        },
+        {
+          "character": "scout",
+          "width": 64,
+          "hidden": false
+        },
+        {
+          "character": "pixel",
+          "width": 48,
+          "hidden": true
+        },
+        {
+          "character": "daemon",
+          "width": 48,
+          "hidden": true
+        },
+        {
+          "character": "keeper",
+          "width": 48,
+          "hidden": true
+        },
+        {
+          "character": "forge",
+          "width": 48,
+          "hidden": true
+        },
+        {
+          "character": "sentinel",
+          "width": 48,
+          "hidden": true
+        },
+        {
+          "character": "archie",
+          "width": 48,
+          "hidden": true
+        },
+        {
+          "character": "archie",
+          "width": 80,
+          "hidden": false
+        },
+        {
+          "character": "relay",
+          "width": 80,
+          "hidden": false
+        },
+        {
+          "character": "relay",
+          "width": 87.92402648925781,
+          "hidden": true
+        },
+        {
+          "character": "pixel",
+          "width": 85.3856430053711,
+          "hidden": true
+        },
+        {
+          "character": "forge",
+          "width": 48,
+          "hidden": true
+        }
+      ],
+      "growth": 1,
+      "growthPercent": 0.008093889113719143,
+      "sectionDelta": [
+        {
+          "id": "about",
+          "delta": 0
+        },
+        {
+          "id": "work",
+          "delta": 0
+        },
+        {
+          "id": "skills",
+          "delta": 0
+        },
+        {
+          "id": "journey",
+          "delta": 0
+        },
+        {
+          "id": "community",
+          "delta": 0
+        },
+        {
+          "id": "contact",
+          "delta": 1
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

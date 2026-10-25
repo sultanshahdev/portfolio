@@ -5,8 +5,8 @@ const exhibit = (page, slug) => page.locator(`.project-entry--showcase[data-proj
 
 test('the studio uses original named companions and three intentional canvas widths', async ({ page }, info) => {
   await page.goto('./#/');
-  await expect(page.getByRole('img', { name: 'BIT, a bracket-shaped engineering assistant' })).toBeVisible();
-  await expect(page.getByRole('img', { name: 'PACKET, a network companion' })).toHaveCount(2);
+  await expect(page.getByRole('img', { name: 'Archie, a software architecture companion' })).toBeVisible();
+  await expect(page.getByRole('img', { name: 'Pixel, a frontend engineering companion' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Step inside Selected Work' })).toHaveAttribute('href', '#/#work');
   if (info.project.name === 'desktop') {
     const wide = await page.locator('.selected-work').boundingBox();
@@ -117,5 +117,5 @@ test('mobile schematics retain readable stage labels and both character silhouet
     await expect(stages.getByRole('listitem')).toHaveCount(4);
     expect(await stages.getByRole('listitem').first().evaluate(el => parseFloat(getComputedStyle(el).fontSize))).toBeGreaterThanOrEqual(12);
   }
-  await expect(exhibit(page, 'c2g').getByRole('img', { name: /PACKET/ })).toBeVisible();
+  await expect(exhibit(page, 'c2g').locator('[data-character="relay"]')).toBeVisible();
 });

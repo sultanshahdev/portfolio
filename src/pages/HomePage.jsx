@@ -7,7 +7,7 @@ import ProjectList from '../components/projects/ProjectList.jsx';
 import SectionHeading from '../components/ui/SectionHeading.jsx';
 import TextLink from '../components/ui/TextLink.jsx';
 import PageMeta from '../components/layout/PageMeta.jsx';
-import StudioMascot from '../components/studio/StudioMascot.jsx';
+import MascotScene from '../components/mascots/MascotScene.jsx';
 import { projects } from '../data/projects.js';
 
 export default function HomePage() {
@@ -19,9 +19,9 @@ export default function HomePage() {
       <ProjectList projects={projects.filter(project => project.featured)} headingLevel={3} variant="showcase" />
     </section>
     <TechnicalExpertise /><EducationLearningSection /><CommunityLeadershipSection />
-    <section id="contact" data-section className="home-section contact-section canvas-standard" aria-labelledby="get-in-touch" data-reveal>
+    <section id="contact" data-section data-mascot-scope className="home-section contact-section canvas-standard" aria-labelledby="get-in-touch" data-reveal>
       <div><SectionHeading id="get-in-touch" number="06" eyebrow="Keep the connection open">Get in touch</SectionHeading><p className="contact-closing">Something on your mind?<br /><em>Let’s connect the dots.</em></p><p>Always glad to talk about software, exchange ideas, or explore a project together.</p><ContactLinks /></div>
-      <div className="contact-companion"><StudioMascot kind="packet" /><span className="section-label">A new connection starts here.</span></div>
+      <div className="contact-companion"><MascotScene /><span className="section-label">A new connection starts here.</span></div>
     </section>
   </>;
 }

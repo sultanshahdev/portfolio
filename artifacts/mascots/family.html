@@ -1,0 +1,12 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Engineering residents — local art review</title><div id="root"></div><script type="module">
+import React from 'react';
+import {createRoot} from 'react-dom/client';
+import Mascot from '/portfolio/src/components/mascots/Mascot.jsx';
+import {mascotFamily} from '/portfolio/src/data/mascots.js';
+import '/portfolio/src/styles/tokens.css';
+import '/portfolio/src/styles/global.css';
+import '/portfolio/src/styles/typography.css';
+import '/portfolio/src/styles/mascots.css';
+const h=React.createElement;
+createRoot(document.getElementById('root')).render(h('main',{},h('p',{className:'section-label'},'The engineering residents / 128px and 64px'),h('h1',{},'Little characters. Different kinds of curiosity.'),h('div',{className:'family'},...mascotFamily.map(m=>h('article',{key:m.id},h('div',{className:'drawings'},h(Mascot,{character:m.id,size:128,label:`${m.name}, ${m.domain}`,motion:false}),h(Mascot,{character:m.id,size:64,motion:false})),h('h2',{},m.name),h('p',{},m.domain),h('small',{},m.personality)))),h('div',{className:'poses'},h(Mascot,{character:'archie',pose:'reading',size:128,motion:false}),h(Mascot,{character:'relay',pose:'community',size:128,motion:false}),h(Mascot,{character:'forge',pose:'resting',size:128,motion:false}),h(Mascot,{character:'pixel',pose:'waving',size:128,motion:false}))));
+</script><style>body{padding:40px;font-family:var(--font-sans)}main{max-width:1280px;margin:auto}h1{font-size:32px;font-weight:400;margin:10px 0 30px;font-family:var(--font-serif)}.family{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}article{border-top:1px solid hsl(var(--border));padding-top:15px;min-height:240px}.drawings{display:flex;align-items:end;gap:12px}h2{font:500 20px var(--font-serif);margin:10px 0 4px}p{font-size:13px;color:hsl(var(--muted-foreground))}small{display:block;font-size:12px;max-width:210px;margin-top:8px;color:hsl(var(--muted-foreground))}.poses{border-top:1px solid hsl(var(--border));margin-top:30px;display:flex;justify-content:space-around;padding-top:20px}</style></html>
