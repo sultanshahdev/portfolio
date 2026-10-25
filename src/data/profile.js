@@ -2,8 +2,16 @@ import { organizations } from './organizations.js';
 
 export const profile = {
   name: 'Sultan Shah',
-  title: 'Software Engineer . Systems Architect . Networking & Security',
-  biographySubtitle: 'Software Engineer · Backend Engineering · Systems & Architecture',
+  title: 'Software Engineer · Frontend Engineer',
+  biographySubtitle: 'Software Engineer · Frontend Engineer',
+  headline: ['From thoughtful', 'interfaces to', 'resilient systems.'],
+  architectureFocus: 'Systems Architecture',
+  disciplines: [
+    { id: 'frontend', label: 'Frontend Engineering', description: 'Thoughtful interfaces, clear interactions, and the experience of using software.' },
+    { id: 'backend', label: 'Backend Engineering', description: 'Application logic, data, and the services behind the interface.' },
+    { id: 'distributed', label: 'Distributed Systems', description: 'How components communicate, coordinate, and recover from failure.' },
+    { id: 'security', label: 'Networking & Security', description: 'The connections and trust boundaries that hold a system together.' },
+  ],
   location: 'Karachi, Sindh, Pakistan',
   description: 'My work span backend development, software architecture, and system design. I’m curious about how components communicate, how applications are structured, and what makes software reliable and maintainable.',
    biography: [
