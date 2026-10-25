@@ -1,0 +1,11 @@
+flowchart LR
+    A[Choose repository] --> B[Prepare snapshot]
+    B --> C{Search mode}
+    C -- Natural-language --> D[Semantic candidates]
+    C -- Exact-text --> E[Literal matches]
+    D --> F[Open real source lines]
+    E --> F
+    F --> G[Explore files / symbols / map]
+    G --> H{Enough evidence?}
+    H -- No --> C
+    H -- Yes --> I[Developer reaches conclusion]

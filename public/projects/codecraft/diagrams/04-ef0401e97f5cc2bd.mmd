@@ -1,0 +1,15 @@
+flowchart TD
+  UI[React + TypeScript workspace] --> SEL{Valid CodeCraft Node API?}
+  SEL -- Yes --> NE[Node analysis engine]
+  SEL -- No --> BE[Browser analysis engine]
+  CLI[codecraft CLI] --> NCORE[Node source + search modules]
+  NE --> API[Localhost HTTP API]
+  API --> NCORE
+  NCORE --> FS[Local files / temporary GitHub checkout]
+  NCORE --> ML[MiniLM via Transformers.js]
+  NCORE --> L[JS/TS compiler + Tree-sitter adapters]
+  NCORE --> CACHE[Memory + private disk vector caches]
+  BE --> G[Public GitHub API + raw pinned files]
+  BE --> MEM[Bounded in-memory snapshot]
+  MEM --> BW[Embedding Web Worker]
+  BW --> BML[MiniLM: WebGPU or WASM]

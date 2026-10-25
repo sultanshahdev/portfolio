@@ -1,0 +1,8 @@
+flowchart LR
+  P["Python 3.12+ source"] --> Pack["PyInstaller onedir / c2g.spec"]
+  W["web/ source: Monaco, JS, CSS"] --> Vite["npm ci + Vite production build"]
+  Vite --> Assets["web/dist: HTML, JS, CSS, editor workers"]
+  Assets --> Pack
+  Pack --> Dist["dist/c2g/ executable + _internal"]
+  Dist --> Verify["Checksum, CLI from /tmp, bundled assets, native smoke"]
+  Verify --> Gate["Linux release candidate · G6 PARTIAL"]

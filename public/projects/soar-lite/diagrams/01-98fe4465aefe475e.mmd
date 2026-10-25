@@ -1,0 +1,7 @@
+flowchart LR
+  subgraph Manual[Typical manual investigation — conceptual]
+    M1[Alert] --> M2[Look up IP] --> M3[Decide] --> M4[Act] --> M5[Document]
+  end
+  subgraph SOAR[SOAR Lite]
+    S1[Authenticated alert] --> S2[Automated IP evidence] --> S3[Human approval] --> S4[Simulated block] --> S5[Audit / revert]
+  end

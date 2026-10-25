@@ -1,0 +1,10 @@
+flowchart TB
+    V[Source view / Symbol Explorer] --> REG[Language registry]
+    REG --> TS[JavaScript / TypeScript adapter]
+    REG --> TREE[Tree-sitter WASM adapters]
+    TS --> TSC[TypeScript AST + compiler checker]
+    TREE --> GRAM[Python / Go / Java / Rust / C / C++ / C# / Ruby / PHP / Bash]
+    TS --> CAP[Declarations, possible usages, supported precise definition]
+    TREE --> STR[Structural declarations and possible usages]
+    STR --> V
+    CAP --> V

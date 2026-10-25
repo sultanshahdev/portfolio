@@ -1,0 +1,17 @@
+flowchart TD
+    R[Bounded repository snapshot] --> S[Source regions + file paths]
+    Q[Natural-language question] --> QE[Query embedding]
+    S --> CE[Region embeddings + cache reuse]
+    QE --> SIM[Cosine similarity]
+    CE --> SIM
+    S --> LEX[Lexical identifier / path evidence]
+    Q --> LEX
+    SIM --> RS[Semantic rank list]
+    LEX --> RL[Lexical rank list]
+    RS --> F[RRF: merge ranked locations]
+    RL --> F
+    Q --> INT[Deterministic intent classification]
+    INT --> RE[Implementation/test/usage reranking]
+    F --> RE
+    RE --> REL[Evidence + relevance checks]
+    REL --> OUT[Candidates with file / lines / excerpts]

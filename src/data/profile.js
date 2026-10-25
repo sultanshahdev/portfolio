@@ -1,3 +1,5 @@
+import { organizations } from './organizations.js';
+
 export const profile = {
   name: 'Sultan Shah',
   title: 'Software Engineer . Systems Architect . Networking & Security',
@@ -25,6 +27,14 @@ export const profile = {
   resumeUrl: null,
   portrait: { src: '/images/profile-img.png', objectPosition: 'center' },
   education: [
-    { institution: 'Sukkur IBA University', qualification: 'BS Computer Science', period: '2024–2028', note: 'In progress · expected 2028' },
+    {
+      id: 'bs-computer-science',
+      organization: organizations.sukkurIba,
+      qualification: 'Bachelor of Science in Computer Science',
+      kind: 'Formal education',
+      period: '2024–2028',
+      note: 'In progress · Expected 2028',
+      location: { city: 'Sukkur', region: 'Sindh', country: 'Pakistan' },
+    },
   ],
 };

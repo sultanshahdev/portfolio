@@ -1,0 +1,10 @@
+flowchart TD
+  Q[Claim due investigation] --> L[Call AbuseIPDB]
+  L --> OK{Valid response?}
+  OK -- Yes --> C[Persist evidence + completed]
+  OK -- No --> E{Transient failure?}
+  E -- No --> F[Persist failed and safe error]
+  E -- Yes --> M{Attempts remaining?}
+  M -- No --> F
+  M -- Yes --> R[Set queued + next_attempt_at]
+  R --> Q

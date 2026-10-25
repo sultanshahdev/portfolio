@@ -1,0 +1,7 @@
+stateDiagram-v2
+  [*] --> queued
+  queued --> running: claimed with token and expiry
+  running --> completed: evidence saved
+  running --> queued: transient error / retry scheduled
+  running --> failed: permanent error or attempt limit
+  running --> running: expired lease re-claimed

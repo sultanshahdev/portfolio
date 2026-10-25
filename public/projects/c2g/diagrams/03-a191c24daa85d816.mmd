@@ -1,0 +1,17 @@
+flowchart LR
+  subgraph A["Alice · Desktop peer"]
+    AUI[Monaco and pywebview] --> AC[Python controller] --> AR[CRDT replica]
+    AC <--> AN[TCP networking]; AC --> AS[(Local JSON)]
+  end
+  subgraph B["Bob · Desktop peer"]
+    BUI[Monaco and pywebview] --> BC[Python controller] --> BR[CRDT replica]
+    BC <--> BN[TCP networking]; BC --> BS[(Local JSON)]
+  end
+  subgraph C["Charlie · Desktop peer"]
+    CUI[Monaco and pywebview] --> CC[Python controller] --> CR[CRDT replica]
+    CC <--> CN[TCP networking]; CC --> CS[(Local JSON)]
+  end
+  AN <-->|"Framed TCP: HELLO, snapshots, operations"| BN
+  BN <-->|"Framed TCP: operations"| CN
+  AN -.->|"UDP broadcast discovery on LAN"| BN
+  BN -.->|"UDP broadcast discovery on LAN"| CN

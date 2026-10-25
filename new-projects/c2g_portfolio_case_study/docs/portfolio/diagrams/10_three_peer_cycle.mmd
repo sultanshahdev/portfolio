@@ -1,0 +1,7 @@
+flowchart LR
+  A["Alice CRDT"] <-->|"OP + stable message_id"| B["Bob CRDT"]
+  B <-->|"OP + stable message_id"| C["Charlie CRDT"]
+  C <-->|"OP + stable message_id"| A
+  Id["Each receiver records seen IDs; skips repeated OPs"] -.-> A
+  Id -.-> B
+  Id -.-> C

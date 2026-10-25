@@ -1,0 +1,8 @@
+flowchart TD
+    OPEN[Open workspace] --> H[Fetch /api/health]
+    H --> CT{OK + JSON + service codecraft?}
+    CT -- Yes --> NODE[Use Node AnalysisEngine]
+    CT -- No / error / timeout --> BROWSER[Use Browser AnalysisEngine]
+    NODE --> LOCAL[Local folders + prepared GitHub checkout]
+    BROWSER --> GH[Public GitHub repository URL]
+    GH --> SNAP[Commit-pinned bounded browser snapshot]

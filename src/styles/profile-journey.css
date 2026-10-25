@@ -1,0 +1,355 @@
+/* Academic record and community journal, within the existing reading column. */
+.education-learning,
+.community-leadership { font-family: var(--font-sans); }
+
+.education-learning .section-heading,
+.community-leadership .section-heading { margin-bottom: 1.75rem; }
+
+.organization-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 4.5rem;
+  height: 3.5rem;
+}
+
+.organization-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: grayscale(1);
+  mix-blend-mode: multiply;
+}
+
+.organization-logo .organization-logo-ink {
+  /* Preserve the exact silhouette of the university's white transparent mark. */
+  filter: grayscale(1) brightness(0.22);
+}
+
+.organization-monogram {
+  color: hsl(var(--primary));
+  font: 500 1.75rem/1 var(--font-serif);
+  letter-spacing: -0.06em;
+}
+
+.organization-logo--pslc .organization-monogram {
+  font-size: 1.25rem;
+  letter-spacing: -0.035em;
+}
+
+.institution-link {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  min-height: 2rem;
+  color: hsl(var(--primary));
+  text-decoration: underline;
+  text-decoration-color: hsl(var(--border));
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.23em;
+  transition: color 120ms ease, text-decoration-color 120ms ease;
+}
+
+.institution-link:hover {
+  color: hsl(var(--accent));
+  text-decoration-color: hsl(var(--accent));
+}
+
+.journey-kicker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  color: hsl(var(--muted-foreground));
+  font: 600 0.75rem/1.5 var(--font-sans);
+  letter-spacing: 0.075em;
+  text-transform: uppercase;
+}
+
+.journey-kicker > span { display: inline-flex; align-items: center; gap: 0.5rem; }
+.journey-kicker svg { flex-shrink: 0; color: hsl(var(--accent)); }
+
+.journey-date {
+  color: hsl(var(--muted-foreground));
+  font-size: 0.875rem;
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+}
+
+.journey-description {
+  color: hsl(var(--foreground));
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+.location-meta {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.2rem 0.4rem;
+  color: hsl(var(--muted-foreground));
+  font: 400 0.875rem/1.6 var(--font-sans);
+}
+
+.location-meta svg { flex-shrink: 0; color: hsl(var(--accent)); }
+.location-meta strong { color: hsl(var(--primary)); font-weight: 600; }
+.location-mode::before { content: '·'; margin-right: 0.4rem; }
+
+.academic-entry {
+  display: grid;
+  grid-template-columns: 8.25rem minmax(0, 1fr);
+  gap: 1.75rem;
+  padding-block: 0.25rem 2rem;
+}
+
+.academic-insignia {
+  display: flex;
+  align-items: center;
+  align-self: start;
+  justify-content: center;
+  min-height: 9rem;
+  border-block: 1px solid hsl(var(--border));
+}
+
+.academic-insignia .organization-logo { width: 8.25rem; height: 6rem; }
+
+.academic-period {
+  color: hsl(var(--primary));
+  font-size: 0.9375rem;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.academic-title {
+  margin-block: 0.65rem 0.6rem;
+  font: 500 1.75rem/1.35 var(--font-serif);
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.academic-content > .institution-link {
+  display: inline-block;
+  padding-block: 0.1rem;
+  font-size: 1.0625rem;
+  font-weight: 500;
+}
+
+.academic-status {
+  margin-block: 0.65rem 0.25rem;
+  color: hsl(var(--muted-foreground));
+  font-size: 0.875rem;
+}
+
+.independent-entry {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1.75rem;
+  padding-block: 1.5rem 0.25rem;
+  border-top: 1px solid hsl(var(--border) / 0.7);
+}
+
+.independent-entry::before {
+  content: '';
+  position: absolute;
+  left: 4.125rem;
+  top: -2rem;
+  height: 2rem;
+  border-left: 1px solid hsl(var(--border));
+}
+
+.independent-heading { display: flex; align-items: flex-start; gap: 1rem; }
+.independent-heading .organization-logo { width: 2.75rem; height: 3.75rem; margin-top: 0.1rem; }
+.independent-heading .journey-kicker { font-size: 0.6875rem; letter-spacing: 0.055em; }
+
+.independent-title {
+  margin-block: 0.45rem 0.3rem;
+  font: 500 1.375rem/1.4 var(--font-serif);
+  letter-spacing: -0.03em;
+}
+
+.independent-heading .institution-link { display: inline-block; padding-block: 0.15rem; font-size: 1rem; }
+.independent-content .journey-date { margin-bottom: 0.6rem; }
+
+.learning-approach {
+  margin-top: 0.7rem;
+  padding-left: 0.85rem;
+  border-left: 1px solid hsl(var(--border));
+  color: hsl(var(--muted-foreground));
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+
+.community-leadership { margin-top: 3.25rem; }
+.leadership-timeline { list-style: none; margin: 0; padding: 0; }
+.leadership-entry > article {
+  display: grid;
+  grid-template-columns: 2.25rem minmax(0, 1fr);
+  gap: 1.75rem;
+}
+
+/* Flow-based connectors leave the logos and content in a normal grid. */
+.leadership-rail { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+.leadership-entry:not(:last-child) .leadership-rail::after {
+  content: '';
+  flex: 1;
+  width: 1px;
+  min-height: 1.25rem;
+  background: hsl(var(--border));
+}
+.leadership-entry + .leadership-entry .leadership-rail::before {
+  content: '';
+  width: 1px;
+  height: 1.25rem;
+  flex-shrink: 0;
+  background: hsl(var(--border));
+}
+
+.leadership-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.5rem;
+  color: hsl(var(--accent));
+  background: hsl(var(--background));
+}
+
+.leadership-number {
+  padding-block: 0.15rem;
+  background: hsl(var(--background));
+  color: hsl(var(--muted-foreground));
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.05em;
+}
+
+.leadership-composition {
+  display: grid;
+  grid-template-columns: 9rem minmax(0, 1fr);
+  grid-template-areas: 'insignia content';
+  align-items: start;
+  gap: 1.75rem;
+  min-width: 0;
+  padding-bottom: 1.75rem;
+}
+
+.leadership-entry--logo-right .leadership-composition {
+  grid-template-columns: minmax(0, 1fr) 9rem;
+  grid-template-areas: 'content insignia';
+}
+
+.leadership-insignia { grid-area: insignia; align-self: center; }
+.leadership-insignia .organization-logo { width: 9rem; height: 9rem; }
+.leadership-insignia .organization-logo--lums { height: 4.5rem; }
+.leadership-content { grid-area: content; min-width: 0; }
+.leadership-entry + .leadership-entry .leadership-composition { padding-top: 1.75rem; border-top: 1px solid hsl(var(--border) / 0.7); }
+.leadership-entry:last-child .leadership-composition { padding-bottom: 0; }
+
+.leadership-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.6rem;
+}
+
+.leadership-header .journey-kicker { margin-bottom: 0.35rem; }
+.journey-duration { display: inline-block; white-space: nowrap; }
+.journey-duration::before { content: '·'; margin-inline: 0.5rem; }
+
+.leadership-title {
+  margin-bottom: 0.55rem;
+  font: 500 1.4375rem/1.4 var(--font-serif);
+  letter-spacing: -0.03em;
+  text-wrap: pretty;
+}
+
+.leadership-organization { color: hsl(var(--primary)); font-size: 1rem; line-height: 1.55; }
+.organization-context,
+.leadership-event { color: hsl(var(--muted-foreground)); font-size: 0.875rem; }
+.leadership-event { margin-top: 0.15rem; }
+
+.leadership-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.2rem 0.85rem;
+  margin-block: 0.65rem 0.85rem;
+}
+
+.journey-kind {
+  padding-left: 0.7rem;
+  border-left: 1px solid hsl(var(--border));
+  color: hsl(var(--muted-foreground));
+  font-size: 0.875rem;
+  line-height: 1.1;
+}
+
+.leadership-highlights {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0.7rem 0 0;
+  padding-left: 1rem;
+  color: hsl(var(--muted-foreground));
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  list-style-type: '–  ';
+}
+
+.leadership-highlights li { padding-left: 0.2rem; }
+.leadership-highlights li::marker { color: hsl(var(--accent)); }
+
+.leadership-emphasis {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.75rem;
+  margin-top: 0.9rem;
+  padding-left: 0.85rem;
+  border-left: 1px solid hsl(var(--accent) / 0.6);
+  color: hsl(var(--primary));
+  font-size: 0.9375rem;
+}
+
+.leadership-emphasis span { color: hsl(var(--muted-foreground)); font-size: 0.8125rem; }
+
+@media (max-width: 639px) {
+  .institution-link { min-height: 2.75rem; }
+  .education-learning .section-heading,
+  .community-leadership .section-heading { margin-bottom: 1.5rem; }
+  .academic-entry { grid-template-columns: 5.5rem minmax(0, 1fr); gap: 0.65rem 1rem; padding-bottom: 1.5rem; }
+  .academic-insignia { justify-content: flex-start; min-height: 0; border: 0; }
+  .academic-insignia .organization-logo { width: 6rem; height: 4rem; margin-left: -0.5rem; }
+  .academic-content { display: contents; }
+  .academic-content .journey-kicker { grid-column: 2; align-self: center; justify-content: flex-start; gap: 0.3rem; }
+  .academic-content .journey-kicker > span { width: 100%; }
+  .academic-title { grid-column: 1 / -1; max-width: 23rem; margin-block: 0.45rem 0; font-size: 1.5rem; }
+  .academic-content > .institution-link { grid-column: 1 / -1; justify-self: start; }
+  .academic-status { grid-column: 1 / -1; margin-block: 0.3rem 0; }
+  .academic-content > .location-meta { grid-column: 1 / -1; }
+  .independent-entry { grid-template-columns: minmax(0, 1fr); gap: 0.85rem; padding-top: 1.25rem; }
+  .independent-entry::before { display: none; }
+  .independent-heading { gap: 0.85rem; }
+  .independent-heading .organization-logo { width: 2.25rem; height: 3.125rem; }
+  .independent-heading .journey-kicker { font-size: 0.75rem; letter-spacing: 0.035em; }
+  .independent-title { font-size: 1.375rem; }
+  .independent-content .journey-date { margin-bottom: 0.65rem; }
+  .community-leadership { margin-top: 2.75rem; }
+  .leadership-entry > article { grid-template-columns: 1.5rem minmax(0, 1fr); gap: 0.85rem; }
+  .leadership-marker { width: 1.5rem; height: 2rem; }
+  .leadership-composition,
+  .leadership-entry--logo-right .leadership-composition {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'insignia' 'content';
+    gap: 1.25rem;
+  }
+  .leadership-insignia { justify-self: start; }
+  .leadership-header { align-items: flex-start; gap: 0.65rem; margin-bottom: 0.75rem; }
+  .leadership-title { font-size: 1.25rem; line-height: 1.45; }
+  .journey-duration { display: block; }
+  .journey-duration::before { content: none; }
+  .leadership-meta { gap: 0.15rem 0.65rem; }
+}

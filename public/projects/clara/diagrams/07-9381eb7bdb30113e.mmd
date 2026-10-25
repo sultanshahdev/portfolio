@@ -1,0 +1,6 @@
+flowchart LR
+    subgraph Laptop[Developer machine]
+        CLI[Redis CLI or Go demo] <-->|RESP2 over TCP| BIN[Compiled Clara process]
+        BIN --> LISTEN[TCP listener 127.0.0.1:6380]
+        LISTEN --> MEM[(In-process keyspace)]
+    end

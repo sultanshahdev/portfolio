@@ -1,0 +1,9 @@
+flowchart TB
+    A[Client handler A] --> M
+    B[Client handler B] --> M
+    C[Client handler C] --> M
+    M{{Store mutex}} --> K[(map string to Entry)]
+    K --> V[Value bytes]
+    K --> T[Optional expiry metadata]
+    classDef central fill:#e7f4f3,stroke:#247e79,color:#143d3a;
+    class M,K central;

@@ -1,0 +1,13 @@
+flowchart LR
+    C[RESP2 client] <--> L[TCP listener]
+    L --> H[Per-client handler]
+    H --> D[RESP2 decoder]
+    D --> X[Command dispatcher]
+    X -->|Stateful commands| S[(Shared in-memory store)]
+    S --> X
+    X --> E[RESP2 response writer]
+    E --> H
+    H --> C
+    X -.->|PING and ECHO reply directly| E
+    classDef core fill:#e7f4f3,stroke:#247e79,color:#143d3a;
+    class S core;

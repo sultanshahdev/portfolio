@@ -1,0 +1,10 @@
+flowchart LR
+  PR[Push / pull request] --> GH[GitHub Actions]
+  GH --> A[Backend + frontend build + Node tests]
+  GH --> B[Frontend build + browser smoke]
+  A --> M{Required checks pass}
+  B --> M
+  M -- Yes --> MAIN[Merge to main]
+  MAIN --> CF[Cloudflare Pages build]
+  CF --> SITE[Static CodeCraft website]
+  SITE --> LIVE[Verify title, /app, GitHub preparation, exact search, source/map]

@@ -1,0 +1,13 @@
+sequenceDiagram
+  participant A as Alice discovery
+  participant B as Bob discovery
+  participant UI as Bob UI
+  participant NT as Bob TCP manager
+  participant AT as Alice TCP manager
+  A-->>B: UDP broadcast {peer_id, version, tcp_port}
+  B->>B: Validate and time-stamp announcement
+  B-->>UI: Offer discovered peer (no auto-connect)
+  UI->>NT: Explicit Connect to Alice IP:port
+  NT->>AT: TCP connect
+  NT->>AT: Framed HELLO
+  AT->>NT: Framed HELLO

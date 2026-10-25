@@ -11,30 +11,32 @@ npm ci
 npm run dev
 ```
 
-Open the URL printed by Vite, normally **http://127.0.0.1:5173/sultandev/**. The server binds to loopback by default. For testing from another device on your local network, run `npm run dev -- --host 0.0.0.0` and use your computer’s LAN address.
+Open the URL printed by Vite, normally **http://127.0.0.1:5173/portfolio/**. The server binds to loopback by default. For testing from another device on your local network, run `npm run dev -- --host 0.0.0.0` and use your computer’s LAN address.
 
 ```sh
 npm run build
 npm run preview
 ```
 
-The production bundle is written to `dist/`. Preview normally serves it at **http://127.0.0.1:4173/sultandev/**. Rebuild after changes before using preview. Opening `dist/index.html` directly with `file://` is not supported.
+The production bundle is written to `dist/`. Preview normally serves it at **http://127.0.0.1:4173/portfolio/**. Rebuild after changes before using preview. Opening `dist/index.html` directly with `file://` is not supported.
 
 ## Pages and content
 
 | Route | Purpose |
 | --- | --- |
 | `/` | Biography, four featured projects, learning, technical focus, education, community, contact |
-| `/projects` | Eight source-reviewed projects and working category filters |
+| `/projects` | Four flagship projects and working category filters |
 | `/projects/:slug` | Reusable engineering case studies |
 | `/writing` | Writing index with two explicitly labeled sample drafts |
 | `/writing/:slug` | Articles with optional contents, prose, lists, code, diagrams, images, and references |
 | `/contact` | Configured professional links |
 | Any unknown route or slug | Accessible 404 with recovery links |
 
-Project descriptions are based on source inspection, not claims that those applications were executed or certified. Case studies link to the exact reviewed revisions. FinanceTracker retains Khadija and Sultan’s attribution. The Odin Project is identified as self-directed education. No personal phone number or private profile PDF is published. The profile currently contains a configured public email address; review it before publishing.
+The active collection contains **c2g, Clara, SOAR Lite, and CodeCraft**. All four appear on the homepage and Projects page. Old detail slugs return the existing Not Found page. Full case studies preserve the supplied documents, historical evidence, limitations, code excerpts, and source links. The portfolio does not rerun the featured applications' test suites.
 
-The sample writing has no invented publication dates and is marked `noindex` in the running application. Replace it with reviewed writing before presenting it as published work. A portrait and email address are currently configured; résumé and demo links remain unset.
+c2g credits the MIT-licensed P2PDocs upstream and retains G6 PARTIAL. Clara's concurrent counter totals describe correctness tests. SOAR Lite distinguishes real reputation lookup from simulated containment and manual verification from automated tests. CodeCraft distinguishes Node and browser capabilities and retains the live browser inference verification gap. Only CodeCraft has a documented public demo.
+
+The sample writing has no invented publication dates and is marked `noindex` in the running application. Replace it with reviewed writing before presenting it as published work. A portrait and email address are currently configured; the résumé link remains unset.
 
 ## Organization
 
@@ -50,14 +52,17 @@ src/
     writing/              Writing entry and shared structured-content renderer
   pages/                  Page-level composition and route lookup
   data/                   Editable profile, projects, writing, experience, skills
+  content/projects/       Generated, independently lazy-loaded publications
   lib/assets.js           Deployment-aware public asset paths
   styles/                 Tokens, global rules, typography, layout
-public/                   Original favicon, font license notices, host redirects
+scripts/                  Publication generator and source-integrity tests
+new-projects/             Authoritative original project documentation
+public/                   Favicon, font licenses, redirects, generated SVGs/sources
 tests/                    Playwright navigation, responsive, and accessibility checks
 docs/                     Reference analysis, source review, verification record
 ```
 
-The app fetches no GitHub data at runtime. React Router handles navigation; React state is limited to category selection and mobile navigation. Content is rendered as structured React elements, without raw HTML injection or a Markdown runtime.
+The app fetches no GitHub data at runtime. React Router handles navigation. Existing writing retains its structured-content renderer. Project publications use react-markdown with GitHub-flavored Markdown; raw HTML is skipped. Mermaid runs only during content generation and ships as static SVG images, with original source and a readable fallback. Neither Mermaid nor the long-form reader is loaded by the homepage.
 
 ## Edit the profile
 
@@ -75,48 +80,32 @@ The component provides appropriate alt text and applies a square crop. Leave `po
 
 For a résumé, add a reviewed public document at `public/documents/resume.pdf`, then set `resumeUrl: 'documents/resume.pdf'`. Review its private information first. **Do not point this field at the LinkedIn reference PDF.**
 
-## Add or edit a project
+## Edit projects and case studies
 
-Add an object to the `projects` array in `src/data/projects.js`. Use a unique `id` and URL-safe `slug`. There is no page component to copy.
+`src/data/projects.js` is the canonical collection. Its four records supply both listings and detail heroes: title, slug, subtitle, category, year, summary, technologies, role, status, verification qualification, highlights, repository/demo links, and an illustrative architecture signature. Filters derive from that collection. Keep every factual claim grounded in the supplied documents.
 
-```js
-{
-  id: 'my-project',
-  slug: 'my-project',
-  title: 'My Project',
-  subtitle: 'Short distinguishing description',
-  category: 'Backend',
-  year: '2026', // Only use a verified year.
-  featured: false,
-  status: 'Prototype',
-  summary: 'An accurate description of the implementation.',
-  technologies: ['JavaScript'],
-  repositoryUrl: 'https://github.com/OWNER/REPOSITORY',
-  verification: 'draft', // Use source-reviewed only after reviewing the source.
-  reviewedAt: null,
-  sourceCommit: null,
-  sourceFiles: [],
-  demoUrl: null,
-  image: null,
-  sections: [
-    {
-      id: 'overview',
-      title: 'Overview',
-      blocks: [{ type: 'prose', text: 'TODO: Add a source-verified overview.' }],
-    },
-  ],
-}
+Edit the authoritative Markdown under `new-projects/`, then regenerate the publication:
+
+```sh
+npx playwright install chromium
+npm run content:build
+npm run test:content
+npm run build
 ```
 
-Set `featured: true` for homepage selection; aim for approximately four. The project index preserves array order. Existing category names live in `projectCategories`; unused categories are hidden. For a new category, add its name there too. Supply `attribution` for collaborative work.
+An installed Chromium can also be selected with `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH`. Generation does not execute any code examples or project scripts. `scripts/build-case-studies.mjs` declares narrative, appendix, and supporting-document paths. It parses frontmatter, creates stable chapter IDs, retains the complete narrative, moves screenshot/authoring instructions to a disclosure, and publishes c2g's 16 architecture decisions and both evidence registers as appendices. Chronology tables become vertical milestones with their original text and source links.
 
-The starter data uses a `review()` helper to attach repository URLs, commit hashes, review dates, and source files. For new reviewed projects, use the same helper with the actual revision. Review dates describe source inspection, not project completion. Starter project years follow repository creation history, not invented employment dates.
+The four generated `src/content/projects/*.json` files contain the publication and diagram manifest. `public/projects/<slug>/` contains rendered SVGs, original `.mmd` sources, and unchanged downloadable Markdown. **Commit the original `new-projects/` inputs, generated JSON, and generated public assets together.** These are publication sources/assets, not private `references/` material. No extracted ZIP or external service is required in CI.
 
-Leave demo URLs unset until the actual deployment is verified. An optional project image is an object with `src`, descriptive `alt`, `width`, `height`, and optional `caption`.
+`npm run build` runs `content:check` before Vite. It checks input/generator/renderer fingerprints and required generated artifacts. A stale or missing publication fails with a regeneration instruction. A normal clean-checkout Pages build uses committed SVGs and requires no installed browser. Mermaid syntax failures retain a readable source fallback and make generation fail. Sequence-label semicolons are escaped only for rendering, and source-specific colors are normalized to the portfolio palette; original source text remains unchanged.
+
+To add another project later, add its metadata plus an input mapping to the generator, then regenerate. A shared lazy reader handles all projects; do not copy a page component. Main chapter IDs derive from headings (with duplicate suffixes), so changing a heading changes its deep link. Hash routes retain the chapter fragment, for example `/portfolio/#/projects/c2g#the-decentralized-architecture`.
+
+There are no supplied product screenshots. Add only authentic reviewed captures, with descriptive alt text, captions and explicit dimensions; the Markdown renderer already supports images. Do not turn screenshot plans into invented product evidence. Wide diagrams and tables scroll independently; figures offer full-size SVG and source downloads. Their captions and full source are available if an image fails.
 
 ## Case-study and article blocks
 
-Each section has a unique `id`, an optional `title`, and `blocks`. Empty blocks and sections are hidden. Use stable section IDs for contents links.
+Existing writing remains unchanged. Each structured article section has a unique `id`, an optional `title`, and `blocks`. Empty blocks and sections are hidden. Use stable section IDs for contents links.
 
 | Type | Content fields |
 | --- | --- |
@@ -128,17 +117,17 @@ Each section has a unique `id`, an optional `title`, and `blocks`. Empty blocks 
 | `callout` | `title`, `text` |
 | `metadata` | `items: [{ label: 'Runtime', value: 'Node.js' }]` |
 
-Diagrams are lightweight, accessible flow lists. Use an image block for more involved diagrams. Code is rendered as escaped text in keyboard-scrollable blocks. Images load lazily. Keep code examples free of secrets.
+Structured writing diagrams remain lightweight, accessible flow lists. Project diagrams use the separate static SVG publication pipeline described above. Code is rendered as escaped text in keyboard-scrollable blocks. Images load lazily. Keep code examples free of secrets.
 
 ## Add an article
 
 Edit `src/data/writing.js`. Each item has `slug`, `title`, `category`, `status`, `publishedAt`, `abstract`, `showTableOfContents`, `sections`, and optional `references: [{ label, url }]`.
 
-For published work, use `status: 'Published'` and its real ISO publication date (for example, `YYYY-MM-DD`). Drafts can leave `publishedAt: null`. `Sample draft` identifies demonstration content. Replace sample text and TODOs before changing its status. The same content blocks power both articles and project case studies.
+For published work, use `status: 'Published'` and its real ISO publication date (for example, `YYYY-MM-DD`). Drafts can leave `publishedAt: null`. `Sample draft` identifies demonstration content. Replace sample text and TODOs before changing its status. These structured blocks power writing; project case studies use the supplied Markdown documents.
 
 ## Colors and typography
 
-Change `src/styles/tokens.css` for HSL colors, the 48rem content width, and font families. The reference palette is preserved, with muted text slightly darkened for small-text contrast. Typography and locally loaded font faces are in `typography.css`; responsive composition is in `layout.css`.
+Change `src/styles/tokens.css` for HSL colors, the 48rem content width, and font families. The reference palette is preserved, with muted text slightly darkened for small-text contrast. Typography and locally loaded font faces are in `typography.css`; responsive composition is in `layout.css`. Project-specific publication and showcase styles are scoped in `projects.css`.
 
 Only the Latin variable WOFF2 files for Lora and Source Sans 3 are bundled, with `font-display: swap`. Both come from Fontsource packages under the SIL Open Font License. Their complete notices ship in `public/licenses/`. No font was taken from the downloaded website. If adding other writing systems, load the appropriate licensed font subsets too.
 
@@ -149,6 +138,7 @@ Build first; the browser tests use Vite’s production preview:
 ```sh
 npm run build
 npx playwright install chromium
+npm run test:content
 npm test
 ```
 
@@ -158,18 +148,18 @@ Alternatively, reuse an installed compatible Chrome/Chromium:
 PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/google-chrome npm test
 ```
 
-Tests cover all pages and detail slugs at desktop and mobile sizes, resource/JavaScript errors, document titles, horizontal overflow, axe accessibility rules, keyboard filters, mobile navigation, history, direct-route reloads, draft labels, contact privacy defaults, and 404 recovery. Additional 320px checks cover code scrolling and reduced-motion preferences. These checks exercise this portfolio; they are **not test results for the featured repositories**. See `docs/VERIFICATION.md` for the executed results and limitations.
+Content tests check every substantive source block, unchanged downloads, unique anchors, all 54 generated diagrams, and the 31 standalone diagram sources. Browser tests cover the four canonical projects, legacy 404s, repository/demo links, chapter navigation/reload, appendices, timelines, image-failure fallback, and 360/390/768/1280px layouts, plus all pages and detail slugs at desktop and mobile sizes, resource/JavaScript errors, document titles, horizontal overflow, axe accessibility rules, keyboard filters, mobile navigation, history, direct-route reloads, draft labels, contact privacy defaults, and 404 recovery. Additional 320px checks cover code scrolling and reduced-motion preferences. These checks exercise this portfolio; they are **not test results for the featured repositories**. See `docs/VERIFICATION.md` for the executed results and limitations.
 
 ## Deploy to GitHub Pages
 
-The production URL is https://sultanshahdev.github.io/sultandev/.
-`vite.config.js` sets `base: '/sultandev/'`. The favicon, bundled fonts, scripts,
+The production URL is https://sultanshahdev.github.io/portfolio/.
+`vite.config.js` sets `base: '/portfolio/'`. The favicon, bundled fonts, scripts,
 styles, and public asset helper use that base, including
-`/sultandev/images/profile-img.png`.
+`/portfolio/images/profile-img.png`.
 
 The app uses `HashRouter`. Existing route definitions are unchanged; public URLs
-include the hash, for example `/sultandev/#/projects/edith` and
-`/sultandev/#/writing/where-a-module-should-end`. Direct visits and refreshes
+include the hash, for example `/portfolio/#/projects/c2g` and
+`/portfolio/#/writing/where-a-module-should-end`. Direct visits and refreshes
 request the site root, so GitHub Pages needs no SPA fallback. Article contents
 links retain their route, for example `#/writing/where-a-module-should-end#example`.
 The existing `public/_redirects` file is ignored by GitHub Pages and is not required.
@@ -180,30 +170,12 @@ with `npm ci`, builds with Node.js 22, uploads only `dist/`, and deploys using t
 official GitHub Pages Actions. It runs on pushes to `main` or manually from Actions.
 It uses GitHub's automatic token; no personal token or environment secret is needed.
 
-This archive is a working project tree without its original `.git` history. To publish it to the existing **empty** `sultanshahdev/sultandev` repository, extract the ZIP into a directory, open a terminal in that directory, then run:
-
-```sh
-npm ci
-npm run build
-
-git init
-git branch -M main
-git remote add origin https://github.com/sultanshahdev/sultandev.git
-
-git status --short
-# Inspect staged files and confirm no local secrets or references will be published.
-git add .
-git status --short
-git commit -m "Deploy software engineering portfolio"
-git push -u origin main
-```
-
-If this directory is already a Git repository and `origin` exists, use `git remote -v` to inspect the remote rather than reinitializing. To correct it, run `git remote set-url origin https://github.com/sultanshahdev/sultandev.git`. Do not create an additional misspelled `orign` remote. Never force-push over existing work without inspecting it first.
+The existing repository is `sultanshahdev/portfolio`. The workflow and Vite base remain unchanged by the case-study migration. Commit and push reviewed source changes through your usual Git workflow; this implementation does not push or publish changes automatically.
 
 Do not include `references/`, your LinkedIn export PDF, `.env` files, `node_modules/`, `dist/`, or `test-results/` in commits. Push the **source project** to GitHub; the workflow publishes only the built `dist/` directory as your site.
 
 After the workflow succeeds, verify the homepage and refresh a project and article
-hash URL on the deployed site. Clean URLs such as `/sultandev/projects/edith` are
+hash URL on the deployed site. Clean URLs such as `/portfolio/projects/c2g` are
 not supported by GitHub Pages.
 
 `references/`, downloaded reference snapshots, local PDFs, `node_modules/`, `dist/`,
@@ -214,6 +186,6 @@ Default title/description/Open Graph tags are in `index.html`; route-specific va
 
 ## Reference and content notes
 
-Read `docs/REFERENCE_ANALYSIS.md` for the extracted design system and `docs/SOURCE_REVIEW.md` for source revisions, attribution, unresolved deployment information, and upstream remediation notes. `references/`, `.env*`, generated builds, and browser artifacts are excluded from Git.
+Read `docs/REFERENCE_ANALYSIS.md` for the extracted design system, `docs/PROJECT_MIGRATION.md` for the current source mapping and milestone/verification report, and `docs/SOURCE_REVIEW.md` for the historical review of the replaced collection. `references/`, `.env*`, generated builds, and browser artifacts are excluded from Git.
 
-Remaining editorial work is to replace sample drafts with your writing, review the configured public portrait and email, and optionally provide a résumé or verified demos. The site does not require résumé or demo assets.
+Optional future editorial work includes authentic project screenshots, author-written articles and a public résumé. The site does not require résumé or demo assets.

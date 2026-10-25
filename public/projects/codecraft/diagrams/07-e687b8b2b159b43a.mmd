@@ -1,0 +1,21 @@
+sequenceDiagram
+    participant S as Search
+    participant P as Persistent cache
+    participant M as In-memory cache
+    participant I as MiniLM inference
+    S->>P: Lookup source-region vector
+    alt Disk hit and valid
+        P-->>S: Reuse vector
+    else Disk miss
+        P->>M: Request embedding
+        alt Memory/in-flight hit
+            M-->>P: Reuse pending or ready vector
+        else Miss
+            M->>I: Compute embedding
+            I-->>M: Vector
+            M-->>P: Vector
+        end
+        P->>P: Validate and atomically save source vector
+        P-->>S: Vector
+    end
+    Note over S,P: Query embeddings are not persisted to disk

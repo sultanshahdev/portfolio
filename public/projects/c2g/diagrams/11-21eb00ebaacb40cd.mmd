@@ -1,0 +1,9 @@
+flowchart TD
+  Start["Initial visible text: AB"] --> A["Alice inserts X between A and B"]
+  Start --> B["Bob inserts Y between A and B"]
+  A --> AI["X: unique Alice Lamport ID; after A; before B"]
+  B --> BI["Y: unique Bob Lamport ID; after A; before B"]
+  AI --> Merge["Exchange immutable records"]
+  BI --> Merge
+  Merge --> Order["Deterministic ancestry/right-anchor linearization"]
+  Order --> End["Both replicas show same merged ordering; X and Y retained"]

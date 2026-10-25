@@ -1,0 +1,13 @@
+flowchart TB
+  subgraph Host["One local desktop device"]
+    Web["Monaco assets: loopback HTTP 127.0.0.1 only"] --> Ctrl[Python controller]
+    Ctrl --> Store[(Local JSON documents outside web root)]
+    Ctrl --> Listener["P2P TCP listener on non-loopback interfaces"]
+  end
+  subgraph LAN["Trusted LAN assumption"]
+    Peer["Other peer; unauthenticated and unencrypted protocol"]
+    UDP["UDP broadcast announcements"]
+  end
+  Peer <-->|"Framed TCP; peers may modify shared document"| Listener
+  UDP -.-> Listener
+  Internet["Untrusted Internet · explicitly out of scope"] -.- X["Do not expose P2P ports publicly"]

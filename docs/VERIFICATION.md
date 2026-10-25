@@ -1,5 +1,13 @@
 # Verification record
 
+## Project migration — 25 October 2026
+
+The four-project migration is complete. `npm run content:build`, `npm run test:content` (7 passed), `npm run build`, and `npm test` (62 passed across desktop/mobile Chromium) succeeded. All 54 SVGs decoded and all 12 original Markdown downloads returned HTTP 200 under `/portfolio/`. The full report, source mapping, changed-file map, responsive/visual checks and limitations are in [PROJECT_MIGRATION.md](PROJECT_MIGRATION.md). GitHub Pages configuration and non-project content are preserved. No public deployment was performed.
+
+## Historical verification — 11 October 2026
+
+The following is the earlier implementation record. Its old project collection, asset sizes and optional-content configuration describe that historical snapshot, not the current migration.
+
 Completed 2026-10-11 against the local application. The repository’s required production build was executed successfully. Existing work was retained after the interrupted sessions; the Vite font imports, optional-content handling, and route-focus behavior were repaired rather than rebuilding the application.
 
 ## Executed checks

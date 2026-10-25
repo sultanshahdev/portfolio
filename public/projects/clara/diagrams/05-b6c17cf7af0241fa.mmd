@@ -1,0 +1,10 @@
+stateDiagram-v2
+    [*] --> Missing
+    Missing --> Persistent: SET key value
+    Persistent --> Expiring: EXPIRE key seconds > 0
+    Expiring --> Expiring: EXPIRE refresh
+    Expiring --> Persistent: SET overwrites value
+    Expiring --> Missing: Deadline reached; next key access
+    Persistent --> Missing: DEL or EXPIRE 0
+    Expiring --> Missing: DEL or EXPIRE 0
+    Missing --> Persistent: SET recreates key

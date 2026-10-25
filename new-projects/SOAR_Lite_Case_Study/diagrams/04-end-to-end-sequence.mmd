@@ -1,0 +1,25 @@
+sequenceDiagram
+  participant E as Alert sender
+  participant A as FastAPI
+  participant D as PostgreSQL
+  participant W as Investigation worker
+  participant P as AbuseIPDB
+  participant H as Human analyst
+  participant R as Response worker
+  E->>A: POST /api/v1/ingest/generic
+  A->>A: Authenticate and validate
+  A->>D: Commit alert + incident + eligible investigation
+  A-->>E: IDs and duplicate flag
+  W->>D: Lock and claim due investigation; commit lease
+  W->>P: HTTPS IP check (outside claim transaction)
+  P-->>W: Reputation result or error
+  W->>D: Evidence + completed OR retry/failed state
+  H->>A: Read investigation through SOC console
+  H->>A: Create block_ip proposal
+  A->>D: Proposed action + audit
+  H->>A: Approve
+  A->>D: Approved state + audit
+  R->>D: Claim approved action
+  R->>D: Simulated block + executed state + audit, one commit
+  H->>A: Revert executed action
+  A->>D: Deactivate owned entry + audit, one commit

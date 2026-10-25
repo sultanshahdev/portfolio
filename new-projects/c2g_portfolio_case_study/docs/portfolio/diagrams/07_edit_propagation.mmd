@@ -1,0 +1,18 @@
+sequenceDiagram
+  participant M as Alice Monaco
+  participant Br as Alice bridge/controller
+  participant R as Alice CRDT
+  participant N as Alice TCP manager
+  participant BN as Bob TCP manager
+  participant BR as Bob CRDT/controller
+  participant BM as Bob Monaco
+  M->>Br: Local transaction (UTF-16 range, text, base_version)
+  Br->>Br: Validate version and convert UTF-16 offsets
+  Br->>R: Apply insertion/deletion under lock
+  R-->>Br: CRDT operation(s)
+  Br->>N: Broadcast framed OP with message ID
+  Br->>Br: Enqueue local JSON snapshot save
+  N->>BN: TCP length-prefixed OP
+  BN->>BN: Deduplicate message ID
+  BN->>BR: Apply remote CRDT operation
+  BR-->>BM: Incremental editor patch/event

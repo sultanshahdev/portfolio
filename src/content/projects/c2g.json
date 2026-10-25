@@ -1,0 +1,596 @@
+{
+  "fingerprint": "64bbedc22513e96673f990868d98b693cd41ce1d26af22b4f4b88a8796f8097e",
+  "metadata": {
+    "title": "c2g — Code 2gether: Engineering a Decentralized Collaborative Editor",
+    "description": "An engineering case study of a Python desktop editor rebuilt around peer-to-peer networking, framed TCP protocol v2, UDP discovery, RGA-style CRDT convergence, safe persistence, and Linux release validation.",
+    "project": "c2g — Code 2gether",
+    "period": "October 2026",
+    "stack": [
+      "Python 3.12+",
+      "TCP/IP",
+      "UDP",
+      "RGA-style CRDT",
+      "Monaco Editor",
+      "JavaScript",
+      "Vite",
+      "pywebview",
+      "JSON",
+      "pytest",
+      "PyInstaller"
+    ],
+    "repository": "https://github.com/sultanshahdev/c2g",
+    "status": "Linux release-candidate acceptance; G6 PARTIAL as documented on 2026-10-24"
+  },
+  "chapters": [
+    {
+      "id": "introduction",
+      "title": "Introduction",
+      "markdown": "**A decentralized, peer-to-peer collaborative code editor for a trusted local network.** Each participant runs a desktop application, keeps a local copy of the document, and exchanges editing operations directly with other peers. No central collaboration server orders the edits.\n\n**What this case study demonstrates:** application-layer TCP protocol design, UDP discovery, thread-safe peer sessions, deterministic replicated state, causal recovery, durable local storage, native desktop integration, and evidence-based release engineering.\n\n| Project facts | Evidence-backed description |\n|---|---|\n| Type | Python desktop collaborative text/code editor; substantial modernization of MIT-licensed P2PDocs |\n| Communication | UDP announcements for discovery; framed TCP sessions for peer state and operations |\n| Consistency | RGA-inspired character CRDT, Lamport IDs, stable anchors, tombstones, full-state merges |\n| Interface | Monaco Editor in pywebview, bundled offline via Vite |\n| Persistence | Validated versioned JSON, local autosave, atomic replace, backup and recovery |\n| Test result | **68 passing Python tests**, including a **100-seed three-replica** convergence test, in the M7 report |\n| Release evidence | Ubuntu 24.04.4 x86_64 GTK/X11 source and frozen automation; **G6 PARTIAL**, not a public release |\n| Repository | [sultanshahdev/c2g](https://github.com/sultanshahdev/c2g) |",
+      "appendix": false,
+      "timeline": false
+    },
+    {
+      "id": "the-project-in-one-minute",
+      "title": "The project in one minute",
+      "markdown": "Collaborative editing looks simple from the outside: two people type into the same file, and both see the result. Underneath, it presents several distinct engineering problems. A network carries bytes, not structured operations. Two users can insert at the same position before either sees the other's change. A disconnect can divide one document into multiple, independently edited histories. A restart can erase the identifiers that make later merges possible. And a visually working desktop window is not necessarily a working editor.\n\nc2g addresses those problems within a deliberately narrow scope: trusted local networks, direct peer connections, and locally stored documents. A Python process acts as both a client and a TCP listener. A UDP discovery worker advertises its presence; users then explicitly connect. Connected peers exchange versioned, length-framed JSON messages. Each peer maintains a character-level replicated data structure rather than treating the current visible text as the sole source of truth. The CRDT stores immutable character identities, positional anchors, and deletion records so replicas can reconcile concurrent operations without a server deciding a single global edit order.\n\nThe project did not begin as a blank repository. It modernized the existing MIT-licensed P2PDocs editor. Early research found correctness problems in the CRDT, missing connection-time reconciliation, brittle GUI behavior, and unsafe/ineffective persistence. The work was therefore sequenced around correctness first: repair replica ordering, make networking reliable, prove the Monaco bridge, integrate a desktop controller, add safe persistence, package the application, then execute end-to-end validation. The final M7 report records 68 passing Python tests, deterministic multi-replica convergence checks, working real loopback TCP integrations, and a tested Linux desktop release-candidate artifact. Windows runtime, physical two-machine discovery, Docker execution, and complete human GUI acceptance were still open at the recorded gate.\n\nThe engineering lesson is the project's central theme: **reliable transport does not create consistent replicated state**. c2g had to solve transport, protocol lifecycle, causal ordering, recovery, and persistence as separate problems.",
+      "appendix": false,
+      "timeline": false
+    },
+    {
+      "id": "problem-definition-and-scope",
+      "title": "Problem definition and scope",
+      "markdown": "### What problem was the system built to explore?\n\nSmall groups working on the same machine-local project or trusted LAN may benefit from directly sharing an editable document. A central collaboration service is one architecture; it is not the only one. For a self-contained desktop prototype, a direct peer model can remove the need to host a collaboration backend while giving the developer an opportunity to implement real distributed-systems behavior. That was the engineering motivation—not a claim that market research proved demand or that the tool is a commercial competitor to existing editors.\n\nThree cases shaped the design. First, a peer needs to discover another machine and establish a connection. Second, participants must be able to make overlapping modifications without discarding one person's work. Third, temporary disconnection and process restart must not destroy the metadata needed for reconciliation. These cases require more than a socket connection and a text widget.\n\n### Goals and non-goals\n\nThe functional target was a native editor with local document creation and recovery, explicit peer connections, shared editing, disconnect/reconnect, and UTF-8 export. Its engineering targets were deterministic convergence under supported delivery histories, bounded protocol processing, safe ownership of mutable state, resilient local persistence, and a testable headless core.\n\nEqually important were the boundaries. c2g did **not** promise internet-scale peer discovery, NAT traversal, cloud collaboration, end-to-end encryption, authenticated remote peers, distributed consensus, or large-document performance guarantees. The protocol is for a **trusted LAN**. A peer connected to a shared document can read and modify that document. Keeping those assumptions visible makes the system easier to explain and its claims easier to defend.",
+      "appendix": false,
+      "timeline": false
+    },
+    {
+      "id": "requirements-reconstructed-from-the-engineering-record",
+      "title": "Requirements reconstructed from the engineering record",
+      "markdown": "The following are **reconstructed engineering requirements**, based on documented plans, implementation and tests—not claims of formal customer interviews.\n\n| ID | Requirement and reason | Implemented area | Evidence/status |\n|---|---|---|---|\n| FR-01 | Create, edit, resume and export local documents | Desktop application, Monaco, persisted CRDT | M4/M5; M7 automated coverage |\n| FR-02 | Discover local peers without a registry service | UDP `PeerDiscovery` | Announcement parser tested; two-machine broadcast still unverified |\n| FR-03 | Explicitly connect to a compatible peer | TCP `NetworkManager`, HELLO | M2 real loopback tests |\n| FR-04 | Keep separate replicas while exchanging edits | `CRDTDocument` + framed OP messages | M1/M2/M7 tests |\n| FR-05 | Support simultaneous edits and eventual reconciliation | Lamport IDs, anchors, tombstones | 100 three-replica seeds |\n| FR-06 | Rejoin after interruption and exchange missed history | Full-state snapshots and relay | M7 two-/three-peer regressions |\n| FR-07 | Preserve identities and deletion history after restart | `PersistedCrdt`, JSON schema | M5 and M7 restart tests |\n| NFR-01 | Avoid interpreting arbitrary TCP reads as entire messages | Four-byte framing and buffered decoder | M2 fragmentation/coalescing tests |\n| NFR-02 | Avoid unbounded peer/session growth | Peer, handshake, frame and queue caps | M7 limits and rejection tests |\n| NFR-03 | Keep GUI and network callbacks from racing over document state | Controller/CRDT/session locks | M4 architecture and integration tests |\n| NFR-04 | Survive an interrupted save without overwriting the only valid backup | Validated atomic primary/backup writes | M7 fault-injection regression |\n| NFR-05 | Work from locally bundled editor assets | Vite and PyInstaller onedir | Linux frozen and asset smoke |\n\nUser-oriented acceptance examples were: *discover an editor on my LAN; connect explicitly; see remote changes; edit while disconnected; rejoin without replacing my changes; reopen the same document after restart.* They informed tests, but no external user-study result is asserted here.",
+      "appendix": false,
+      "timeline": false
+    },
+    {
+      "id": "starting-point-p2pdocs-not-a-greenfield-rewrite",
+      "title": "Starting point: P2PDocs, not a greenfield rewrite",
+      "markdown": "The predecessor was a Python/Tkinter text editor with an RGA-inspired CRDT, TCP/UDP network modules, and a pickle-based persistence path. The [original P2PDocs project](https://github.com/taaha-0548/P2PDocs) is credited in c2g's MIT-licensed repository, and its history was preserved. The starting source already contained significant components; the contribution of c2g is the subsequent correction, restructuring, integration, testing and modernization.\n\nThe initial architecture review identified concrete problems. Ascending sibling-ID ordering could turn an intended middle insertion into an append. Tombstones could be lost or ignored when messages arrived in an unexpected order. Connection establishment did not consistently reconcile full document state, and remote operations did not reliably propagate across more than two peers. The Tkinter editing layer coupled interaction handling with networking; common edits such as paste, undo and Delete were difficult to handle completely. Normal startup could discard saved state, while pickle-based recovery was inappropriate for loading untrusted data.\n\n| Dimension | Earlier P2PDocs baseline | Modernized c2g |\n|---|---|---|\n| Desktop interface | Tkinter editor | Monaco inside pywebview; Python controller owns document |\n| CRDT | RGA-inspired, known insertion/deletion failures | Deterministic anchored ordering; causal buffering; tombstones; tested merges |\n| Networking | Incomplete peer lifecycle and synchronization | Framed protocol v2, identities, bidirectional snapshots, relaying, caps |\n| Storage | Pickle path, startup-reset issues | Strict JSON schema, New/Resume, autosave, atomic primary and backup |\n| Verification | Baseline had limited reliable automated evidence | 68 Python tests and targeted desktop/packaging checks in M7 |\n| Distribution | Legacy package metadata | Python 3.12+ metadata, Vite assets, Linux PyInstaller onedir |\n\n```mermaid\nflowchart LR\n  subgraph Before[\"P2PDocs baseline\"]\n    Tk[Tkinter editor] --> OldCRDT[\"RGA-inspired CRDT with ordering defects\"]\n    Tk --> OldNet[\"Unversioned networking / incomplete joins\"]\n    Tk --> Pickle[\"Pickle persistence; startup reset\"]\n  end\n  subgraph After[\"c2g M7\"]\n    Monaco[Monaco + pywebview] --> App[Python controller]\n    App --> NewCRDT[\"Deterministic RGA-style CRDT\"]\n    App --> V2[\"Framed TCP v2 + UDP discovery\"]\n    App --> JSON[\"Validated JSON + atomic autosave\"]\n  end\n  Before ==>|\"Incremental modernization M0–M7\"| After\n```\n\n*Figure 1 — The work modernized and corrected the existing codebase instead of claiming every inherited component was written from scratch.*",
+      "appendix": false,
+      "timeline": false
+    },
+    {
+      "id": "development-strategy-correctness-before-polish",
+      "title": "Development strategy: correctness before polish",
+      "markdown": "The milestones were dependency-driven. A beautiful interface would not compensate for divergent replicas; persistent state could not be trusted until its underlying CRDT model was correct. The plan put model and protocol correctness ahead of visual modernization, then validated every integration boundary separately.\n\n```mermaid\nflowchart LR\n  M0[\"M0 · Baseline\"] --> M1[\"M1 · CRDT correctness\"] --> M2[\"M2 · P2P protocol\"]\n  M2 --> M3[\"M3 · Monaco feasibility\"] --> M4[\"M4 · Desktop integration\"]\n  M4 --> M5[\"M5 · JSON persistence\"] --> M6[\"M6 · Packaging / CI\"] --> M7[\"M7 · Validation\"]\n```\n\n*Figure 2 — Milestones were ordered to resolve CRDT and protocol correctness before desktop polish and packaging.*\n\n| Phase | Question it answered | Main result and evidence |\n|---|---|---|\n| **M0** — Baseline | What is broken, what must be preserved? | Characterization tests, planning records, repository rebrand and attribution |\n| **M1** — CRDT | Can independent replicas converge without losing edits/deletes? | Anchored ordering, pending causality, monotonic merges; **G1 PASS** |\n| **M2** — Networking | Can several peers join, exchange and recover state safely? | TCP protocol v2, UDP discovery, relay dedup; automated loopback tests; physical LAN still pending |\n| **M3** — Feasibility | Can Monaco run inside a Linux-native Python host? | pywebview bridge, Unicode conversion, worker loading, batch insertion; **G3 PARTIAL** for cross-platform evidence |\n| **M4** — Desktop | Can real UI edits and remote operations use one CRDT authority? | Controller/bridge architecture; Monaco replaces default Tk launch |\n| **M5** — Persistence | Can replica identity and history survive restart? | JSON schema, recovery, autosave, New/Resume, locks, packaging metadata |\n| **M6** — Distribution | Can offline assets and native process launch together? | Linux onedir, headless simulation, Windows build workflow, Docker definition, sanitizer patch |\n| **M7** — Validation | Which claims survive fault injection and end-to-end testing? | 68 passing tests, three serious defects fixed, Linux artifact verified; **G6 PARTIAL** |\n\nNot every intermediate gate was formally complete: some remained partial because Windows, physical LAN or human input testing could not be run in the available environment. That distinction is part of the engineering record, not an omission.",
+      "appendix": false,
+      "timeline": true
+    },
+    {
+      "id": "the-decentralized-architecture",
+      "title": "The decentralized architecture",
+      "markdown": "A c2g **peer is a full application instance**, not simply a browser tab or thin client. It owns its editor, Python controller, CRDT replica, TCP listener, discovery worker and on-disk state. Peers exchange records and reconcile local copies; there is no authoritative cloud process to which all keystrokes must be submitted. A peer can also open a document without any other participant connected.\n\n```mermaid\nflowchart LR\n  subgraph A[\"Alice · Desktop peer\"]\n    AUI[Monaco and pywebview] --> AC[Python controller] --> AR[CRDT replica]\n    AC <--> AN[TCP networking]; AC --> AS[(Local JSON)]\n  end\n  subgraph B[\"Bob · Desktop peer\"]\n    BUI[Monaco and pywebview] --> BC[Python controller] --> BR[CRDT replica]\n    BC <--> BN[TCP networking]; BC --> BS[(Local JSON)]\n  end\n  subgraph C[\"Charlie · Desktop peer\"]\n    CUI[Monaco and pywebview] --> CC[Python controller] --> CR[CRDT replica]\n    CC <--> CN[TCP networking]; CC --> CS[(Local JSON)]\n  end\n  AN <-->|\"Framed TCP: HELLO, snapshots, operations\"| BN\n  BN <-->|\"Framed TCP: operations\"| CN\n  AN -.->|\"UDP broadcast discovery on LAN\"| BN\n  BN -.->|\"UDP broadcast discovery on LAN\"| CN\n```\n\n*Figure 3 — A chain is sufficient for three-way propagation. Every box represents an independent replica and local storage; the dashed broadcasts are discovery, not document updates.*\n\nWithin one instance, the Monaco UI is presentation and user intent. The pywebview bridge exposes a limited set of commands. `ApplicationController` validates those commands and serializes mutations against the CRDT. `NetworkManager` owns TCP session framing, handshake, deduplication and forwarding. `PeerDiscovery` owns UDP announcements. `PersistedCrdt` connects document mutations to a queued, validated JSON snapshot writer. Separating these components made it possible to test real protocol behavior without launching GTK.\n\n```mermaid\nflowchart TD\n  User[User editing] --> Monaco[\"Monaco · web/src/main.js\"]\n  Monaco <-->|\"pywebview API + UI events\"| Bridge[\"DesktopBridge · c2g/ui/bridge.py\"]\n  Bridge --> App[\"DesktopApplication · c2g/ui/app.py\"]\n  App --> Controller[\"ApplicationController · c2g/ui/controller.py\"]\n  Controller <--> Crdt[\"CRDTDocument · c2g/crdt/document.py\"]\n  Controller <--> Network[\"NetworkManager · c2g/network/manager.py\"]\n  Controller <--> Discovery[\"PeerDiscovery · c2g/network/discovery.py\"]\n  Controller --> Persist[\"PersistedCrdt + autosave\"]\n  Persist --> Store[(\"JSON primary + backup\")]\n  Network <-->|\"TCP protocol v2\"| Remote[Remote peers]\n  Discovery <-.->|\"UDP 5001\"| Other[LAN announcements]\n```\n\n*Figure 4 — The authoritative document remains on the Python side; the editor displays that document and submits transactional edits.*\n\nAn important distinction emerged during release validation: pywebview can start a **random loopback-only HTTP server** for bundled local assets even when its `http_server=False` argument is used. M7 observed that service bound to `127.0.0.1`, rooted at `web/dist`, while the intentional peer TCP listener binds `0.0.0.0` for LAN communication. The presence of a loopback asset server does **not** mean that collaboration is centrally hosted, nor does it justify saying the desktop application has no local HTTP listener. Saved JSON documents live under a different storage directory, not the asset root.",
+      "appendix": false,
+      "timeline": false
+    },
+    {
+      "id": "network-engineering-discovery-transport-and-protocol",
+      "title": "Network engineering: discovery, transport and protocol",
+      "markdown": "### 7.1 Two transports, two responsibilities\n\nThe distinction between discovering a peer and exchanging application state drove the hybrid networking design. `PeerDiscovery` broadcasts small UDP announcements on port **5001**. They contain a c2g protocol marker and version, a peer ID, display name and the sender's actual TCP listening port. A receiving process validates the announcement, associates it with the sender's IP address, and expires stale entries based on **local monotonic receipt time** rather than trusting a remote timestamp. The original implementation does not try to create TCP sessions as a side effect of discovery: the person using the editor chooses **Connect**.\n\nUDP is appropriate for this local presence announcement because a broadcast is lightweight and does not require a preexisting connection. Its failure to deliver is not a failure of document correctness: a peer can still be entered manually by address. The data plane then uses TCP because synchronization benefits from ordered, reliable byte delivery. However, TCP delivers an arbitrary **stream of bytes**. A single `recv()` is not equivalent to one complete application message; reads may contain partial frames or several concatenated frames.\n\n```mermaid\nsequenceDiagram\n  participant A as Alice discovery\n  participant B as Bob discovery\n  participant UI as Bob UI\n  participant NT as Bob TCP manager\n  participant AT as Alice TCP manager\n  A-->>B: UDP broadcast {peer_id, version, tcp_port}\n  B->>B: Validate and time-stamp announcement\n  B-->>UI: Offer discovered peer (no auto-connect)\n  UI->>NT: Explicit Connect to Alice IP:port\n  NT->>AT: TCP connect\n  NT->>AT: Framed HELLO\n  AT->>NT: Framed HELLO\n```\n\n*Figure 5 — Discovery identifies a candidate endpoint; explicit user action starts the direct TCP handshake.*\n\n### 7.2 A deliberately small application-layer protocol\n\n`c2g/network/manager.py` defines **protocol version 2**. Each message is serialized as a UTF-8 JSON object with a **four-byte unsigned big-endian length prefix**. The receiver buffers incoming bytes and only attempts JSON decoding when the declared frame length has arrived. The implementation checks that the length is positive and no greater than **12 MiB**, bounds the receive buffer, and rejects malformed UTF-8, invalid JSON and non-object frames.\n\n```mermaid\nflowchart LR\n  subgraph Wire[\"One TCP application frame\"]\n    L[\"4 bytes: unsigned big-endian payload length\"] --> P[\"N bytes: UTF-8 JSON object\"]\n  end\n  P --> Decode[\"FrameDecoder accumulates arbitrary recv chunks\"]\n  Decode --> Verify[\"Check 0 < N <= 12 MiB; decode JSON object\"]\n  Verify --> Events[HELLO / FULL_SYNC / OP / REJECT]\n```\n\n*Figure 6 — The four-byte prefix solves message-boundary recovery on top of TCP's byte stream; JSON carries the application envelope.*\n\nThe core functions are [`encode_frame` and `FrameDecoder`](https://github.com/sultanshahdev/c2g/blob/main/c2g/network/manager.py). A concise excerpt captures the design:\n\n```python\n# Extracted from the repository's framing logic.\nreturn len(raw).to_bytes(4, \"big\") + raw\n```\n\nThe tradeoff is direct: JSON plus length framing is inspectable and easy to test, but larger than a purpose-built binary protocol. A 12 MiB frame cap limits a single payload, not aggregate throughput or memory under hostile traffic; the protocol was not designed for untrusted Internet exposure. Protocol versioning lets peers reject incompatible clients instead of silently interpreting different message semantics.\n\n### 7.3 HELLO: identity and compatibility before editing\n\nA TCP connection alone is insufficient to decide that two processes should share a document. Both sides exchange framed `HELLO` objects with **protocol version, stable peer UUID, username, document UUID, actual listener port, required capabilities and explicit join intent**. The accepted capability set includes support for right anchors, pending tombstones and state synchronization. Incoming peers reject mismatched versions, unsupported capabilities, self-connections, malformed identities, and unrelated nonempty documents.\n\nAn **explicitly empty** joining document may adopt an existing peer's logical document ID. That ID transition is persisted; independent local replica identifiers remain distinct. This prevents a newly opened empty document from being rejected unnecessarily while avoiding accidental merges between two unrelated nonempty documents. Duplicate sessions are handled using deterministic peer identity preference rather than allowing unlimited parallel connections for the same peer.\n\n```mermaid\nsequenceDiagram\n  participant A as Alice outgoing TCP\n  participant B as Bob incoming TCP\n  A->>B: HELLO v2, peer UUID, document UUID, capabilities\n  B->>A: HELLO v2, peer UUID, document UUID, capabilities\n  A->>A: Validate version, capabilities, peer and document\n  B->>B: Validate version, capabilities, peer and document\n  alt compatible identity or explicit empty join\n    A->>B: FULL_SYNC snapshot\n    B->>A: FULL_SYNC snapshot\n    A->>A: Flush bounded pending operations\n    B->>B: Flush bounded pending operations\n  else incompatible / unrelated nonempty document\n    B-->>A: REJECT when possible; close connection\n  end\n```\n\n*Figure 7 — Capability and document validation precede accepted snapshot exchange; a mismatch yields rejection rather than an unsafe merge.*\n\n### 7.4 Synchronization is a lifecycle, not one message\n\nA new `PeerSession` begins in `SYNCING`. During the handshake both sides initiate a `FULL_SYNC` snapshot, capturing **immutable CRDT elements, anchors, visibility/tombstones and pending deletes**. Operations created while the session is synchronizing enter a bounded per-session pending queue. A per-session send lock ensures the queued operations are flushed after the snapshot so that local edits do not overtake the initial state boundary. After that boundary, the session is marked `READY` for normal operation exchange.\n\nThe word `READY` does not mean every peer on a network has globally converged at that instant; the M2 report defines it operationally as the reciprocal snapshot exchange having been initiated. That nuance matters because asynchronous deliveries, multi-hop propagation and reconnect scenarios still require eventual reconciliation.\n\n```mermaid\nstateDiagram-v2\n  [*] --> Connecting\n  Connecting --> Handshaking: TCP connected\n  Handshaking --> Rejected: Invalid HELLO / document mismatch\n  Handshaking --> Syncing: Valid HELLO\n  Syncing --> Ready: Snapshot sent; buffered operations flushed\n  Ready --> Closed: Disconnect / transport error\n  Rejected --> Closed\n  Closed --> [*]\n```\n\n*Figure 8 — The practical TCP session lifecycle. `Rejected` and `Closed` are conceptual diagram outcomes, not claims that the implementation exposes distinct enum objects for them.*\n\n### 7.5 Multi-peer operation relay\n\nIn a three-peer chain—Alice ↔ Bob ↔ Charlie—Charlie can only see Alice's change if Bob forwards it. In a cycle, forwarding without duplicate suppression risks circulating the same operation repeatedly. c2g wraps application messages in an `OP` envelope carrying a **stable message ID**. A bounded seen-message cache suppresses reprocessing, and relays exclude the immediate sender. The M2 report records a **20,000-entry** seen cache, with peer-session and handshake limits of **16** and a per-session sync queue of **1,000** packets.\n\n```mermaid\nflowchart LR\n  A[\"Alice CRDT\"] <-->|\"OP + stable message_id\"| B[\"Bob CRDT\"]\n  B <-->|\"OP + stable message_id\"| C[\"Charlie CRDT\"]\n  C <-->|\"OP + stable message_id\"| A\n  Id[\"Each receiver records seen IDs; skips repeated OPs\"] -.-> A\n  Id -.-> B\n  Id -.-> C\n```\n\n*Figure 9 — A repeated logical operation is filtered by message ID, even if multiple network paths deliver it.*\n\nM7 uncovered a subtle second propagation failure. When Charlie rejoined, a full-state snapshot reached Alice but not Bob, who remained connected to Alice. Bob could therefore miss Charlie's tombstone. The fix relayed **nonempty directly received FULL_SYNC state** through the existing message-ID-controlled OP mechanism, excluding the incoming session. A regression test proved that all three replicas then converged in full state without forcing a separate Bob reconnection. That failure shows why two-peer integration alone does not establish correct multi-peer behavior.\n\n### 7.6 Errors and limits as first-class protocol behavior\n\nThe actual tests include fragmented/coalesced frames, partial-frame disconnects, unsupported HELLO versions, invalid JSON, oversized frames, simultaneous cross-connections, duplicate sessions, refused connections and unavailable listener ports. The server accepts peers in worker threads with timeouts. Importantly, socket closing and blocking sends are kept outside the global peer-map lock where possible. A malformed peer should not be able to corrupt a different session's CRDT state simply by violating framing expectations.\n\nThat is not a claim of full denial-of-service resistance. It is a concrete improvement in input validation and resource ownership within the stated trusted-LAN scope.\n\n### 7.7 Offline reconciliation after a dropped connection\n\nWhen connectivity returns, peers repeat document identity checks and send full CRDT snapshots. The merge includes tombstones and unresolved causal state, not just the current text. The test suite covered both sides making independent edits, reconnecting, then restarting with their saved identities and continuing to edit.\n\n```mermaid\nsequenceDiagram\n  participant A as Alice\n  participant B as Bob\n  A->>B: Connected and synchronized\n  Note over A,B: TCP connection lost\n  A->>A: Offline local insert / delete\n  B->>B: Offline local insert / delete\n  B->>A: Reconnect; framed HELLO\n  A->>B: FULL_SYNC with elements/tombstones/pending deletes\n  B->>A: FULL_SYNC with elements/tombstones/pending deletes\n  A->>A: Commutative compatible CRDT merge\n  B->>B: Commutative compatible CRDT merge\n  Note over A,B: Convergence under tested supported assumptions\n```\n\n*Figure 10 — Reconnect repeats bidirectional state exchange rather than copying a winner’s visible text.*",
+      "appendix": false,
+      "timeline": false
+    },
+    {
+      "id": "the-replicated-document-why-the-crdt-exists",
+      "title": "The replicated document: why the CRDT exists",
+      "markdown": "Imagine that Alice and Bob both see `AB`. Alice inserts `X` between `A` and `B`, while Bob—before seeing Alice's message—inserts `Y` in the same gap. If each peer merely sends its current full text, whichever copy arrives last can overwrite the other person's edit. Reliable TCP does not solve that semantic conflict; it only transports whichever bytes were sent.\n\nc2g's `CRDTDocument` instead records each character as an element with a stable identity and positional relationships. An element has a `CRDTId(client_id, lamport_clock)`, its character, a predecessor `after_id`, an optional right-side `before_id`, and a visibility flag. The IDs are not screen offsets: screen positions change as other inserts arrive, but a character's identity does not. A local logical clock advances when creating new character elements and is restored safely when state is loaded or merged.\n\n```mermaid\nflowchart TD\n  Start[\"Initial visible text: AB\"] --> A[\"Alice inserts X between A and B\"]\n  Start --> B[\"Bob inserts Y between A and B\"]\n  A --> AI[\"X: unique Alice Lamport ID; after A; before B\"]\n  B --> BI[\"Y: unique Bob Lamport ID; after A; before B\"]\n  AI --> Merge[\"Exchange immutable records\"]\n  BI --> Merge\n  Merge --> Order[\"Deterministic ancestry/right-anchor linearization\"]\n  Order --> End[\"Both replicas show same merged ordering; X and Y retained\"]\n```\n\n*Figure 11 — Both inserts survive. Their exact final ordering follows the implementation's deterministic ordering rules; the diagram intentionally does not invent an ID comparison outcome.*\n\n### 8.1 Anchors and deterministic order\n\nThe starting CRDT implementation had a significant position bug. An insertion requested in the middle of `AB` could be placed after `B` because sorting siblings by ID did not preserve the user's visual gap. M1 introduced the **right anchor** (`before_id`) alongside the traditional RGA predecessor. In the simple regression `AB` plus `X@1`, the desired text is `AXB` rather than `ABX`. A new insertion at the head similarly uses its right-side neighbor to remain before old head elements.\n\nRendering is not a naive sort over raw IDs. The modernized implementation resolves ancestry and then performs iterative topological linearization over predecessor and optional right-anchor constraints. If independently formed right-side constraints conflict, candidates are considered in stable ID order and a cycle-closing *optional* right edge can be discarded; immutable predecessor ancestry is not discarded. This is an implementation-specific choice that produces deterministic ordering under the tested conditions.\n\n### 8.2 Out-of-order operations and tombstones\n\nA distributed receiver can see a child insertion before its predecessor, or a deletion before the original insertion. The correct response is not to drop the operation. The engine retains unresolved inserts indexed by missing predecessor and tracks unknown deletions in `pending_deletes`. When the missing element arrives, resolution cascades and pending deletion state is applied. Deletes mark records invisible rather than destroying their identity and place in the ancestry graph. Tombstone visibility is **false-dominant**: a later snapshot cannot make a deleted record visible again.\n\n```mermaid\nsequenceDiagram\n  participant A as Alice\n  participant B as Bob\n  Note over A,B: Network messages may be reordered\n  A->>A: Insert character C with ID (alice,7)\n  A->>A: Delete C (tombstone)\n  A->>B: DELETE(alice,7) delivered first\n  B->>B: Save pending delete by element ID\n  A->>B: INSERT(alice,7) delivered later\n  B->>B: Apply insert then tombstone\n  Note over B: C remains structurally present but invisible\n```\n\n*Figure 12 — A delayed insert is still deleted because the receiver saved the deletion intent by immutable element ID.*\n\nSnapshots are also **merged**, not assigned wholesale. For compatible immutable records, each replica unions known elements, combines deletion state, validates ancestry, and advances logical clocks as needed. Duplicates are idempotent. Conflicting immutable data claiming the same ID is rejected. This gives convergence under the algorithm's supported assumptions without needing a central sequencer. It is important not to describe this as a consensus algorithm or a formal mathematical proof.\n\n### 8.3 Unicode, batches and performance discipline\n\nMonaco reports change ranges in **UTF-16 code units**. Python strings are indexed by Unicode code points. With emoji and other supplementary characters, the numeric offsets can differ. The bridge converts offsets and rejects boundaries that split surrogate pairs, so a user action cannot accidentally delete half of a character representation. M3 tested emoji, combining marks, RTL text and multiline replacement.\n\nAn early feasibility experiment exposed a non-network performance cost: inserting text one character at a time repeatedly recomputed visible ordering and serialized state. M3 introduced `insert_local_batch`, which resolves the initial gap once, creates one immutable CRDT record and Lamport tick **per code point**, and persists the batch once. In the report's **in-memory-persistence** spike, a 10,003-code-point insertion was applied in **0.179 seconds**, followed by a **0.059-second** text read. Those are scoped local measurements, **not** end-to-end network latency, throughput or a general large-document performance guarantee.",
+      "appendix": false,
+      "timeline": false
+    },
+    {
+      "id": "editing-end-to-end-monaco-to-the-remote-replica",
+      "title": "Editing end-to-end: Monaco to the remote replica",
+      "markdown": "The production UI uses Monaco inside pywebview, not a web-based central application. On a local edit, JavaScript collects a transaction with a base version and UTF-16 change ranges. It serializes those transactions through a queue. `DesktopBridge` forwards the request to `ApplicationController`, which checks versions and ranges and applies changes against the authoritative Python CRDT. For compound edits, deletion ranges are processed in the appropriate order to avoid offset shifts. The controller emits CRDT messages for networking and schedules the persistence snapshot. Remote operations are applied to the same CRDT engine and returned to the editor as incremental patches rather than replacing the entire text on every update.\n\n```mermaid\nsequenceDiagram\n  participant M as Alice Monaco\n  participant Br as Alice bridge/controller\n  participant R as Alice CRDT\n  participant N as Alice TCP manager\n  participant BN as Bob TCP manager\n  participant BR as Bob CRDT/controller\n  participant BM as Bob Monaco\n  M->>Br: Local transaction (UTF-16 range, text, base_version)\n  Br->>Br: Validate version and convert UTF-16 offsets\n  Br->>R: Apply insertion/deletion under lock\n  R-->>Br: CRDT operation(s)\n  Br->>N: Broadcast framed OP with message ID\n  Br->>Br: Enqueue local JSON snapshot save\n  N->>BN: TCP length-prefixed OP\n  BN->>BN: Deduplicate message ID\n  BN->>BR: Apply remote CRDT operation\n  BR-->>BM: Incremental editor patch/event\n```\n\n*Figure 13 — One local edit becomes a CRDT mutation and an application-level network operation; Monaco is a view, not the replication authority.*\n\nA programmatic remote patch must not be mistaken for a new local user edit, or it would echo the operation back into the network. The editor integration uses an explicit remote-application guard and versioned transaction acknowledgments. This is one of the less visible but essential boundaries between a graphical editor and a distributed model.\n\n```mermaid\nsequenceDiagram\n  participant U as Monaco UI\n  participant JS as JS event queue\n  participant API as pywebview DesktopBridge\n  participant C as ApplicationController\n  participant D as CRDT\n  U->>JS: onDidChangeModelContent event\n  JS->>API: apply_local_transaction (UTF-16 offsets)\n  API->>C: Validate base_version and transaction\n  C->>D: Convert ranges; apply CRDT ops\n  D-->>C: New document state / remote messages\n  C-->>API: Accepted or rejected; version\n  API-->>JS: Bridge result\n  JS-->>U: Update status / process next transaction\n  Note over U,D: Remote patches avoid echoing themselves as local edits\n```\n\n*Figure 14 — The editor sends intent and receives acknowledgment; version validation prevents silent stale transaction application.*",
+      "appendix": false,
+      "timeline": false
+    },
+    {
+      "id": "concurrency-thread-ownership-and-lock-boundaries",
+      "title": "Concurrency, thread ownership and lock boundaries",
+      "markdown": "A desktop peer handles input, network reads, network writes, discovery announcements and filesystem writes at overlapping times. c2g does not hand every subsystem an unrestricted reference to the same mutable data. `ApplicationController` owns a re-entrant lock around authoritative document mutation. `CRDTDocument` also guards its internal state. `NetworkManager` has a peer-registry lock and each `PeerSession` has its own send lock. Discovery protects its peer list. The persistent document owns a single autosave writer and cross-process advisory lock for a local storage key.\n\n```mermaid\nflowchart TD\n  GTK[\"GTK/WebKit UI thread\"] <-->|\"Bridge queue/events\"| Ctrl[\"Controller · RLock serializes CRDT mutations\"]\n  TCP1[\"Peer reader thread A\"] --> Ctrl\n  TCP2[\"Peer reader thread B\"] --> Ctrl\n  UDP[\"Discovery broadcast/listen workers\"] --> Ctrl\n  Ctrl --> CRDT[\"CRDTDocument · lock\"]\n  Ctrl --> Save[\"Autosave writer · latest snapshot\"]\n  Save --> Guard[\"Cross-process advisory ownership lock\"]\n  Guard --> Disk[(\"state.json / backup\")]\n  TCP1 --> SendLock[\"Per-PeerSession send lock\"]\n  TCP2 --> SendLock\n  Note[\"Peer registry lock protects session map; socket closure outside global lock\"] -.-> SendLock\n```\n\n*Figure 15 — Different locks protect different invariants. The diagram describes ownership boundaries, not a literal single shared lock across all peer sessions.*\n\nThe network layer intentionally avoids holding a global session lock while writing or closing sockets. Such operations can block on an unavailable peer and stall otherwise healthy connections. A closing session also checks that it is still the expected session for its peer ID: an old receiver must not remove a replacement connection after reconnect. The UI bridge similarly separates background network callbacks from GTK/Monaco presentation updates.\n\nThis design is more than “uses multithreading.” It specifies **which state is mutable, who owns it, which operations can block, and when a thread may hand an event to another subsystem**. That is the core of a thread-safe application architecture.",
+      "appendix": false,
+      "timeline": false
+    },
+    {
+      "id": "persistence-that-preserves-the-replica-not-just-the-text",
+      "title": "Persistence that preserves the replica, not just the text",
+      "markdown": "If c2g saved only `\"Hello\"`, reopening would restore visible content but lose Lamport identities, tombstones, predecessor anchors, pending deletes and the logical document relationship to other peers. A future reconnect could then produce identity collisions, resurrect deleted characters or fail to recognize existing history. That is why the persistent representation contains validated **CRDT state**, including document and replica metadata.\n\nM5 introduced `JsonDocumentStore` with schema `c2g-document`, version 1, stored under an isolated `documents/<storage-key>` directory. The normal application path uses `PersistedCrdt` and **does not automatically deserialize historical pickle files**. `--new` creates a new local replica and document; `--resume STORAGE_KEY` loads one validated persisted state. Different local replicas of the same logical shared document retain different storage keys and replica IDs.\n\nSaves serialize deterministic UTF-8 JSON to a same-directory temporary file, flush and `fsync` it, and atomically replace the primary file. The previous *valid* primary may be retained as a backup. Loading validates primary state, then attempts the backup if necessary; invalid primary and backup copies are not overwritten simply to let startup continue. Autosave coalesces snapshots, reports completed saves or errors to the UI, and flushes and joins its worker during normal shutdown. Per-document advisory locking prevents two local processes from writing the same saved replica simultaneously.\n\n```mermaid\nflowchart TD\n  M[\"Validated CRDT snapshot\"] --> Temp[\"Write temporary JSON in document directory\"]\n  Temp --> Flush[\"flush() + fsync(file)\"]\n  Flush --> Valid{Existing primary validates?}\n  Valid -->|Yes| Rotate[\"Replace backup with previous valid primary\"]\n  Valid -->|No / missing| Keep[\"Keep previous valid backup\"]\n  Rotate --> Commit[\"os.replace(temp, primary)\"]\n  Keep --> Commit\n  Commit --> DSync[\"Best-effort fsync(directory)\"]\n  DSync --> Done[\"Completed save status\"]\n  Commit -.->|\"Failure before commit\"| Safe[\"Leave last valid backup available\"]\n  Read[\"Resume document\"] --> Primary{Primary valid?}\n  Primary -->|Yes| Load[Load validated state]\n  Primary -->|No| Backup{Backup valid?}\n  Backup -->|Yes| Load\n  Backup -->|No| Error[\"Reject resume; preserve corrupt files\"]\n```\n\n*Figure 16 — The important invariant is retaining a recoverable prior state when a new commit fails, not claiming protection from every possible hardware fault.*\n\n**The M7 save-recovery defect** illustrates why durability requirements need fault injection. After recovering from a corrupt primary using a valid backup, a subsequent save could rotate the corrupt primary over that sole good backup. If the final replacement then failed, neither file would be recoverable. A regression reproduced the exact sequence. The revised save first validates an existing primary before rotating it, preserving the last valid backup if commit fails.\n\nM7 also detected a failed-resume resource leak: a cyclic ancestry record could be rejected only **after** an autosave writer and ownership lock had started. Validating that state before acquiring those resources allowed the process to exit cleanly and a later opener to regain ownership. The lesson is that recovery correctness includes both on-disk bytes and the lifecycle of resources opened during recovery.",
+      "appendix": false,
+      "timeline": false
+    },
+    {
+      "id": "native-desktop-integration-and-document-workflow",
+      "title": "Native desktop integration and document workflow",
+      "markdown": "The modernization retained Python for the CRDT and sockets while replacing the default Tkinter interface with **Monaco Editor** hosted by **pywebview**. M3 was a feasibility gate: Linux GTK launched a native window, initialized the Monaco worker, and proved the local JavaScript/Python bridge. M4 turned the spike into an `ApplicationController` and `DesktopBridge` boundary. The frontend stays locally bundled, with no runtime CDN requirement. The user can create or resume documents, edit in Monaco, view connection state, connect/disconnect peers and export UTF-8 text.\n\nA typical document lifecycle is: launch → select New/Resume → activate controller and TCP listener → edit locally → connect to peers → exchange and apply CRDT operations → autosave → close → reopen → reconnect and merge. The application does not start a document's CRDT/listener/writer until the startup choice is made. In source and frozen runs, the desktop host reads the built `web/dist` assets. Actual native export-dialog and physical clipboard acceptance remained on the M7 manual checklist; automated bridge/export tests are not equivalent to physically exercising the full dialog.\n\nOne practical bug surfaced after packaging. The `Continue working` picker remained visible even when JavaScript had set `hidden` on its element. The CSS selector `#picker { display: grid }` overrode the default hidden display behavior. A targeted `[hidden] { display: none !important }` rule, plus a remote-patch startup-handler correction, restored interaction. Regression testing isolated that browser behavior; the GTK automation and subsequent frozen source checks confirmed the fix. This is a useful example of a small frontend rule masking otherwise functioning network and persistence subsystems.",
+      "appendix": false,
+      "timeline": false
+    },
+    {
+      "id": "engineering-failures-that-shaped-the-system",
+      "title": "Engineering failures that shaped the system",
+      "markdown": "Failures are presented as implementation evidence, not as marketing anecdotes. The following were documented in the milestone reports and verified by regressions.\n\n| Failure | Root cause | Corrective decision | Verification |\n|---|---|---|---|\n| Middle insert `AB` + `X@1` produced `ABX` | Pure sibling ID order ignored a requested visual gap | Add stable right anchor and deterministic topological ordering | M1 REG-01; `AXB` expectation |\n| Remote delete arrived before insert and disappeared | Unknown deletion not preserved | Retain pending tombstone keyed by immutable element ID | M1 causal-delivery regressions |\n| Deleted characters reappeared after snapshot | Merge replaced tombstone visibility | False-dominant visibility join and immutable record validation | M1 tombstone/snapshot tests |\n| Three-peer rejoin left Bob without Charlie's deletion | Full-state snapshot stayed connection-local | Relay nonempty received FULL_SYNC via deduplicated OP envelope | M7 real TCP three-peer regression |\n| Startup dialog remained above Monaco | `display:grid` defeated the HTML hidden attribute | Explicit `[hidden]` CSS rule | Picker browser/GTK checks |\n| Failed save could destroy last valid backup | Corrupt primary rotated over a recovered backup | Validate primary before backup rotation | M7 injected replacement failure |\n| Cyclic resume leaked writer/ownership | Validation ran after resource acquisition | Validate ancestry before opening writer/lock | M7 subprocess regression |\n| Bundled sanitizer contained an advisory-affected dependency | Monaco's sanitizer import resolved an older DOMPurify build | Scoped Vite resolver and pinned 3.4.17 | Production npm audit and bundle inspection |\n\nThe range of bugs is revealing. The CRDT defects were **semantic**: messages delivered correctly could still produce the wrong text. The three-peer defect was **topological**: local and two-peer behavior concealed a missing forwarding path. The persistence defect was **transactional**: an attempted protection mechanism removed the last recovery copy. And the picker bug was **presentational**: the application state had progressed, but the user could not interact with it. Each required a different debugging approach and a corresponding layer-specific regression test.",
+      "appendix": false,
+      "timeline": false
+    },
+    {
+      "id": "testing-strategy-and-what-it-really-establishes",
+      "title": "Testing strategy and what it really establishes",
+      "markdown": "Testing was structured to separate deterministic model behavior from platform-dependent behavior. Pure CRDT tests cover inserts, deletes, anchors, cycles, causal delays and invalid state. Framing tests cover split TCP reads, combined frames, bad lengths and malformed payloads. Socket tests use ephemeral loopback listeners and bounded polling to exercise real TCP send/receive behavior without relying on fixed ports or arbitrary sleeps. Persistence tests use temporary directories and injected failures. GTK and frozen tests exercise resource loading and synthetic native input. Each layer increases integration scope without pretending to validate more than it observes.\n\n```mermaid\nflowchart TD\n  Static[\"Source and security checks: diff, npm audit, asset inspection\"] --> Unit[\"CRDT / framing / storage unit and regression tests\"]\n  Unit --> Seeds[\"100 seeded three-replica convergence histories\"]\n  Seeds --> Net[\"Two-/three-peer real loopback TCP integration\"]\n  Net --> Native[\"GTK and frozen X11/XTest synthetic interaction\"]\n  Native --> Human[\"Physical clipboard / export / LAN / Windows checks: pending\"]\n```\n\n*Figure 17 — The evidence moves from algorithmic and protocol checks to real sockets and native desktop automation. Human and cross-platform gates remain separate.*\n\nThe final M7 run recorded **68 passed in 12.22 seconds**, exiting normally. The randomized suite used **100 deterministic seeds (0–99)**, **three replicas** and **30 generated edits per seed**. It varied insertion positions, Unicode/newlines, partial and reversed deliveries, duplicate operations, delayed predecessors, pending deletes, stale snapshots and final all-to-all merges. Assertions checked not only rendered text but also element identities, anchors, visibility and pending state. Failed assertions included the seed, making regressions reproducible. The report describes this as bounded randomized evidence, **not a formal proof**.\n\nThe two-peer integration created and resumed real persistent controllers, exchanged actual protocol-v2 TCP frames, inserted and deleted concurrently, used multiline Arabic/emoji/combining marks, edited while disconnected and reconciled after restart. The three-peer suite covered a chain, a cycle, duplicate delivery and the rejoin/tombstone propagation regression. This is stronger evidence than merely showing two editor windows with matching text, because it validates the metadata required for future reconciliation.\n\n| Area | M7 evidence | Boundary |\n|---|---|---|\n| Python regression suite | 68 passed; normal process exit | Test suite is not formal verification |\n| CRDT randomized convergence | 100 deterministic three-replica seeds | Does not prove arbitrary histories or unbounded scale |\n| Two-/three-peer networking | Actual TCP loopback integration passed | Physical two-machine UDP discovery not tested |\n| Persistence | Corruption, backup, locking, restart, injected failures | Not immunity to hardware loss or unsaved-process termination |\n| Native desktop | GTK/X11 source and PyInstaller synthetic pointer/keyboard smoke | Full physical clipboard and export-dialog acceptance pending |\n| Frontend/security | Vite production build; npm production audit zero at run time; bundled DOMPurify 3.4.17 | Not an audit of all future dependencies or malicious peer behavior |\n| Windows / Docker | Workflow and Dockerfile defined | Build/runtime and Docker daemon execution not verified at G6 |\n\nAn important metric discipline applies: the **68 tests** count automated Python test cases, while **100 seeds** describe iterations *inside* a convergence test; they should not be summed and presented as 168 tests. Likewise, the in-memory paste spike is not a P2P latency result.",
+      "appendix": false,
+      "timeline": false
+    },
+    {
+      "id": "security-model-and-operational-boundaries",
+      "title": "Security model and operational boundaries",
+      "markdown": "The system's trust model is explicit: peers communicate on a **trusted local network** through an **unauthenticated, unencrypted application protocol**. It is not intended to expose the TCP or UDP discovery ports to the public Internet. Version, capability and document identity checks prevent certain accidental mismatches, but they are not peer authentication. The finite 12 MiB frame size, 16 peer and 16 handshake caps, 1,000-entry sync queues and bounded dedup records reduce specific resource risks; they are not complete protection against denial of service. Connected peers can receive and change the selected document.\n\n```mermaid\nflowchart TB\n  subgraph Host[\"One local desktop device\"]\n    Web[\"Monaco assets: loopback HTTP 127.0.0.1 only\"] --> Ctrl[Python controller]\n    Ctrl --> Store[(Local JSON documents outside web root)]\n    Ctrl --> Listener[\"P2P TCP listener on non-loopback interfaces\"]\n  end\n  subgraph LAN[\"Trusted LAN assumption\"]\n    Peer[\"Other peer; unauthenticated and unencrypted protocol\"]\n    UDP[\"UDP broadcast announcements\"]\n  end\n  Peer <-->|\"Framed TCP; peers may modify shared document\"| Listener\n  UDP -.-> Listener\n  Internet[\"Untrusted Internet · explicitly out of scope\"] -.- X[\"Do not expose P2P ports publicly\"]\n```\n\n*Figure 18 — The local frontend asset server is loopback-only; P2P transport crosses onto the trusted LAN. The Internet is outside the approved threat model.*\n\nFor storage, strict JSON validation replaces unsafe automatic pickle loading. The local HTTP asset root is separate from document profiles. A traversal attempt to fetch repository content outside the asset root was rejected in M7. The production npm audit found no vulnerabilities at the time it was run and the shipped frontend included the remediated sanitizer; these outcomes do not establish perpetual dependency safety. This honest scope statement is important when discussing the project's engineering maturity.",
+      "appendix": false,
+      "timeline": false
+    },
+    {
+      "id": "build-packaging-and-how-the-application-runs",
+      "title": "Build, packaging and how the application runs",
+      "markdown": "The release pipeline combines Python with a compiled local web frontend. `web/` is built with npm/Vite into `web/dist`, including Monaco workers. `scripts/build_desktop.py` and `c2g.spec` create a PyInstaller **onedir** bundle, with resource resolution supporting both source and frozen layouts. Desktop data is stored outside the distribution. The complete folder—including `_internal` resources—must be distributed; copying the executable alone is insufficient.\n\n```mermaid\nflowchart LR\n  P[\"Python 3.12+ source\"] --> Pack[\"PyInstaller onedir / c2g.spec\"]\n  W[\"web/ source: Monaco, JS, CSS\"] --> Vite[\"npm ci + Vite production build\"]\n  Vite --> Assets[\"web/dist: HTML, JS, CSS, editor workers\"]\n  Assets --> Pack\n  Pack --> Dist[\"dist/c2g/ executable + _internal\"]\n  Dist --> Verify[\"Checksum, CLI from /tmp, bundled assets, native smoke\"]\n  Verify --> Gate[\"Linux release candidate · G6 PARTIAL\"]\n```\n\n*Figure 19 — Offline editor assets become part of the native folder; a checksum and launch smoke are verification steps, not cloud deployment.*\n\nThe source README documents a Python 3.12+ environment and source asset build:\n\n```bash\n# Example from a source checkout; GTK/WebKitGTK host dependencies are separate.\npython -m pip install -e '.[desktop]'\ncd web && npm ci && npm run build && cd ..\npython -m c2g alice --new --listen-port 5000\n```\n\nFor a **same-machine two-peer** test, use separate profiles and TCP listener ports. Launch Alice on 5000 and Bob on 5002, then manually connect Bob to `127.0.0.1:5000`; ensure each process initially has its own storage key. The README also supports `c2g alice --resume STORAGE_KEY`. For the frozen Linux build, the executable is `dist/c2g/c2g`, and `C2G_STORAGE_ROOT` can point at a disposable profile.\n\nM7 rebuilt the Linux artifact once after its Python fixes. The recorded release-candidate onedir directory occupied approximately **363 MiB** of filesystem space, with **96 frontend asset files** totaling around **14 MB**, including Monaco workers. The executable had a SHA-256 manifest and passed a foreign-working-directory CLI smoke and GTK/X11 frozen interaction. The exact artifact hash belongs to the M7 report; a later rebuild should not reuse that hash. Packaging did not publish a GitHub Release, PyPI package or signed installer.\n\n### Platform readiness at the recorded gate\n\n| Target | State on 24 October 2026 |\n|---|---|\n| Ubuntu 24.04.4 x86_64, GTK/WebKitGTK, X11 | Source and frozen automation verified; **human release-candidate acceptance pending** |\n| Other Linux / Wayland | Not fully qualified |\n| Windows / WebView2 | Workflow configured; desktop build artifact and native runtime **not verified** |\n| macOS | Not verified |\n| Docker | Definition exists; daemon denied access; tests **not executed** in Docker |\n| Two-machine physical LAN | Manual procedure defined; UDP discovery across machines **not verified** |\n\nThis status does not prevent presenting c2g as a strong engineering portfolio project. It does prevent describing it as a fully supported cross-platform public release.",
+      "appendix": false,
+      "timeline": false
+    },
+    {
+      "id": "tradeoffs-rather-than-slogans",
+      "title": "Tradeoffs rather than slogans",
+      "markdown": "| Decision | Why it suited this scope | Cost or limitation |\n|---|---|---|\n| Direct peers, no central editor service | Preserves local-first behavior and exposes real distributed-state challenges | No NAT traversal, cloud relay or access-control server |\n| UDP discovery plus TCP transport | Lightweight presence announcements and ordered byte delivery | Broadcast may be filtered; user still connects explicitly |\n| Framed JSON protocol v2 | Visible semantics, testable boundaries and compatibility checks | JSON payload overhead; custom protocol maintenance |\n| RGA-style CRDT | Concurrent edits merge without central edit sequencing | Tombstones and causal state consume memory; complex ordering invariants |\n| Bidirectional full-state snapshots | Reconnection can recover missed state | Large snapshots; frame/state limits; no claim of scalable incremental history compression |\n| Deduplicated relaying | Allows chains/cycles without unbounded repeated OP handling | Bounded cache has finite retention; no hostile-network guarantee |\n| Threaded Python networking | Integrates with the inherited Python core and desktop host | Lock ownership and blocking socket behavior require care |\n| Monaco inside pywebview | Familiar editor functions with native application shell | Renderer dependencies and UTF-16/Unicode bridge complexity |\n| Validated JSON with atomic replace | Human-inspectable format and recoverable on-disk state | JSON state can grow; fsync cannot prevent every filesystem/hardware fault |\n| PyInstaller onedir | Bundles Python and offline editor assets | Large artifact and platform-specific build/acceptance burden |",
+      "appendix": false,
+      "timeline": false
+    },
+    {
+      "id": "lessons-and-next-technical-questions",
+      "title": "Lessons and next technical questions",
+      "markdown": "**Message delivery and state correctness are independent.** TCP handled ordered bytes, while the CRDT had to give those bytes meaning under concurrent edits and late delivery. **Stable identity matters more than visible text.** The persisted replica must preserve metadata that an editor normally hides. **Reconnection is a protocol phase.** Explicit HELLO, snapshot exchange, deduplicated relay and bounded queues were necessary; simply reopening a socket was not enough. **Failures must be tested at the layer where they occur.** The M7 snapshot bug required a three-peer topology, the backup bug required fault injection, and the picker bug required browser rendering inspection. **Platform evidence is not portable.** A successful Linux artifact does not prove Windows/WebView2 behavior.\n\nFuture work could add authenticated and encrypted peer transport, internet connectivity/NAT traversal, verified Windows/macOS distributions, deeper physical LAN acceptance, better collaborative presence, and investigated CRDT history compaction. Each changes the threat model, consistency behavior or implementation complexity. None should be presented as a shipped feature.",
+      "appendix": false,
+      "timeline": false
+    },
+    {
+      "id": "outcome-and-release-decision",
+      "title": "Outcome and release decision",
+      "markdown": "The project reached a working, testable **Linux release candidate for human acceptance**. The evidence supports a decentralized desktop application with a custom framed TCP protocol, UDP discovery, RGA-style replicated editing, three-peer message forwarding, reconnect reconciliation, safe local persistence and comprehensive headless validation. The reported M7 test suite passed **68 tests**, and its randomized convergence test passed **100 three-replica seeds**. No unresolved demonstrated P0/P1 defect remained in the executed scope, but required acceptance environments were missing.\n\n**Final gate: G6 PARTIAL.** That is a more useful engineering conclusion than an unsupported “production-ready” label: it states exactly what is known, what was tested, and what a release owner must still verify. For a technical portfolio, c2g demonstrates not just the ability to assemble components, but the judgment to identify failure modes, preserve architectural boundaries, design reproducible tests and stop short of claims the evidence cannot defend.\n\n---",
+      "appendix": false,
+      "timeline": false
+    },
+    {
+      "id": "source-references-and-historical-attribution",
+      "title": "Source references and historical attribution",
+      "markdown": "- [c2g repository and README](https://github.com/sultanshahdev/c2g/blob/main/README.md)\n- [Original P2PDocs project](https://github.com/taaha-0548/P2PDocs) — original contributors and retained MIT attribution\n- [Implementation plan M0–M7](https://github.com/sultanshahdev/c2g/blob/main/docs/IMPLEMENTATION_PLAN.md)\n- [M1 CRDT correctness](https://github.com/sultanshahdev/c2g/blob/main/docs/M1_CRDT_CORRECTNESS_REPORT.md)\n- [M2 networking reliability](https://github.com/sultanshahdev/c2g/blob/main/docs/M2_NETWORK_RELIABILITY_REPORT.md)\n- [M3 Monaco feasibility](https://github.com/sultanshahdev/c2g/blob/main/docs/M3_MONACO_FEASIBILITY_REPORT.md)\n- [M4 desktop integration](https://github.com/sultanshahdev/c2g/blob/main/docs/M4_DESKTOP_INTEGRATION_REPORT.md)\n- [M5 persistence and recovery](https://github.com/sultanshahdev/c2g/blob/main/docs/M5_PERSISTENCE_RECOVERY_REPORT.md)\n- [M6 release tooling](https://github.com/sultanshahdev/c2g/blob/main/docs/M6_RELEASE_TOOLING_REPORT.md)\n- [M7 final validation and support matrix](https://github.com/sultanshahdev/c2g/blob/main/docs/M7_FINAL_VALIDATION_REPORT.md)\n- [CRDT implementation](https://github.com/sultanshahdev/c2g/blob/main/c2g/crdt/document.py), [TCP manager](https://github.com/sultanshahdev/c2g/blob/main/c2g/network/manager.py), [UDP discovery](https://github.com/sultanshahdev/c2g/blob/main/c2g/network/discovery.py), [JSON storage](https://github.com/sultanshahdev/c2g/blob/main/c2g/storage/json_store.py), [UI controller](https://github.com/sultanshahdev/c2g/blob/main/c2g/ui/controller.py)\n\n**Evidence cutoff:** repository content and milestone reports retrieved for this case study, including the 2026-10-24 M7 report. GitHub source links use branch paths, not immutable commit permalinks; pin to a reviewed commit before publishing. The archive accompanying this case study is a portable documentation package—not a commit to the developer's local repository.",
+      "appendix": false,
+      "timeline": false
+    }
+  ],
+  "appendices": [
+    {
+      "id": "architecture-decisions-16-records",
+      "title": "Architecture decisions — 16 records",
+      "chapters": [
+        {
+          "id": "introduction-2",
+          "title": "Introduction",
+          "markdown": "These records reconstruct decisions from source and milestone evidence. **“Alternative” does not imply that a formal benchmark or team design review occurred.** References use branch-relative paths; pin to a commit before publication.",
+          "appendix": true,
+          "timeline": false
+        },
+        {
+          "id": "adr-01-modernize-p2pdocs-instead-of-claiming-a-greenfield-build",
+          "title": "ADR-01 — Modernize P2PDocs instead of claiming a greenfield build",
+          "markdown": "- **Context:** The supplied MIT-licensed P2PDocs archive already implemented Tkinter editing, character identities, and TCP/UDP modules but had documented correctness and lifecycle defects.\n- **Decision:** Preserve upstream Git history and attribution; evolve through M0–M7 correctness and integration gates.\n- **Consequence:** Historical author credit remains necessary; the contribution is the documented modernization and reengineering.\n- **Evidence:** `README.md`; `docs/IMPLEMENTATION_PLAN.md`; original P2PDocs source archive.",
+          "appendix": true,
+          "timeline": false
+        },
+        {
+          "id": "adr-02-a-local-replica-per-peer-without-central-edit-sequencing",
+          "title": "ADR-02 — A local replica per peer, without central edit sequencing",
+          "markdown": "- **Context:** Direct LAN collaboration should not require a hosted document coordinator.\n- **Decision:** Each process owns a CRDT replica and synchronizes with other peers using P2P connections.\n- **Tradeoff:** Network membership and consistency recovery must be handled by each participant; no cloud relay or WAN NAT solution.\n- **Evidence:** `ApplicationController`, `CRDTDocument`, `NetworkManager`; M4 and M7 reports.",
+          "appendix": true,
+          "timeline": false
+        },
+        {
+          "id": "adr-03-udp-discovery-and-tcp-operations",
+          "title": "ADR-03 — UDP discovery and TCP operations",
+          "markdown": "- **Context:** Announcing presence and exchanging reliable document state are different tasks.\n- **Decision:** UDP broadcasts publish endpoint metadata; explicitly selected peers connect over TCP.\n- **Tradeoff:** LAN broadcasts can be filtered and have no delivery guarantee; manual endpoint connection remains useful.\n- **Evidence:** `c2g/network/discovery.py`, `c2g/network/manager.py`, M2 report.",
+          "appendix": true,
+          "timeline": false
+        },
+        {
+          "id": "adr-04-versioned-length-framed-json-application-protocol",
+          "title": "ADR-04 — Versioned, length-framed JSON application protocol",
+          "markdown": "- **Context:** TCP is a byte stream, not message-structured; older handshakes were incompatible with richer CRDT state.\n- **Decision:** Four-byte big-endian length + UTF-8 JSON, protocol-v2 HELLO and capabilities.\n- **Tradeoff:** JSON overhead and bespoke protocol maintenance; easier debugging and deterministic parsing tests.\n- **Evidence:** `NetworkManager.encode_frame`, `FrameDecoder`, `_validate_hello`.",
+          "appendix": true,
+          "timeline": false
+        },
+        {
+          "id": "adr-05-stable-peer-and-document-identity",
+          "title": "ADR-05 — Stable peer and document identity",
+          "markdown": "- **Context:** TCP socket identity, replica ID and shared document identity have distinct meanings.\n- **Decision:** Versioned HELLO carries peer/document UUID and explicit empty-document join; mismatched nonempty documents are rejected.\n- **Tradeoff:** Joining requires clear user intent; accidental merges are prevented.\n- **Evidence:** `NetworkManager._handshake`, M2 report, M5 joined-document tests.",
+          "appendix": true,
+          "timeline": false
+        },
+        {
+          "id": "adr-06-character-level-rga-variant-with-right-anchors",
+          "title": "ADR-06 — Character-level RGA variant with right anchors",
+          "markdown": "- **Context:** Simple sibling-ID sorting produced wrong head/middle placement.\n- **Decision:** Store predecessor and optional right-side visual-gap anchor; deterministic topological linearization.\n- **Tradeoff:** Ordering and cycle-handling algorithms are more complex than append-only text operations.\n- **Evidence:** `CRDTDocument._linearized_ids`; M1 REG-01/02.",
+          "appendix": true,
+          "timeline": false
+        },
+        {
+          "id": "adr-07-pending-causal-state-and-deletion-tombstones",
+          "title": "ADR-07 — Pending causal state and deletion tombstones",
+          "markdown": "- **Context:** Out-of-order delivery may bring a delete before insert, or a child before its predecessor.\n- **Decision:** Keep unresolved operations and monotonic visibility; do not garbage-collect ancestry on delete.\n- **Tradeoff:** History grows until bounded limits; compaction requires further reasoning.\n- **Evidence:** `CRDTDocument.insert_remote`, `delete_remote`, `apply_full_state`; M1 tests.",
+          "appendix": true,
+          "timeline": false
+        },
+        {
+          "id": "adr-08-snapshot-exchange-at-connection-reconnection",
+          "title": "ADR-08 — Snapshot exchange at connection/reconnection",
+          "markdown": "- **Context:** New or rejoining peers may have missed operations.\n- **Decision:** Reciprocal FULL_SYNC with CRDT metadata and per-session queue to prevent live updates overtaking snapshot boundary.\n- **Tradeoff:** Potentially large snapshots; state limits and frame cap apply.\n- **Evidence:** `NetworkManager._handshake`, `PeerSession.pending`, M2 report.",
+          "appendix": true,
+          "timeline": false
+        },
+        {
+          "id": "adr-09-message-id-based-operation-relay",
+          "title": "ADR-09 — Message-ID-based operation relay",
+          "markdown": "- **Context:** Three-peer chains require forwarding; cycles require duplicate suppression.\n- **Decision:** Relay OP envelopes with stable message IDs, source exclusion and bounded seen cache; M7 extends nonempty reconnect snapshot relay.\n- **Tradeoff:** Finite cache, trusted peers only; no global consensus ordering.\n- **Evidence:** `NetworkManager._handle`, `broadcast_message`; M7 three-peer regression.",
+          "appendix": true,
+          "timeline": false
+        },
+        {
+          "id": "adr-10-threaded-peers-with-scoped-locks",
+          "title": "ADR-10 — Threaded peers with scoped locks",
+          "markdown": "- **Context:** Multiple socket readers and UI events share one authoritative replica.\n- **Decision:** Controller RLock, CRDT lock, peer-registry RLock and per-session send locks; avoid closing sockets under global lock.\n- **Tradeoff:** Lock order and worker cleanup need integration tests.\n- **Evidence:** `ApplicationController`, `CRDTDocument`, `PeerSession`, M4/M7.",
+          "appendix": true,
+          "timeline": false
+        },
+        {
+          "id": "adr-11-monaco-as-interface-python-as-source-of-truth",
+          "title": "ADR-11 — Monaco as interface, Python as source of truth",
+          "markdown": "- **Context:** A familiar code-editing surface must not independently overwrite distributed state.\n- **Decision:** pywebview bridge validates versioned local edits, converts UTF-16 ranges, applies CRDT operations and patches remote UI changes incrementally.\n- **Tradeoff:** Unicode conversion and transaction versioning add bridge complexity; native renderer requirements remain.\n- **Evidence:** `web/src/main.js`, `c2g/ui/controller.py`, M3/M4 reports.",
+          "appendix": true,
+          "timeline": false
+        },
+        {
+          "id": "adr-12-validated-json-replaces-automatic-legacy-pickle-recovery",
+          "title": "ADR-12 — Validated JSON replaces automatic legacy pickle recovery",
+          "markdown": "- **Context:** Untrusted pickle deserialization is unsafe and historical resume path was inadequate.\n- **Decision:** Schema-versioned JSON, strict validation, isolated storage keys, stable identities and tombstones.\n- **Tradeoff:** Schema migration burden and larger serialized state than plain text.\n- **Evidence:** `JsonDocumentStore`, `PersistedCrdt`, M5 report.",
+          "appendix": true,
+          "timeline": false
+        },
+        {
+          "id": "adr-13-atomic-save-with-previous-valid-backup",
+          "title": "ADR-13 — Atomic save with previous valid backup",
+          "markdown": "- **Context:** A failed commit must not remove the only recovery copy.\n- **Decision:** Write temp + fsync; validate old primary before rotating backup; os.replace; best-effort directory fsync; retain invalid state for diagnosis.\n- **Tradeoff:** Atomic replace is filesystem/platform dependent and not immunity to hardware faults.\n- **Evidence:** `JsonDocumentStore.save`, M7 §11 fault-injection regression.",
+          "appendix": true,
+          "timeline": false
+        },
+        {
+          "id": "adr-14-native-pywebview-pyinstaller-onedir-distribution",
+          "title": "ADR-14 — Native pywebview/PyInstaller onedir distribution",
+          "markdown": "- **Context:** Keep local Python sockets and Monaco in a desktop app without requiring users to host a web service.\n- **Decision:** Local Vite bundle, pywebview GTK renderer, PyInstaller onedir, checksum and offline worker checks.\n- **Tradeoff:** Large folder, platform-native dependencies, platform-specific acceptance burden.\n- **Evidence:** `c2g.spec`, `scripts/build_desktop.py`, `c2g/ui/resources.py`, M6/M7.",
+          "appendix": true,
+          "timeline": false
+        },
+        {
+          "id": "adr-15-trusted-lan-only-release-boundary",
+          "title": "ADR-15 — Trusted-LAN-only release boundary",
+          "markdown": "- **Context:** Current protocol has no peer authentication or encryption.\n- **Decision:** Describe and test only the trusted-LAN threat model, reject incompatible documents/frames and cap resources; do not expose P2P ports to the Internet.\n- **Tradeoff:** Excludes public WAN collaboration until authenticated secure transport and relay/NAT design exist.\n- **Evidence:** README networking limits; M7 security findings.",
+          "appendix": true,
+          "timeline": false
+        },
+        {
+          "id": "adr-16-g6-partial-instead-of-claiming-cross-platform-shipping",
+          "title": "ADR-16 — G6 PARTIAL instead of claiming cross-platform shipping",
+          "markdown": "- **Context:** Linux automated artifact and loopback tests were successful, but Windows, physical LAN, Docker and complete human UI checks remained open.\n- **Decision:** Describe a Linux acceptance candidate and record unresolved gates; do not auto-publish.\n- **Tradeoff:** Less marketable release label, stronger factual confidence.\n- **Evidence:** `docs/M7_FINAL_VALIDATION_REPORT.md` §§15–20.",
+          "appendix": true,
+          "timeline": false
+        }
+      ]
+    },
+    {
+      "id": "technical-evidence-register",
+      "title": "Technical evidence register",
+      "chapters": [
+        {
+          "id": "introduction-3",
+          "title": "Introduction",
+          "markdown": "**Purpose.** Trace the portfolio narrative to actual source, tests and dated reports. **Evidence cutoff:** M7 report dated 2026-10-24. This register was assembled through the GitHub repository content connector and the earlier P2PDocs source archive supplied in the project context; the reporter **did not execute the c2g repository or its test suite in this environment**. Reported test output is identified as report evidence, not a newly independently rerun result.\n\n**Status keys:** `CODE` source inspected; `REPORT` result recorded in an engineering report; `OWNER` reported manually by developer; `PENDING` unexecuted acceptance; `INFERENCE` explanatory synthesis.\n\n| ID | Claim | Implementation reference | Evidence | Status and limitation |\n|---|---|---|---|---|\n| E01 | c2g modernizes MIT-licensed P2PDocs rather than originating as greenfield | `README.md`, `LICENSE`, Git history, earlier P2PDocs archive | README attribution; M0 plan | CODE/REPORT; preserve upstream credits |\n| E02 | Each peer keeps a separate CRDT replica | `c2g/ui/controller.py`, `c2g/crdt/document.py` | M4 architecture; M7 two-peer restart | CODE/REPORT; no central collaboration authority |\n| E03 | UDP broadcasting discovers LAN participants | `c2g/network/discovery.py:PeerDiscovery` | M2 discovery validation tests | CODE/REPORT; two-machine broadcast PENDING |\n| E04 | Discovery does not auto-connect peers | `c2g/network/discovery.py`, `c2g/ui/controller.py` | M2 report | CODE/REPORT; manual Connect required |\n| E05 | UDP default discovery port 5001 | `PeerDiscovery.discovery_port` | `c2g/network/discovery.py` | CODE; host firewall may block broadcasts |\n| E06 | TCP uses a four-byte big-endian length prefix | `c2g/network/manager.py:encode_frame` | M2 frame tests | CODE/REPORT |\n| E07 | Fragmentation/coalescing handled in buffered decode | `c2g/network/manager.py:FrameDecoder.feed` | M2 network tests | CODE/REPORT |\n| E08 | Protocol v2 validates version, capabilities and identity | `NetworkManager._hello`, `_validate_hello`, `_handshake` | M2/M7 reports | CODE/REPORT; not cryptographic authentication |\n| E09 | Empty join may adopt existing document UUID | `NetworkManager._handshake`, `ApplicationController._persist_joined_document_id` | M2/M5 tests | CODE/REPORT; unrelated nonempty documents rejected |\n| E10 | Peer sessions bound by locking and capacity limits | `PeerSession`, `_accept_peers`, `_send`, `_drop` | M2/M7 tests | CODE/REPORT; hostile-network safety not proven |\n| E11 | Limits: 16 peers, 16 handshakes, 12 MiB frames | `MAX_PEERS`, `MAX_HANDSHAKES`, `MAX_FRAME_SIZE` | M7 security section | CODE/REPORT; values are limits, not scalability benchmark |\n| E12 | Operations are relayed with stable IDs and bounded cache | `NetworkManager._handle`, `broadcast_message`, `_remember` | M2 chain/cycle tests | CODE/REPORT |\n| E13 | 20,000 seen IDs; 1,000 session pending packets | `MAX_SEEN_MESSAGES`, `MAX_PENDING_OUTBOUND` | M2 report | CODE/REPORT; finite cache |\n| E14 | Rejoin full snapshots propagate to connected neighbors | `NetworkManager._handle` FULL_SYNC branch | M7 three-peer regression | CODE/REPORT; implemented during M7 |\n| E15 | Character identity uses client ID and Lamport clock | `c2g/crdt/types.py`, `CRDTDocument` | M1 report | CODE/REPORT |\n| E16 | CRDT stores predecessor and optional right anchor | `c2g/crdt/document.py` | M1 REG-01/02 | CODE/REPORT; implementation-specific RGA variant |\n| E17 | Rendering uses deterministic ancestry and gap ordering | `CRDTDocument._linearized_ids` | M1 convergence results | CODE/REPORT; no formal proof |\n| E18 | Missing parents and pending deletes are retained | `CRDTDocument.pending_by_predecessor`, `pending_deletes`, `delete_remote` | M1 regressions | CODE/REPORT |\n| E19 | Tombstones are false-dominant in full-state merge | `CRDTDocument.apply_full_state` | M1 tests | CODE/REPORT |\n| E20 | CRDT batch insert preserves per-character records | `CRDTDocument.insert_local_batch` | M3 feasibility | CODE/REPORT |\n| E21 | M3 10,003-character in-memory paste reported 0.179s apply | `insert_local_batch`; M3 report | M3 measurement | REPORT; scoped in-memory spike, not wire performance |\n| E22 | Monaco uses UTF-16 offsets, Python code points | `c2g/ui/controller.py:utf16_to_codepoint`, `codepoint_to_utf16` | M3/M4 tests | CODE/REPORT |\n| E23 | Bridge/controller own transaction and remote patch flow | `c2g/ui/bridge.py`, `c2g/ui/controller.py` | M4 report | CODE/REPORT |\n| E24 | Startup picker New/Resume activates a persisted replica | `c2g/ui/app.py:DesktopApplication` | M5 report, M7 native smoke | CODE/REPORT; source currently has `debug=True`, avoid claiming release-mode flag |\n| E25 | JSON schema validates document state | `c2g/storage/json_store.py:validate_state` | M5 JSON tests | CODE/REPORT |\n| E26 | Same-directory temp + fsync + replace protect save | `JsonDocumentStore.save` | M5/M7 persistence tests | CODE/REPORT; storage/hardware guarantees bounded |\n| E27 | Corrupt-primary backup rotation defect fixed | `JsonDocumentStore.save` primary validation | M7 P0 fault-injection regression | CODE/REPORT |\n| E28 | Owner locking and a bounded autosave writer | `c2g/storage/recovered_document.py`, other storage helpers | M5 lifecycle report | CODE/REPORT; exact platform-specific lock mechanism in M5 |\n| E29 | Cyclic resume cleans up ownership resources | CRDT full-state validation and `PersistedCrdt` construction path | M7 P1 subprocess regression | REPORT; no newer field results asserted |\n| E30 | Final Python suite 68 passed, 12.22 seconds | `tests/`, `docs/M7_FINAL_VALIDATION_REPORT.md` | M7 §3 | REPORT; no live rerun here |\n| E31 | 100 seeded three-replica histories of 30 generated edits each | CRDT randomized test, M7 §4 | M7 §4 | REPORT; not formal universal proof |\n| E32 | Real two-/three-peer TCP integration and restart convergence | M7 network tests, `NetworkManager` | M7 §§5–6 | REPORT; loopback rather than physical LAN |\n| E33 | GTK and frozen automated checks passed | `scripts/validate_desktop.py` | M7 §7 | REPORT; physical clipboard, file dialog PENDING |\n| E34 | 96 bundled Vite assets and Monaco workers | `scripts/build_desktop.py`, `c2g.spec`, `c2g/ui/resources.py` | M7 §14 | REPORT; full onedir folder required |\n| E35 | Local asset server binds loopback, P2P listener LAN | `c2g/ui/app.py`, `NetworkManager.start_listening` | M7 §12 | CODE/REPORT; pywebview Bottle loopback exists |\n| E36 | Production npm audit zero vulnerabilities at test time | `web/package.json`, `web/vite.config.js` | M7 §13 | REPORT; not full security guarantee |\n| E37 | DOMPurify 3.4.17 in inspected bundle | `web/package.json`, Vite resolver | M7 §13 | REPORT; verified shipped bundle at M7 |\n| E38 | G6 remained PARTIAL; no public release approved | `README.md`, M7 §§18–20 | M7 gate | REPORT; verify for any future release announcement |\n| E39 | Windows build/runtime not verified | `.github/workflows/tests.yml` | M7 §8 | PENDING; CI configuration alone is insufficient |\n| E40 | Docker execution not verified | `Dockerfile.tests` | M7 §9 | PENDING; denied access to daemon |\n| E41 | Two-machine physical LAN discovery not verified | `PeerDiscovery`, M7 §10 | M7 §10 | PENDING; loopback is not broadcast evidence |\n| E42 | No encryption/authentication in P2P transport | `c2g/network/manager.py` | M2/M7 security sections | CODE/REPORT; trusted-LAN-only |",
+          "appendix": true,
+          "timeline": false
+        },
+        {
+          "id": "source-inventory",
+          "title": "Source inventory",
+          "markdown": "The core references are relative to the [c2g repository](https://github.com/sultanshahdev/c2g): `README.md`, `c2g/network/{manager,discovery}.py`, `c2g/crdt/{document,types,message}.py`, `c2g/ui/{app,bridge,controller,resources}.py`, `c2g/storage/{json_store,recovered_document}.py`, `web/src/main.js`, `docs/M{1,2,3,4,5,6,7}_*.md`, `tests/`, and `scripts/validate_desktop.py`. Consult the repository's live tree for precise filenames and source lines before pinning links to a commit.",
+          "appendix": true,
+          "timeline": false
+        },
+        {
+          "id": "source-of-truth-and-conflict-resolution",
+          "title": "Source-of-truth and conflict resolution",
+          "markdown": "1. Latest inspected code describes **implementation**.\n2. Dated M7 report describes **observed tests and release status**.\n3. Earlier milestone reports describe **the development sequence**, even where final code later changed.\n4. Original P2PDocs archive identifies **inherited functionality**.\n5. Project-owner confirmations are **owner reports**, not independently observed manual tests.\n6. Hypothetical CRDT example text, teaching diagrams and UI placement are **illustrations**, not transcripts of instrumented network traffic.",
+          "appendix": true,
+          "timeline": false
+        },
+        {
+          "id": "further-verification-required-before-public-case-study-publication",
+          "title": "Further verification required before public case-study publication",
+          "markdown": "- Run physical two-machine TCP/UDP LAN smoke and retain screenshots/logs.\n- Exercise actual clipboard and native export dialog by hand.\n- Run Windows build and WebView2 runtime if that platform is to be claimed.\n- Run Docker tests only with authorized daemon access; do not mark as passed merely because Dockerfile exists.\n- Select a reviewed immutable Git commit for permalinks and record new test versions if code changes.\n- Capture original screenshots from current Linux artifact instead of creating fictional product evidence.",
+          "appendix": true,
+          "timeline": false
+        }
+      ]
+    },
+    {
+      "id": "media-and-editorial-notes",
+      "title": "Media and editorial notes",
+      "chapters": [
+        {
+          "id": "introduction-4",
+          "title": "Introduction",
+          "markdown": "> **Hero asset:** Capture a real c2g window with syntax-highlighted text and the Connections sidebar, ideally alongside a second real peer window. Do not substitute a mockup: the evidence is stronger when the screenshot shows a running build. Suggested caption: *Two desktop peers edit the same locally replicated document through direct TCP connections.* Only use that caption after recording the actual two-window scene.",
+          "appendix": true,
+          "timeline": false
+        }
+      ]
+    }
+  ],
+  "diagrams": [
+    {
+      "key": "2ec18a364f2d8ea5",
+      "number": 1,
+      "caption": "Figure 1 — The work modernized and corrected the existing codebase instead of claiming every inherited component was written from scratch.",
+      "source": "flowchart LR\n  subgraph Before[\"P2PDocs baseline\"]\n    Tk[Tkinter editor] --> OldCRDT[\"RGA-inspired CRDT with ordering defects\"]\n    Tk --> OldNet[\"Unversioned networking / incomplete joins\"]\n    Tk --> Pickle[\"Pickle persistence; startup reset\"]\n  end\n  subgraph After[\"c2g M7\"]\n    Monaco[Monaco + pywebview] --> App[Python controller]\n    App --> NewCRDT[\"Deterministic RGA-style CRDT\"]\n    App --> V2[\"Framed TCP v2 + UDP discovery\"]\n    App --> JSON[\"Validated JSON + atomic autosave\"]\n  end\n  Before ==>|\"Incremental modernization M0–M7\"| After",
+      "sourcePath": "projects/c2g/diagrams/01-2ec18a364f2d8ea5.mmd",
+      "src": "projects/c2g/diagrams/01-2ec18a364f2d8ea5.svg",
+      "width": 1772,
+      "height": 379,
+      "focusX": 0.07226120537613638
+    },
+    {
+      "key": "f7f490f3473d7dad",
+      "number": 2,
+      "caption": "Figure 2 — Milestones were ordered to resolve CRDT and protocol correctness before desktop polish and packaging.",
+      "source": "flowchart LR\n  M0[\"M0 · Baseline\"] --> M1[\"M1 · CRDT correctness\"] --> M2[\"M2 · P2P protocol\"]\n  M2 --> M3[\"M3 · Monaco feasibility\"] --> M4[\"M4 · Desktop integration\"]\n  M4 --> M5[\"M5 · JSON persistence\"] --> M6[\"M6 · Packaging / CI\"] --> M7[\"M7 · Validation\"]",
+      "sourcePath": "projects/c2g/diagrams/02-f7f490f3473d7dad.mmd",
+      "src": "projects/c2g/diagrams/02-f7f490f3473d7dad.svg",
+      "width": 2052,
+      "height": 69,
+      "focusX": 0.05079076815302144
+    },
+    {
+      "key": "a191c24daa85d816",
+      "number": 3,
+      "caption": "Figure 3 — A chain is sufficient for three-way propagation. Every box represents an independent replica and local storage; the dashed broadcasts are discovery, not document updates.",
+      "source": "flowchart LR\n  subgraph A[\"Alice · Desktop peer\"]\n    AUI[Monaco and pywebview] --> AC[Python controller] --> AR[CRDT replica]\n    AC <--> AN[TCP networking]; AC --> AS[(Local JSON)]\n  end\n  subgraph B[\"Bob · Desktop peer\"]\n    BUI[Monaco and pywebview] --> BC[Python controller] --> BR[CRDT replica]\n    BC <--> BN[TCP networking]; BC --> BS[(Local JSON)]\n  end\n  subgraph C[\"Charlie · Desktop peer\"]\n    CUI[Monaco and pywebview] --> CC[Python controller] --> CR[CRDT replica]\n    CC <--> CN[TCP networking]; CC --> CS[(Local JSON)]\n  end\n  AN <-->|\"Framed TCP: HELLO, snapshots, operations\"| BN\n  BN <-->|\"Framed TCP: operations\"| CN\n  AN -.->|\"UDP broadcast discovery on LAN\"| BN\n  BN -.->|\"UDP broadcast discovery on LAN\"| CN",
+      "sourcePath": "projects/c2g/diagrams/03-a191c24daa85d816.mmd",
+      "src": "projects/c2g/diagrams/03-a191c24daa85d816.svg",
+      "width": 2985,
+      "height": 386,
+      "focusX": 0.051470570268742806
+    },
+    {
+      "key": "beb988cf8cfda6a5",
+      "number": 4,
+      "caption": "Figure 4 — The authoritative document remains on the Python side; the editor displays that document and submits transactional edits.",
+      "source": "flowchart TD\n  User[User editing] --> Monaco[\"Monaco · web/src/main.js\"]\n  Monaco <-->|\"pywebview API + UI events\"| Bridge[\"DesktopBridge · c2g/ui/bridge.py\"]\n  Bridge --> App[\"DesktopApplication · c2g/ui/app.py\"]\n  App --> Controller[\"ApplicationController · c2g/ui/controller.py\"]\n  Controller <--> Crdt[\"CRDTDocument · c2g/crdt/document.py\"]\n  Controller <--> Network[\"NetworkManager · c2g/network/manager.py\"]\n  Controller <--> Discovery[\"PeerDiscovery · c2g/network/discovery.py\"]\n  Controller --> Persist[\"PersistedCrdt + autosave\"]\n  Persist --> Store[(\"JSON primary + backup\")]\n  Network <-->|\"TCP protocol v2\"| Remote[Remote peers]\n  Discovery <-.->|\"UDP 5001\"| Other[LAN announcements]",
+      "sourcePath": "projects/c2g/diagrams/04-beb988cf8cfda6a5.mmd",
+      "src": "projects/c2g/diagrams/04-beb988cf8cfda6a5.svg",
+      "width": 1110,
+      "height": 864,
+      "focusX": 0.4868026458465301
+    },
+    {
+      "key": "074e6de954b3766e",
+      "number": 5,
+      "caption": "Figure 5 — Discovery identifies a candidate endpoint; explicit user action starts the direct TCP handshake.",
+      "source": "sequenceDiagram\n  participant A as Alice discovery\n  participant B as Bob discovery\n  participant UI as Bob UI\n  participant NT as Bob TCP manager\n  participant AT as Alice TCP manager\n  A-->>B: UDP broadcast {peer_id, version, tcp_port}\n  B->>B: Validate and time-stamp announcement\n  B-->>UI: Offer discovered peer (no auto-connect)\n  UI->>NT: Explicit Connect to Alice IP:port\n  NT->>AT: TCP connect\n  NT->>AT: Framed HELLO\n  AT->>NT: Framed HELLO",
+      "sourcePath": "projects/c2g/diagrams/05-074e6de954b3766e.mmd",
+      "src": "projects/c2g/diagrams/05-074e6de954b3766e.svg",
+      "width": 1053,
+      "height": 597,
+      "focusX": 0.5
+    },
+    {
+      "key": "948a9ef9a50ec060",
+      "number": 6,
+      "caption": "Figure 6 — The four-byte prefix solves message-boundary recovery on top of TCP's byte stream; JSON carries the application envelope.",
+      "source": "flowchart LR\n  subgraph Wire[\"One TCP application frame\"]\n    L[\"4 bytes: unsigned big-endian payload length\"] --> P[\"N bytes: UTF-8 JSON object\"]\n  end\n  P --> Decode[\"FrameDecoder accumulates arbitrary recv chunks\"]\n  Decode --> Verify[\"Check 0 < N <= 12 MiB; decode JSON object\"]\n  Verify --> Events[HELLO / FULL_SYNC / OP / REJECT]",
+      "sourcePath": "projects/c2g/diagrams/06-948a9ef9a50ec060.mmd",
+      "src": "projects/c2g/diagrams/06-948a9ef9a50ec060.svg",
+      "width": 1619,
+      "height": 155,
+      "focusX": 0.10524562201873987
+    },
+    {
+      "key": "d66d6aca9d06f115",
+      "number": 7,
+      "caption": "Figure 7 — Capability and document validation precede accepted snapshot exchange; a mismatch yields rejection rather than an unsafe merge.",
+      "source": "sequenceDiagram\n  participant A as Alice outgoing TCP\n  participant B as Bob incoming TCP\n  A->>B: HELLO v2, peer UUID, document UUID, capabilities\n  B->>A: HELLO v2, peer UUID, document UUID, capabilities\n  A->>A: Validate version, capabilities, peer and document\n  B->>B: Validate version, capabilities, peer and document\n  alt compatible identity or explicit empty join\n    A->>B: FULL_SYNC snapshot\n    B->>A: FULL_SYNC snapshot\n    A->>A: Flush bounded pending operations\n    B->>B: Flush bounded pending operations\n  else incompatible / unrelated nonempty document\n    B-->>A: REJECT when possible; close connection\n  end",
+      "sourcePath": "projects/c2g/diagrams/07-d66d6aca9d06f115.mmd",
+      "src": "projects/c2g/diagrams/07-d66d6aca9d06f115.svg",
+      "width": 470,
+      "height": 989,
+      "focusX": 0.5
+    },
+    {
+      "key": "bf4272c8b89b6669",
+      "number": 8,
+      "caption": "Figure 8 — The practical TCP session lifecycle. Rejected and Closed are conceptual diagram outcomes, not claims that the implementation exposes distinct enum objects for them.",
+      "source": "stateDiagram-v2\n  [*] --> Connecting\n  Connecting --> Handshaking: TCP connected\n  Handshaking --> Rejected: Invalid HELLO / document mismatch\n  Handshaking --> Syncing: Valid HELLO\n  Syncing --> Ready: Snapshot sent; buffered operations flushed\n  Ready --> Closed: Disconnect / transport error\n  Rejected --> Closed\n  Closed --> [*]",
+      "sourcePath": "projects/c2g/diagrams/08-bf4272c8b89b6669.mmd",
+      "src": "projects/c2g/diagrams/08-bf4272c8b89b6669.svg",
+      "width": 902,
+      "height": 742,
+      "focusX": 0.2059126724953662
+    },
+    {
+      "key": "1bc14e9a151dc18c",
+      "number": 9,
+      "caption": "Figure 9 — A repeated logical operation is filtered by message ID, even if multiple network paths deliver it.",
+      "source": "flowchart LR\n  A[\"Alice CRDT\"] <-->|\"OP + stable message_id\"| B[\"Bob CRDT\"]\n  B <-->|\"OP + stable message_id\"| C[\"Charlie CRDT\"]\n  C <-->|\"OP + stable message_id\"| A\n  Id[\"Each receiver records seen IDs; skips repeated OPs\"] -.-> A\n  Id -.-> B\n  Id -.-> C",
+      "sourcePath": "projects/c2g/diagrams/09-1bc14e9a151dc18c.mmd",
+      "src": "projects/c2g/diagrams/09-1bc14e9a151dc18c.svg",
+      "width": 1469,
+      "height": 157,
+      "focusX": 0.3020895483381818
+    },
+    {
+      "key": "b1a3d98edd440877",
+      "number": 10,
+      "caption": "Figure 10 — Reconnect repeats bidirectional state exchange rather than copying a winner’s visible text.",
+      "source": "sequenceDiagram\n  participant A as Alice\n  participant B as Bob\n  A->>B: Connected and synchronized\n  Note over A,B: TCP connection lost\n  A->>A: Offline local insert / delete\n  B->>B: Offline local insert / delete\n  B->>A: Reconnect; framed HELLO\n  A->>B: FULL_SYNC with elements/tombstones/pending deletes\n  B->>A: FULL_SYNC with elements/tombstones/pending deletes\n  A->>A: Commutative compatible CRDT merge\n  B->>B: Commutative compatible CRDT merge\n  Note over A,B: Convergence under tested supported assumptions",
+      "sourcePath": "projects/c2g/diagrams/10-b1a3d98edd440877.mmd",
+      "src": "projects/c2g/diagrams/10-b1a3d98edd440877.svg",
+      "width": 462,
+      "height": 944,
+      "focusX": 0.5
+    },
+    {
+      "key": "21eb00ebaacb40cd",
+      "number": 11,
+      "caption": "Figure 11 — Both inserts survive. Their exact final ordering follows the implementation's deterministic ordering rules; the diagram intentionally does not invent an ID comparison outcome.",
+      "source": "flowchart TD\n  Start[\"Initial visible text: AB\"] --> A[\"Alice inserts X between A and B\"]\n  Start --> B[\"Bob inserts Y between A and B\"]\n  A --> AI[\"X: unique Alice Lamport ID; after A; before B\"]\n  B --> BI[\"Y: unique Bob Lamport ID; after A; before B\"]\n  AI --> Merge[\"Exchange immutable records\"]\n  BI --> Merge\n  Merge --> Order[\"Deterministic ancestry/right-anchor linearization\"]\n  Order --> End[\"Both replicas show same merged ordering; X and Y retained\"]",
+      "sourcePath": "projects/c2g/diagrams/11-21eb00ebaacb40cd.mmd",
+      "src": "projects/c2g/diagrams/11-21eb00ebaacb40cd.svg",
+      "width": 692,
+      "height": 587,
+      "focusX": 0.5022469779659557
+    },
+    {
+      "key": "63f4d9a0d773e0e8",
+      "number": 12,
+      "caption": "Figure 12 — A delayed insert is still deleted because the receiver saved the deletion intent by immutable element ID.",
+      "source": "sequenceDiagram\n  participant A as Alice\n  participant B as Bob\n  Note over A,B: Network messages may be reordered\n  A->>A: Insert character C with ID (alice,7)\n  A->>A: Delete C (tombstone)\n  A->>B: DELETE(alice,7) delivered first\n  B->>B: Save pending delete by element ID\n  A->>B: INSERT(alice,7) delivered later\n  B->>B: Apply insert then tombstone\n  Note over B: C remains structurally present but invisible",
+      "sourcePath": "projects/c2g/diagrams/12-63f4d9a0d773e0e8.mmd",
+      "src": "projects/c2g/diagrams/12-63f4d9a0d773e0e8.svg",
+      "width": 451,
+      "height": 802,
+      "focusX": 0.5
+    },
+    {
+      "key": "0a2916637fe08d91",
+      "number": 13,
+      "caption": "Figure 13 — One local edit becomes a CRDT mutation and an application-level network operation; Monaco is a view, not the replication authority.",
+      "source": "sequenceDiagram\n  participant M as Alice Monaco\n  participant Br as Alice bridge/controller\n  participant R as Alice CRDT\n  participant N as Alice TCP manager\n  participant BN as Bob TCP manager\n  participant BR as Bob CRDT/controller\n  participant BM as Bob Monaco\n  M->>Br: Local transaction (UTF-16 range, text, base_version)\n  Br->>Br: Validate version and convert UTF-16 offsets\n  Br->>R: Apply insertion/deletion under lock\n  R-->>Br: CRDT operation(s)\n  Br->>N: Broadcast framed OP with message ID\n  Br->>Br: Enqueue local JSON snapshot save\n  N->>BN: TCP length-prefixed OP\n  BN->>BN: Deduplicate message ID\n  BN->>BR: Apply remote CRDT operation\n  BR-->>BM: Incremental editor patch/event",
+      "sourcePath": "projects/c2g/diagrams/13-0a2916637fe08d91.mmd",
+      "src": "projects/c2g/diagrams/13-0a2916637fe08d91.svg",
+      "width": 1453,
+      "height": 805,
+      "focusX": 0.5
+    },
+    {
+      "key": "3775429ec5161f2d",
+      "number": 14,
+      "caption": "Figure 14 — The editor sends intent and receives acknowledgment; version validation prevents silent stale transaction application.",
+      "source": "sequenceDiagram\n  participant U as Monaco UI\n  participant JS as JS event queue\n  participant API as pywebview DesktopBridge\n  participant C as ApplicationController\n  participant D as CRDT\n  U->>JS: onDidChangeModelContent event\n  JS->>API: apply_local_transaction (UTF-16 offsets)\n  API->>C: Validate base_version and transaction\n  C->>D: Convert ranges; apply CRDT ops\n  D-->>C: New document state / remote messages\n  C-->>API: Accepted or rejected; version\n  API-->>JS: Bridge result\n  JS-->>U: Update status / process next transaction\n  Note over U,D: Remote patches avoid echoing themselves as local edits",
+      "sourcePath": "projects/c2g/diagrams/14-3775429ec5161f2d.mmd",
+      "src": "projects/c2g/diagrams/14-3775429ec5161f2d.svg",
+      "width": 1072,
+      "height": 692,
+      "focusX": 0.5
+    },
+    {
+      "key": "38d9a46ebb88171f",
+      "number": 15,
+      "caption": "Figure 15 — Different locks protect different invariants. The diagram describes ownership boundaries, not a literal single shared lock across all peer sessions.",
+      "source": "flowchart TD\n  GTK[\"GTK/WebKit UI thread\"] <-->|\"Bridge queue/events\"| Ctrl[\"Controller · RLock serializes CRDT mutations\"]\n  TCP1[\"Peer reader thread A\"] --> Ctrl\n  TCP2[\"Peer reader thread B\"] --> Ctrl\n  UDP[\"Discovery broadcast/listen workers\"] --> Ctrl\n  Ctrl --> CRDT[\"CRDTDocument · lock\"]\n  Ctrl --> Save[\"Autosave writer · latest snapshot\"]\n  Save --> Guard[\"Cross-process advisory ownership lock\"]\n  Guard --> Disk[(\"state.json / backup\")]\n  TCP1 --> SendLock[\"Per-PeerSession send lock\"]\n  TCP2 --> SendLock\n  Note[\"Peer registry lock protects session map; socket closure outside global lock\"] -.-> SendLock",
+      "sourcePath": "projects/c2g/diagrams/15-38d9a46ebb88171f.mmd",
+      "src": "projects/c2g/diagrams/15-38d9a46ebb88171f.svg",
+      "width": 1406,
+      "height": 668,
+      "focusX": 0.6852430232388536
+    },
+    {
+      "key": "9f649e3d160ed371",
+      "number": 16,
+      "caption": "Figure 16 — The important invariant is retaining a recoverable prior state when a new commit fails, not claiming protection from every possible hardware fault.",
+      "source": "flowchart TD\n  M[\"Validated CRDT snapshot\"] --> Temp[\"Write temporary JSON in document directory\"]\n  Temp --> Flush[\"flush() + fsync(file)\"]\n  Flush --> Valid{Existing primary validates?}\n  Valid -->|Yes| Rotate[\"Replace backup with previous valid primary\"]\n  Valid -->|No / missing| Keep[\"Keep previous valid backup\"]\n  Rotate --> Commit[\"os.replace(temp, primary)\"]\n  Keep --> Commit\n  Commit --> DSync[\"Best-effort fsync(directory)\"]\n  DSync --> Done[\"Completed save status\"]\n  Commit -.->|\"Failure before commit\"| Safe[\"Leave last valid backup available\"]\n  Read[\"Resume document\"] --> Primary{Primary valid?}\n  Primary -->|Yes| Load[Load validated state]\n  Primary -->|No| Backup{Backup valid?}\n  Backup -->|Yes| Load\n  Backup -->|No| Error[\"Reject resume; preserve corrupt files\"]",
+      "sourcePath": "projects/c2g/diagrams/16-9f649e3d160ed371.mmd",
+      "src": "projects/c2g/diagrams/16-9f649e3d160ed371.svg",
+      "width": 1243,
+      "height": 1110,
+      "focusX": 0.2708178740399361
+    },
+    {
+      "key": "e8d0f41250db5b02",
+      "number": 17,
+      "caption": "Figure 17 — The evidence moves from algorithmic and protocol checks to real sockets and native desktop automation. Human and cross-platform gates remain separate.",
+      "source": "flowchart TD\n  Static[\"Source and security checks: diff, npm audit, asset inspection\"] --> Unit[\"CRDT / framing / storage unit and regression tests\"]\n  Unit --> Seeds[\"100 seeded three-replica convergence histories\"]\n  Seeds --> Net[\"Two-/three-peer real loopback TCP integration\"]\n  Net --> Native[\"GTK and frozen X11/XTest synthetic interaction\"]\n  Native --> Human[\"Physical clipboard / export / LAN / Windows checks: pending\"]",
+      "sourcePath": "projects/c2g/diagrams/17-e8d0f41250db5b02.mmd",
+      "src": "projects/c2g/diagrams/17-e8d0f41250db5b02.svg",
+      "width": 345,
+      "height": 640,
+      "focusX": 0.49999997788581296
+    },
+    {
+      "key": "05d927be5e88bdb5",
+      "number": 18,
+      "caption": "Figure 18 — The local frontend asset server is loopback-only; P2P transport crosses onto the trusted LAN. The Internet is outside the approved threat model.",
+      "source": "flowchart TB\n  subgraph Host[\"One local desktop device\"]\n    Web[\"Monaco assets: loopback HTTP 127.0.0.1 only\"] --> Ctrl[Python controller]\n    Ctrl --> Store[(Local JSON documents outside web root)]\n    Ctrl --> Listener[\"P2P TCP listener on non-loopback interfaces\"]\n  end\n  subgraph LAN[\"Trusted LAN assumption\"]\n    Peer[\"Other peer; unauthenticated and unencrypted protocol\"]\n    UDP[\"UDP broadcast announcements\"]\n  end\n  Peer <-->|\"Framed TCP; peers may modify shared document\"| Listener\n  UDP -.-> Listener\n  Internet[\"Untrusted Internet · explicitly out of scope\"] -.- X[\"Do not expose P2P ports publicly\"]",
+      "sourcePath": "projects/c2g/diagrams/18-05d927be5e88bdb5.mmd",
+      "src": "projects/c2g/diagrams/18-05d927be5e88bdb5.svg",
+      "width": 1075,
+      "height": 735,
+      "focusX": 0.3358821567269259
+    },
+    {
+      "key": "714b1c9e57b36fb8",
+      "number": 19,
+      "caption": "Figure 19 — Offline editor assets become part of the native folder; a checksum and launch smoke are verification steps, not cloud deployment.",
+      "source": "flowchart LR\n  P[\"Python 3.12+ source\"] --> Pack[\"PyInstaller onedir / c2g.spec\"]\n  W[\"web/ source: Monaco, JS, CSS\"] --> Vite[\"npm ci + Vite production build\"]\n  Vite --> Assets[\"web/dist: HTML, JS, CSS, editor workers\"]\n  Assets --> Pack\n  Pack --> Dist[\"dist/c2g/ executable + _internal\"]\n  Dist --> Verify[\"Checksum, CLI from /tmp, bundled assets, native smoke\"]\n  Verify --> Gate[\"Linux release candidate · G6 PARTIAL\"]",
+      "sourcePath": "projects/c2g/diagrams/19-714b1c9e57b36fb8.mmd",
+      "src": "projects/c2g/diagrams/19-714b1c9e57b36fb8.svg",
+      "width": 2298,
+      "height": 180,
+      "focusX": 0.3734120633728718
+    }
+  ],
+  "sources": [
+    {
+      "filename": "C2G_ENGINEERING_CASE_STUDY.md",
+      "url": "projects/c2g/sources/C2G_ENGINEERING_CASE_STUDY.md",
+      "sha256": "a7fca4cc39995e6c1c5911259b6705315184d2b9c80c7e6c487c4191ade16d2f",
+      "original": "new-projects/c2g_portfolio_case_study/docs/portfolio/C2G_ENGINEERING_CASE_STUDY.md"
+    },
+    {
+      "filename": "C2G_ARCHITECTURE_DECISIONS.md",
+      "url": "projects/c2g/sources/C2G_ARCHITECTURE_DECISIONS.md",
+      "sha256": "fbf38a13a8188f3b45d4ab545f3e088bcf6183b45429330f647dc2ae78585722",
+      "original": "new-projects/c2g_portfolio_case_study/docs/portfolio/C2G_ARCHITECTURE_DECISIONS.md"
+    },
+    {
+      "filename": "C2G_TECHNICAL_EVIDENCE.md",
+      "url": "projects/c2g/sources/C2G_TECHNICAL_EVIDENCE.md",
+      "sha256": "eeb64a3207f18c5deeb440b8512da96adc9f54d59d7c1b83218c0970f2af4d2e",
+      "original": "new-projects/c2g_portfolio_case_study/docs/portfolio/C2G_TECHNICAL_EVIDENCE.md"
+    },
+    {
+      "filename": "C2G_PAGE_PRESENTATION.md",
+      "url": "projects/c2g/sources/C2G_PAGE_PRESENTATION.md",
+      "sha256": "1b22d853de23f6cd3ee21f5a1147a632880d3d85ec27526a90a2d9a784cff4db",
+      "original": "new-projects/c2g_portfolio_case_study/docs/portfolio/C2G_PAGE_PRESENTATION.md"
+    },
+    {
+      "filename": "DIAGRAM_INDEX.md",
+      "url": "projects/c2g/sources/DIAGRAM_INDEX.md",
+      "sha256": "bbdabe6b4d506515530e41e1abf239eb44f01340b83425d3532f7a2f7d194ffd",
+      "original": "new-projects/c2g_portfolio_case_study/docs/portfolio/DIAGRAM_INDEX.md"
+    },
+    {
+      "filename": "README_PORTFOLIO_PACKAGE.md",
+      "url": "projects/c2g/sources/README_PORTFOLIO_PACKAGE.md",
+      "sha256": "da82bb4ea4be6984b5063695eecca304bc0df6c09af3d96976886c5b6c9810a5",
+      "original": "new-projects/c2g_portfolio_case_study/README_PORTFOLIO_PACKAGE.md"
+    }
+  ]
+}

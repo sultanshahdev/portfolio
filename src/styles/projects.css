@@ -1,0 +1,117 @@
+/* Project surfaces extend the existing editorial tokens and reading column. */
+.project-list--showcase { display: grid; grid-template-columns: minmax(0, 1fr); }
+.project-entry--showcase { min-width: 0; padding-block: 1.75rem; border-bottom: 0; border-top: 1px solid hsl(var(--border)); }
+.project-entry--showcase:first-child { border-top: 0; }
+.project-index { display: flex; align-items: baseline; gap: 0.6rem; margin-bottom: 0.6rem; font-family: var(--font-sans); }
+.project-index .project-meta { margin: 0; font-size: 0.7rem; letter-spacing: 0.055em; text-transform: uppercase; }
+.project-number { font-size: 0.75rem; color: hsl(var(--accent)); font-variant-numeric: tabular-nums; }
+.project-entry .project-title { font-size: 1.65rem; line-height: 1.3; }
+.project-entry--showcase:first-child .project-title { font-size: 2.35rem; }
+.project-deck { font: 0.875rem/1.5 var(--font-sans); color: hsl(var(--primary)); margin-top: 0.25rem; }
+.project-entry .entry-summary { margin-top: 0.8rem; }
+.project-entry-grid { min-width: 0; }
+.project-entry--showcase .project-entry-grid { display: grid; grid-template-columns: minmax(0, 1fr) 17.5rem; gap: 2rem; align-items: center; }
+.project-entry--archive .project-entry-grid { display: grid; grid-template-columns: minmax(0, 1fr) 12rem; gap: 1.75rem; align-items: center; }
+.architecture-signature { margin: 0.75rem 0 1rem; min-width: 0; color: hsl(var(--primary)); }
+.architecture-signature svg { width: 100%; height: auto; display: block; }
+.architecture-signature text { fill: hsl(var(--primary)); font: 12px var(--font-sans); }
+.signature-line { stroke: hsl(var(--muted-foreground)); stroke-width: 1; }
+.signature-node { stroke: hsl(var(--primary) / 0.6); fill: hsl(var(--background)); }
+.signature-gate { stroke: hsl(var(--accent)); }
+.signature-dot { fill: hsl(var(--accent)); }
+.signature-detail { stroke: hsl(var(--accent)); }
+.architecture-signature figcaption { font-size: 0.75rem; text-align: center; text-wrap: balance; }
+.project-distinction { font: 600 0.8125rem/1.5 var(--font-sans); color: hsl(var(--primary)); margin-top: 1rem; }
+.project-evidence, .project-status { font: 0.8125rem/1.6 var(--font-sans); color: hsl(var(--muted-foreground)); margin-top: 0.3rem; }
+.project-entry .entry-links { margin-top: 0.8rem; }
+.project-entry--archive { padding-block: 2rem; }
+.project-entry--archive .project-title { font-size: 1.8rem; }
+.project-entry--archive .project-distinction { margin-top: 0.8rem; }
+.case-study { min-width: 0; }
+@media (max-width: 767px) {
+  .project-entry--showcase .project-entry-grid { display: block; }
+  .project-entry--showcase .architecture-signature { max-width: 18rem; margin: 1rem auto; }
+}
+@media (max-width: 639px) {
+  .project-entry--showcase { padding-block: 1.5rem; }
+  .project-entry--archive .project-entry-grid { display: block; }
+  .project-entry .project-title { font-size: 1.7rem; }
+  .architecture-signature { max-width: 18rem; margin: 1rem auto; }
+}
+
+/* Long-form engineering publications. Scoped to project pages so writing stays intact. */
+.case-study:focus, .case-study [tabindex="-1"]:focus { outline: none; }
+.case-study .detail-heading h1 { font-size: clamp(2.2rem, 5vw, 3rem); }
+.case-study .detail-subtitle { max-width: 35rem; font-size: 1.2rem; line-height: 1.6; }
+.case-study-role { font: 0.875rem/1.6 var(--font-sans); color: hsl(var(--muted-foreground)); margin-top: 1rem; }
+.project-qualification { margin-top: 1.5rem; margin-bottom: 0; }
+.case-study-glance h2 { margin-bottom: 1rem; }
+.case-study-glance dl { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem 2rem; margin: 0; font: 0.9375rem/1.6 var(--font-sans); }
+.case-study-glance dt { font-size: 0.75rem; font-weight: 600; color: hsl(var(--accent)); letter-spacing: 0.06em; text-transform: uppercase; }
+.case-study-glance dd { margin: 0.3rem 0 0; }
+.case-study-toc { margin-block: 2rem 3rem; padding-block: 1rem; border-block: 1px solid hsl(var(--border)); font-family: var(--font-sans); }
+.case-study-toc summary { cursor: pointer; font-weight: 600; color: hsl(var(--primary)); padding-block: 0.3rem; }
+.toc-count { font-size: 0.8rem; font-weight: 400; color: hsl(var(--muted-foreground)); margin-left: 1rem; }
+.case-study-toc ol { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem 1.75rem; list-style: none; margin: 1rem 0 0; padding: 0; }
+.case-study-toc a { display: flex; gap: 0.65rem; align-items: baseline; padding-block: 0.25rem; font-size: 0.875rem; line-height: 1.5; }
+.toc-number { color: hsl(var(--muted-foreground)); font-size: 0.7rem; font-variant-numeric: tabular-nums; min-width: 1.2rem; }
+.case-study-toc a[aria-current="location"] { color: hsl(var(--accent)); text-decoration: underline; text-underline-offset: 0.2em; }
+.case-study-content { font-size: 1rem; line-height: 1.85; }
+.case-study-content .case-study-chapter { margin-top: 3.25rem; min-width: 0; }
+.case-study-content h2 { font-size: 1.45rem; line-height: 1.5; margin-block: 0 1.3rem; }
+.case-study-content h3 { font-size: 1.075rem; margin-block: 2rem 1rem; }
+.case-study-content h4 { color: hsl(var(--primary)); margin-block: 1.5rem 0.75rem; }
+.case-study-content p { margin-block: 1rem; }
+.case-study-content a { color: hsl(var(--accent)); text-decoration: underline; text-decoration-color: hsl(var(--accent) / 0.3); }
+.case-study-content a:hover { text-decoration-color: currentColor; }
+.case-study-content :not(pre) > code { padding: 0.12em 0.3em; background: hsl(var(--secondary) / 0.6); overflow-wrap: anywhere; }
+.case-study-content blockquote { border-left: 2px solid hsl(var(--accent) / 0.55); padding: 0.1rem 0 0.1rem 1.1rem; margin: 1.5rem 0; font: 0.9375rem/1.75 var(--font-sans); color: hsl(var(--muted-foreground)); }
+.case-study-content blockquote > p { margin-block: 0.5rem; }
+.case-study-content hr { border: 0; border-top: 1px solid hsl(var(--border)); margin-block: 2rem; }
+.case-study-content .code-block { margin-block: 1.75rem; }
+.case-study-content .code-block pre { max-width: 100%; font-size: 0.8125rem; }
+.technical-table { width: 100%; overflow-x: auto; margin-block: 1.5rem; border-block: 1px solid hsl(var(--border)); }
+.technical-table table { border-collapse: collapse; width: 100%; min-width: 34rem; font: 0.875rem/1.65 var(--font-sans); }
+.technical-table th, .technical-table td { text-align: left; vertical-align: top; padding: 0.85rem 0.75rem; border-bottom: 1px solid hsl(var(--border) / 0.65); min-width: 7.5rem; overflow-wrap: anywhere; }
+.technical-table th { font-weight: 600; color: hsl(var(--primary)); background: hsl(var(--card)); }
+.technical-table tr:last-child td { border-bottom: 0; }
+.technical-diagram { margin-block: 2rem; background: hsl(var(--card) / 0.6); border: 1px solid hsl(var(--border)); padding: 1rem; min-width: 0; }
+.diagram-label { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: space-between; font: 0.7rem var(--font-sans); color: hsl(var(--muted-foreground)); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 1rem; }
+.diagram-scroll { max-width: 100%; overflow-x: auto; padding-block: 0.5rem 1rem; }
+.diagram-size-controls { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 0.75rem; font: 0.75rem/1.5 var(--font-sans); color: hsl(var(--muted-foreground)); }
+.diagram-size-controls button { border: 1px solid hsl(var(--border)); border-radius: 2px; padding: 0.3rem 0.6rem; background: hsl(var(--background)); color: hsl(var(--accent)); font: inherit; }
+.diagram-size-controls button[aria-pressed="true"] { border-color: hsl(var(--accent)); }
+.case-study-content .diagram-scroll img { max-width: none; height: auto; border: 0; margin-inline: auto; }
+.technical-diagram figcaption { color: hsl(var(--primary)); font-size: 0.875rem; }
+.diagram-actions { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; margin-top: 0.75rem; font: 0.8125rem/1.5 var(--font-sans); }
+.diagram-source { font: 0.8125rem/1.7 var(--font-sans); margin-top: 0.8rem; color: hsl(var(--muted-foreground)); }
+.diagram-source summary { cursor: pointer; padding-block: 0.3rem; }
+.diagram-source pre { margin: 0.6rem 0 0; max-width: 100%; overflow-x: auto; padding: 0.8rem; background: hsl(var(--secondary)); color: hsl(var(--foreground)); }
+.diagram-fallback { font-family: var(--font-sans); }
+.case-study-content .engineering-timeline { list-style: none; padding: 0; margin-block: 2rem; }
+.engineering-timeline > li { border-left: 1px solid hsl(var(--border)); margin: 0 0 0 0.35rem; padding: 0 0 1.75rem 1.5rem; position: relative; }
+.engineering-timeline > li::before { content: ''; position: absolute; left: -4px; top: 0.5rem; width: 7px; height: 7px; background: hsl(var(--accent)); border-radius: 50%; }
+.engineering-timeline > li:last-child { padding-bottom: 0; }
+.milestone-name { font: 600 1rem/1.6 var(--font-sans); color: hsl(var(--primary)); }
+.engineering-timeline dl { font: 0.875rem/1.7 var(--font-sans); margin-block: 0.65rem 0; }
+.engineering-timeline dl > div + div { margin-top: 0.65rem; }
+.engineering-timeline dt { font-size: 0.75rem; color: hsl(var(--muted-foreground)); }
+.engineering-timeline dd { margin: 0; }
+.case-study-appendix { margin-top: 2rem; border-top: 1px solid hsl(var(--border)); padding-top: 1.2rem; }
+.case-study-appendix > summary { cursor: pointer; font: 600 1.1rem/1.6 var(--font-serif); color: hsl(var(--primary)); }
+.case-study-appendix .case-study-chapter { margin-top: 2rem; }
+.publication-sources > p { font: 0.9375rem/1.75 var(--font-sans); color: hsl(var(--muted-foreground)); }
+.publication-sources .source-download-label { margin-top: 1.5rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.07em; }
+.publication-sources .source-files a { text-decoration: underline; text-decoration-color: hsl(var(--border)); }
+.case-study-end { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem; }
+.publication-loading { font-family: var(--font-sans); color: hsl(var(--muted-foreground)); }
+@media (max-width: 639px) {
+  .case-study-glance dl { grid-template-columns: 1fr; gap: 1rem; }
+  .case-study-toc ol { grid-template-columns: 1fr; }
+  .case-study-toc a { padding-block: 0.5rem; }
+  .toc-count { display: inline-block; margin-left: 0.5rem; }
+  .case-study-content { font-size: 0.9375rem; }
+  .case-study-content h2 { font-size: 1.3rem; }
+  .technical-diagram { padding: 0.75rem; }
+  .case-study-content .case-study-chapter { margin-top: 2.5rem; }
+}

@@ -1,0 +1,19 @@
+sequenceDiagram
+    participant B as Visitor browser
+    participant API as GitHub API
+    participant RAW as GitHub raw content
+    participant WK as Embedding worker
+    B->>API: Get repository metadata
+    API-->>B: Default branch
+    B->>API: Resolve branch commit and tree
+    API-->>B: Commit SHA + file list
+    loop Eligible files under budget
+        B->>RAW: Fetch file at commit SHA
+        RAW-->>B: Bounded source text
+    end
+    B->>B: Exact search / source / map
+    opt Semantic search selected
+        B->>WK: Embed overlapping code chunks and question
+        WK-->>B: Normalized vectors or failure
+        B->>B: Rank vector similarities
+    end

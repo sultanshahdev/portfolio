@@ -1,0 +1,10 @@
+flowchart TD
+   UT[Deterministic unit tests] --> CI[GitHub Actions validation]
+   IT[Backend and API tests] --> CI
+   ST[Source-evidence and adapter tests] --> CI
+   BS[Playwright smoke tests] --> CI
+   CI --> MERGE{Checks pass?}
+   MERGE -- Yes --> PROD[Merge and deploy]
+   MERGE -- No --> FIX[Repair regression and rerun]
+   FIX --> CI
+   PROD --> MAN[Live production checks]

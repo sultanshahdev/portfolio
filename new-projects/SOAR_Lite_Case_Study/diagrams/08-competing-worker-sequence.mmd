@@ -1,0 +1,17 @@
+sequenceDiagram
+  participant A as Worker A
+  participant D as PostgreSQL
+  participant B as Worker B
+  A->>D: SELECT FOR UPDATE SKIP LOCKED
+  Note over D: Claim row is locked
+  B->>D: Try to claim available job
+  D-->>B: Skip locked row / no claim
+  A->>D: Commit running + lease token A
+  B->>D: Try again
+  D-->>B: Active lease excludes row
+  Note over A: If A crashes and lease expires...
+  B->>D: Claim expired running row
+  D-->>B: New lease token B
+  A->>D: Late completion with old token A
+  D-->>A: No completion accepted
+  B->>D: Complete with current token B

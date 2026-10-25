@@ -11,8 +11,8 @@ export default function ProjectsPage() {
   const filtered = projects.filter((project) => category === 'All' || project.category === category);
   return (
     <>
-      <PageMeta title="Projects" description="Applications, tools, and learning projects by Sultan Shah, with source-based engineering case studies." />
-      <PageHeading title="Projects" description="A selection of applications, tools, and experiments. Notes on what they do, how they are structured, and what remains to improve." />
+      <PageMeta title="Projects" description="Four engineering case studies by Sultan Shah: replicated editing, database internals, security workflows, and local source intelligence." />
+      <PageHeading title="Projects" description="Four engineering studies. From replicated documents to source intelligence: the problems, the systems built to address them, and the evidence behind each decision." />
       <CategoryFilter categories={categories} selected={category} onChange={setCategory} />
       <p className="result-count" role="status">{filtered.length} {filtered.length === 1 ? 'project' : 'projects'}{category !== 'All' && ` in ${category}`}</p>
       <ProjectList projects={filtered} />

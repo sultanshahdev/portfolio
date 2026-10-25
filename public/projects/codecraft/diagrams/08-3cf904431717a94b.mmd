@@ -1,0 +1,12 @@
+flowchart TD
+  A[Repository root] --> B[Discover eligible files]
+  B --> C{Supported extension and safe path?}
+  C -- No --> SKIP[Exclude]
+  C -- Yes --> D{Within file count and size limits?}
+  D -- No --> W[Skip + coverage warning]
+  D -- Yes --> E[Bounded read without following symlinks]
+  E --> F{Within aggregate byte budget?}
+  F -- No --> W
+  F -- Yes --> G[Store source with path and line context]
+  G --> H[Segment / parse / inspect]
+  W --> PART[Report partial coverage]

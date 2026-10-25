@@ -1,0 +1,11 @@
+sequenceDiagram
+  participant A as Alice
+  participant B as Bob
+  Note over A,B: Network messages may be reordered
+  A->>A: Insert character C with ID (alice,7)
+  A->>A: Delete C (tombstone)
+  A->>B: DELETE(alice,7) delivered first
+  B->>B: Save pending delete by element ID
+  A->>B: INSERT(alice,7) delivered later
+  B->>B: Apply insert then tombstone
+  Note over B: C remains structurally present but invisible

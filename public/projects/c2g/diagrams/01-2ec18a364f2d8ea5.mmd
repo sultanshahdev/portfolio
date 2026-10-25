@@ -1,0 +1,13 @@
+flowchart LR
+  subgraph Before["P2PDocs baseline"]
+    Tk[Tkinter editor] --> OldCRDT["RGA-inspired CRDT with ordering defects"]
+    Tk --> OldNet["Unversioned networking / incomplete joins"]
+    Tk --> Pickle["Pickle persistence; startup reset"]
+  end
+  subgraph After["c2g M7"]
+    Monaco[Monaco + pywebview] --> App[Python controller]
+    App --> NewCRDT["Deterministic RGA-style CRDT"]
+    App --> V2["Framed TCP v2 + UDP discovery"]
+    App --> JSON["Validated JSON + atomic autosave"]
+  end
+  Before ==>|"Incremental modernization M0–M7"| After

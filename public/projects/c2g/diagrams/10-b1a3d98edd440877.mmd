@@ -1,0 +1,13 @@
+sequenceDiagram
+  participant A as Alice
+  participant B as Bob
+  A->>B: Connected and synchronized
+  Note over A,B: TCP connection lost
+  A->>A: Offline local insert / delete
+  B->>B: Offline local insert / delete
+  B->>A: Reconnect; framed HELLO
+  A->>B: FULL_SYNC with elements/tombstones/pending deletes
+  B->>A: FULL_SYNC with elements/tombstones/pending deletes
+  A->>A: Commutative compatible CRDT merge
+  B->>B: Commutative compatible CRDT merge
+  Note over A,B: Convergence under tested supported assumptions

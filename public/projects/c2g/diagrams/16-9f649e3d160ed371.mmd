@@ -1,0 +1,16 @@
+flowchart TD
+  M["Validated CRDT snapshot"] --> Temp["Write temporary JSON in document directory"]
+  Temp --> Flush["flush() + fsync(file)"]
+  Flush --> Valid{Existing primary validates?}
+  Valid -->|Yes| Rotate["Replace backup with previous valid primary"]
+  Valid -->|No / missing| Keep["Keep previous valid backup"]
+  Rotate --> Commit["os.replace(temp, primary)"]
+  Keep --> Commit
+  Commit --> DSync["Best-effort fsync(directory)"]
+  DSync --> Done["Completed save status"]
+  Commit -.->|"Failure before commit"| Safe["Leave last valid backup available"]
+  Read["Resume document"] --> Primary{Primary valid?}
+  Primary -->|Yes| Load[Load validated state]
+  Primary -->|No| Backup{Backup valid?}
+  Backup -->|Yes| Load
+  Backup -->|No| Error["Reject resume; preserve corrupt files"]

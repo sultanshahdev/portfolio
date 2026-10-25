@@ -1,0 +1,12 @@
+flowchart TD
+  User[User editing] --> Monaco["Monaco · web/src/main.js"]
+  Monaco <-->|"pywebview API + UI events"| Bridge["DesktopBridge · c2g/ui/bridge.py"]
+  Bridge --> App["DesktopApplication · c2g/ui/app.py"]
+  App --> Controller["ApplicationController · c2g/ui/controller.py"]
+  Controller <--> Crdt["CRDTDocument · c2g/crdt/document.py"]
+  Controller <--> Network["NetworkManager · c2g/network/manager.py"]
+  Controller <--> Discovery["PeerDiscovery · c2g/network/discovery.py"]
+  Controller --> Persist["PersistedCrdt + autosave"]
+  Persist --> Store[("JSON primary + backup")]
+  Network <-->|"TCP protocol v2"| Remote[Remote peers]
+  Discovery <-.->|"UDP 5001"| Other[LAN announcements]

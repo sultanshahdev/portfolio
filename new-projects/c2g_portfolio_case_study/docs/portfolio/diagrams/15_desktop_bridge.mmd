@@ -1,0 +1,15 @@
+sequenceDiagram
+  participant U as Monaco UI
+  participant JS as JS event queue
+  participant API as pywebview DesktopBridge
+  participant C as ApplicationController
+  participant D as CRDT
+  U->>JS: onDidChangeModelContent event
+  JS->>API: apply_local_transaction (UTF-16 offsets)
+  API->>C: Validate base_version and transaction
+  C->>D: Convert ranges; apply CRDT ops
+  D-->>C: New document state / remote messages
+  C-->>API: Accepted or rejected; version
+  API-->>JS: Bridge result
+  JS-->>U: Update status / process next transaction
+  Note over U,D: Remote patches avoid echoing themselves as local edits

@@ -1,0 +1,15 @@
+sequenceDiagram
+    participant U as Local UI
+    participant A as Node API
+    participant G as GitHub acquirer
+    participant S as Source scope
+    U->>A: POST /api/repositories/prepare
+    alt Local path
+        A->>S: Validate and inspect directory
+    else Public GitHub URL
+        A->>G: Stage safe shallow checkout
+        G-->>A: Verified revision + checkout path
+        A->>S: Build bounded source scope
+    end
+    S-->>A: File counts + coverage warnings
+    A-->>U: Prepared repository ID and status

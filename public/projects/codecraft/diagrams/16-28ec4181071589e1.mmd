@@ -1,0 +1,13 @@
+flowchart TB
+  subgraph Hosted[Static public deployment]
+    CF[Cloudflare Pages: React / Vite files]
+    BR[Visitor browser: CodeCraft browser engine]
+    CF --> BR
+  end
+  GH[Public GitHub repository + pinned raw files] --> BR
+  BR --> W[Browser Web Worker / model inference]
+  subgraph Local[User's own machine]
+    UI[Local React UI or CLI] --> SERVER[127.0.0.1 Node service]
+    SERVER --> FS[Local repository files]
+    SERVER --> CACHE[Local source embeddings + caches]
+  end

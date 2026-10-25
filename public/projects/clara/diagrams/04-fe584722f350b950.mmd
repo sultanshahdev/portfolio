@@ -1,0 +1,16 @@
+sequenceDiagram
+    participant A as Client A
+    participant B as Client B
+    participant M as Store mutex
+    participant S as Shared counter
+    A->>M: INCR counter, acquire lock
+    activate M
+    A->>S: Read 10, validate, write 11
+    B->>M: INCR counter, wait
+    M-->>A: Unlock, return 11
+    deactivate M
+    B->>M: Acquire lock
+    activate M
+    B->>S: Read 11, validate, write 12
+    M-->>B: Unlock, return 12
+    deactivate M

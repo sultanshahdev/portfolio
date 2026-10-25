@@ -1,0 +1,9 @@
+stateDiagram-v2
+  [*] --> Connecting
+  Connecting --> Handshaking: TCP connected
+  Handshaking --> Rejected: Invalid HELLO / document mismatch
+  Handshaking --> Syncing: Valid HELLO
+  Syncing --> Ready: Snapshot sent; buffered operations flushed
+  Ready --> Closed: Disconnect / transport error
+  Rejected --> Closed
+  Closed --> [*]

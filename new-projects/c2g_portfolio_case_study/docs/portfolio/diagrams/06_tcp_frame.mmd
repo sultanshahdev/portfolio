@@ -1,0 +1,7 @@
+flowchart LR
+  subgraph Wire["One TCP application frame"]
+    L["4 bytes: unsigned big-endian payload length"] --> P["N bytes: UTF-8 JSON object"]
+  end
+  P --> Decode["FrameDecoder accumulates arbitrary recv chunks"]
+  Decode --> Verify["Check 0 < N <= 12 MiB; decode JSON object"]
+  Verify --> Events[HELLO / FULL_SYNC / OP / REJECT]

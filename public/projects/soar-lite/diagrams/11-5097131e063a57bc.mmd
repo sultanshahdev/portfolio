@@ -1,0 +1,19 @@
+flowchart LR
+  subgraph EXT[External trust zone]
+    S[Webhook client]
+    P[AbuseIPDB v2]
+  end
+  subgraph HOST[Developer machine / Docker Compose]
+    U[Browser analyst]
+    V[Vite proxy]
+    A[FastAPI auth + validation]
+    W[Python worker]
+    D[(Internal PostgreSQL)]
+    L[Simulated lab adapter]
+    U --> V --> A
+    A <--> D
+    W <--> D
+    W --> L --> D
+  end
+  S -->|Bearer credential| A
+  W -->|HTTPS with provider key| P

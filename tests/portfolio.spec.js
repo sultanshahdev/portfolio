@@ -47,16 +47,16 @@ test('filters work with keyboard and reset to all projects', async ({ page }) =>
 
 test('navigation, case studies, history, and focus work', async ({ page }, testInfo) => {
   await page.goto('./#/');
-  await page.getByRole('link', { name: 'Read case study: EDITH — AI consultation application' }).click();
-  await expect(page).toHaveURL(/\/projects\/edith$/);
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('EDITH');
+  await page.getByRole('link', { name: 'Read case study: c2g — Code 2gether — Decentralized Collaborative Editor' }).click();
+  await expect(page).toHaveURL(/\/projects\/c2g$/);
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('c2g');
   await expect(page.locator('main')).toBeFocused();
   await page.reload();
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('EDITH');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('c2g');
   await page.getByRole('link', { name: '← All projects', exact: true }).click();
   await expect(page).toHaveURL(/\/projects$/);
   await page.goBack();
-  await expect(page).toHaveURL(/\/projects\/edith$/);
+  await expect(page).toHaveURL(/\/projects\/c2g$/);
   if (testInfo.project.name === 'mobile') {
     const menu = page.getByRole('button', { name: 'Menu' });
     await menu.click();
@@ -105,7 +105,7 @@ test('404 recovers through a working home link', async ({ page }) => {
   await page.goto('./#/projects/missing');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('This page isn’t here.');
   await page.getByRole('link', { name: 'Back to home', exact: true }).click();
-  await expect(page).toHaveURL(/\/sultandev\/#\/$/);
+  await expect(page).toHaveURL(/\/portfolio\/#\/$/);
   await expect(page.getByRole('heading', { name: 'Selected work' })).toBeVisible();
 });
 
@@ -113,7 +113,7 @@ test('404 recovers through a working home link', async ({ page }) => {
 test('production portrait and skip link preserve the current route', async ({ page }) => {
   await page.goto('./#/');
   const portrait = page.locator('.biography-portrait');
-  await expect(portrait).toHaveAttribute('src', '/sultandev/images/profile-img.png');
+  await expect(portrait).toHaveAttribute('src', '/portfolio/images/profile-img.png');
   await expect.poll(() => portrait.evaluate((image) => image.naturalWidth)).toBeGreaterThan(0);
   await page.goto('./#/projects');
   // Browser initial focus after programmatic navigation differs across engines.

@@ -1,0 +1,11 @@
+flowchart TB
+    A[Socket accepted] --> B{Admission slot free?}
+    B -->|No| R[Send bounded error and close]
+    B -->|Yes| C[Register and start handler]
+    C --> D[Read one RESP2 request with deadline]
+    D -->|Valid| E[Dispatch, encode, flush reply]
+    E --> D
+    D -->|EOF, timeout, protocol failure| F[Close and unregister]
+    E -->|Write failure| F
+    C -.->|Server shutdown| F
+    F --> G[Release admission slot and finish handler]

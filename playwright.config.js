@@ -6,7 +6,7 @@ export default defineConfig({
   workers: 2,
   reporter: 'list',
   use: {
-    baseURL: 'http://127.0.0.1:4173/sultandev/',
+    baseURL: 'http://127.0.0.1:4173/portfolio/',
     headless: true,
     launchOptions: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH
       ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH }
@@ -20,7 +20,7 @@ export default defineConfig({
   ],
   webServer: {
     command: 'npm run preview -- --port 4173 --strictPort',
-    url: 'http://127.0.0.1:4173/sultandev/',
+    url: 'http://127.0.0.1:4173/portfolio/',
     reuseExistingServer: !process.env.CI,
   },
 });

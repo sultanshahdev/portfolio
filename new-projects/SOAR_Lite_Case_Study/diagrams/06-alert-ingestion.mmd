@@ -1,0 +1,13 @@
+flowchart TD
+  A[POST generic webhook] --> B{Bearer auth valid?}
+  B -- No --> X[HTTP 401]
+  B -- Yes --> C{JSON / schema / declared size valid?}
+  C -- No --> Y[Validation / content error]
+  C -- Yes --> D{Existing source + event ID?}
+  D -- Yes --> E[Return existing IDs / HTTP 200]
+  D -- No --> F[Insert incident + alert in transaction]
+  F --> G{Suspicious login with global IP?}
+  G -- Yes --> H[Insert queued investigation]
+  G -- No --> I[No investigation queued]
+  H --> J[Commit / HTTP 201]
+  I --> J

@@ -1,0 +1,9 @@
+flowchart LR
+    A[Behavior question] --> B[Guess exact identifiers]
+    B --> C[Search and open files]
+    C --> D{Found implementation?}
+    D -- No --> B
+    D -- Maybe --> E[Inspect source and verify]
+    F[CodeCraft alternative] --> G[Natural-language retrieval]
+    G --> H[Ranked source candidates]
+    H --> E

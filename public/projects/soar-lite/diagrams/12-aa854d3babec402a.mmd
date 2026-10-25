@@ -1,0 +1,9 @@
+flowchart TD
+  B[Browser] -->|localhost:5173| F[Frontend / Vite]
+  F -->|/api proxy| A[FastAPI backend :8000 internal]
+  E[Demo alert helper] -->|localhost:8000| A
+  A <-->|SQLAlchemy| D[(PostgreSQL :5432 internal)]
+  W[Python worker] <-->|SQLAlchemy| D
+  W -->|HTTPS| P[AbuseIPDB]
+  A -. Startup requires DB healthy .-> D
+  F -. Startup requires backend healthy .-> A

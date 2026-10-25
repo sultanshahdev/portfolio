@@ -1,0 +1,12 @@
+flowchart TD
+  GTK["GTK/WebKit UI thread"] <-->|"Bridge queue/events"| Ctrl["Controller · RLock serializes CRDT mutations"]
+  TCP1["Peer reader thread A"] --> Ctrl
+  TCP2["Peer reader thread B"] --> Ctrl
+  UDP["Discovery broadcast/listen workers"] --> Ctrl
+  Ctrl --> CRDT["CRDTDocument · lock"]
+  Ctrl --> Save["Autosave writer · latest snapshot"]
+  Save --> Guard["Cross-process advisory ownership lock"]
+  Guard --> Disk[("state.json / backup")]
+  TCP1 --> SendLock["Per-PeerSession send lock"]
+  TCP2 --> SendLock
+  Note["Peer registry lock protects session map; socket closure outside global lock"] -.-> SendLock

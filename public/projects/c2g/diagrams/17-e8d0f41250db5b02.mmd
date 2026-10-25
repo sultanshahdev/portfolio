@@ -1,0 +1,6 @@
+flowchart TD
+  Static["Source and security checks: diff, npm audit, asset inspection"] --> Unit["CRDT / framing / storage unit and regression tests"]
+  Unit --> Seeds["100 seeded three-replica convergence histories"]
+  Seeds --> Net["Two-/three-peer real loopback TCP integration"]
+  Net --> Native["GTK and frozen X11/XTest synthetic interaction"]
+  Native --> Human["Physical clipboard / export / LAN / Windows checks: pending"]

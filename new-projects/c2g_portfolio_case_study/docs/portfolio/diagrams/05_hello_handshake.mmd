@@ -1,0 +1,15 @@
+sequenceDiagram
+  participant A as Alice outgoing TCP
+  participant B as Bob incoming TCP
+  A->>B: HELLO v2, peer UUID, document UUID, capabilities
+  B->>A: HELLO v2, peer UUID, document UUID, capabilities
+  A->>A: Validate version, capabilities, peer and document
+  B->>B: Validate version, capabilities, peer and document
+  alt compatible identity or explicit empty join
+    A->>B: FULL_SYNC snapshot
+    B->>A: FULL_SYNC snapshot
+    A->>A: Flush bounded pending operations
+    B->>B: Flush bounded pending operations
+  else incompatible / unrelated nonempty document
+    B-->>A: REJECT when possible; close connection
+  end

@@ -101,6 +101,7 @@
   .container { padding-inline: 1rem; }
   .header-inner { flex-wrap: wrap; padding-block: 1.25rem; gap: 0; }
   .identity-name { font-size: 1.25rem; }
+  .identity { max-width: 100%; min-width: 0; }
   .identity-title { font-size: 0.8125rem; }
   .desktop-navigation { display: none; }
   .mobile-navigation { display: block; }

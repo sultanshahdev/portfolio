@@ -1,0 +1,8 @@
+flowchart LR
+  S[External alert sender] -->|Bearer webhook secret| A[FastAPI API]
+  U[Analyst browser] --> V[Vite same-origin /api proxy] -->|X-API-Key| A
+  A <-->|Transactional records| DB[(PostgreSQL)]
+  W[Python background worker] <-->|Claims / evidence / response state| DB
+  W -->|HTTPS IP reputation check| I[AbuseIPDB API v2]
+  W --> L[LabResponseAdapter]
+  L -->|Simulated entry only| DB

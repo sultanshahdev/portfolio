@@ -1,0 +1,17 @@
+sequenceDiagram
+  participant Dev as Developer
+  participant UI as Workspace
+  participant API as Node API
+  participant Search as Hybrid retriever
+  participant Model as Local MiniLM
+  Dev->>UI: Ask where behavior is implemented
+  UI->>API: POST /api/search
+  API->>Search: Prepare bounded regions
+  Search->>Model: Embed query and cache misses
+  Model-->>Search: Dense vectors
+  Search->>Search: Cosine + lexical ranks + RRF
+  Search-->>API: Candidates and evidence status
+  API-->>UI: Paths, excerpts, line ranges
+  Dev->>UI: Open candidate source
+  UI->>API: POST /api/source
+  API-->>UI: Verified source lines

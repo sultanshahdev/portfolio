@@ -1,0 +1,9 @@
+stateDiagram-v2
+  [*] --> proposed
+  proposed --> approved: authenticated approve
+  proposed --> rejected: authenticated reject
+  approved --> executing: worker claims
+  executing --> executed: simulated result committed
+  executing --> failed: execution error / limit
+  executing --> executing: expired lease recovered
+  executed --> reverted: authenticated reversal
