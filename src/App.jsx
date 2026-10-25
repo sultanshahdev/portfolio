@@ -3,6 +3,7 @@ import { lazy, Suspense } from 'react';
 import Header from './components/layout/Header.jsx';
 import Footer from './components/layout/Footer.jsx';
 import RouteFocus from './components/layout/RouteFocus.jsx';
+import ScrollExperience from './components/studio/ScrollExperience.jsx';
 import HomePage from './pages/HomePage.jsx';
 import ProjectsPage from './pages/ProjectsPage.jsx';
 import WritingPage from './pages/WritingPage.jsx';
@@ -17,6 +18,7 @@ export default function App() {
     <div className="site-shell">
       <Link className="skip-link" to="#main-content" onClick={() => document.getElementById('main-content')?.focus()}>Skip to content</Link>
       <Header />
+      <ScrollExperience />
       <main id="main-content" className="container main-content" tabIndex="-1">
         <Routes>
           <Route path="/" element={<HomePage />} />

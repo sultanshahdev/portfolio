@@ -12,7 +12,7 @@ function LeadershipEntry({ entry, index }) {
 
   return (
     <li className={`leadership-entry leadership-entry--${entry.id} leadership-entry--logo-${index % 2 === 0 ? 'left' : 'right'}`}>
-      <article aria-labelledby={entry.id}>
+      <article aria-labelledby={entry.id} data-reveal>
         <div className="leadership-rail" aria-hidden="true">
           <span className="leadership-marker"><Icon size={19} strokeWidth={1.5} /></span>
           <span className="leadership-number">{String(index + 1).padStart(2, '0')}</span>
@@ -56,8 +56,9 @@ function LeadershipEntry({ entry, index }) {
 
 export default function CommunityLeadershipSection() {
   return (
-    <section className="home-section community-leadership" aria-labelledby="community">
-      <SectionHeading id="community">Community & leadership</SectionHeading>
+    <section className="home-section community-leadership canvas-standard" aria-labelledby="community">
+      <SectionHeading id="community" number="05" eyebrow="People / places / shared ideas">Community & leadership</SectionHeading>
+      <p className="journey-route"><span>Lahore</span><i aria-hidden="true" /><span>Karachi</span><i aria-hidden="true" /><span>Sukkur</span></p>
       <ol className="leadership-timeline">
         {community.map((entry, index) => <LeadershipEntry key={entry.id} entry={entry} index={index} />)}
       </ol>

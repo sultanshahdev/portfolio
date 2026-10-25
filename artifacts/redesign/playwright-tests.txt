@@ -1,0 +1,170 @@
+
+> sultan-portfolio@1.0.0 test
+> playwright test --reporter=line
+
+[WebServer] (node:44480) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+
+Running 142 tests using 2 workers
+
+(node:44506) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:44507) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/142] [desktop] › tests/intro-hero.spec.js:12:1 › the introduction preserves the exact biography and connects to projects
+[2/142] [desktop] › tests/intro-hero.spec.js:30:1 › social links open their configured destinations in a separate tab
+[3/142] [desktop] › tests/intro-hero.spec.js:49:1 › pointer previews return to the chosen discipline without moving the biography
+[4/142] [desktop] › tests/intro-hero.spec.js:78:1 › keyboard focus previews paths and Enter and Space select explanations
+[5/142] [desktop] › tests/intro-hero.spec.js:103:1 › touch selection works while every discipline remains visible
+[6/142] [desktop] › tests/intro-hero.spec.js:120:1 › reduced motion keeps the introduction and final linework immediately available
+[7/142] [desktop] › tests/intro-hero.spec.js:133:3 › the engineering portrait is composed and readable at 1440px
+[8/142] [desktop] › tests/intro-hero.spec.js:133:3 › the engineering portrait is composed and readable at 1280px
+[9/142] [desktop] › tests/intro-hero.spec.js:133:3 › the engineering portrait is composed and readable at 1024px
+[10/142] [desktop] › tests/intro-hero.spec.js:133:3 › the engineering portrait is composed and readable at 768px
+[11/142] [desktop] › tests/intro-hero.spec.js:133:3 › the engineering portrait is composed and readable at 390px
+[12/142] [desktop] › tests/intro-hero.spec.js:133:3 › the engineering portrait is composed and readable at 360px
+[13/142] [desktop] › tests/living-systems.spec.js:6:1 › the studio uses original named companions and three intentional canvas widths
+[14/142] [desktop] › tests/living-systems.spec.js:24:1 › progress reflects the scroll range and the footer returns keyboard focus to the page
+[15/142] [desktop] › tests/living-systems.spec.js:38:1 › all project illustrations are finite, replayable and keyboard operable
+[16/142] [desktop] › tests/living-systems.spec.js:62:1 › reduced motion responds immediately and can change during a diagram run
+[17/142] [desktop] › tests/living-systems.spec.js:80:1 › changing routes disconnects old observed elements and cancels pending diagram work
+[18/142] [desktop] › tests/living-systems.spec.js:104:1 › mobile schematics retain readable stage labels and both character silhouettes
+[19/142] [desktop] › tests/portfolio.spec.js:15:3 › loads, fits, and is accessible: /
+[20/142] [desktop] › tests/portfolio.spec.js:15:3 › loads, fits, and is accessible: /projects
+[21/142] [desktop] › tests/portfolio.spec.js:15:3 › loads, fits, and is accessible: /writing
+[22/142] [desktop] › tests/portfolio.spec.js:15:3 › loads, fits, and is accessible: /contact
+[23/142] [desktop] › tests/portfolio.spec.js:15:3 › loads, fits, and is accessible: /projects/c2g
+[24/142] [desktop] › tests/portfolio.spec.js:15:3 › loads, fits, and is accessible: /projects/clara
+[25/142] [desktop] › tests/portfolio.spec.js:15:3 › loads, fits, and is accessible: /projects/soar-lite
+[26/142] [desktop] › tests/portfolio.spec.js:15:3 › loads, fits, and is accessible: /projects/codecraft
+[27/142] [desktop] › tests/portfolio.spec.js:15:3 › loads, fits, and is accessible: /writing/where-a-module-should-end
+[28/142] [desktop] › tests/portfolio.spec.js:15:3 › loads, fits, and is accessible: /writing/following-data-through-an-application
+[29/142] [desktop] › tests/portfolio.spec.js:15:3 › loads, fits, and is accessible: /not-a-page
+[30/142] [desktop] › tests/portfolio.spec.js:15:3 › loads, fits, and is accessible: /projects/unknown
+[31/142] [desktop] › tests/portfolio.spec.js:15:3 › loads, fits, and is accessible: /writing/unknown
+[32/142] [desktop] › tests/portfolio.spec.js:32:1 › filters work with keyboard and reset to all projects
+[33/142] [desktop] › tests/portfolio.spec.js:48:1 › navigation, case studies, history, and focus work
+[34/142] [desktop] › tests/portfolio.spec.js:78:1 › sample articles, contents links, code, and configured contact links
+[35/142] [desktop] › tests/portfolio.spec.js:93:1 › small screens and long code do not overflow the page
+[36/142] [desktop] › tests/portfolio.spec.js:104:1 › 404 recovers through a working home link
+[37/142] [desktop] › tests/portfolio.spec.js:113:1 › production portrait and skip link preserve the current route
+[38/142] [desktop] › tests/profile-journey.spec.js:3:1 › homepage presents formal education, independent learning, then all four community roles
+[39/142] [desktop] › tests/profile-journey.spec.js:48:1 › verified institutional images load from the deployment base and keep their monochrome treatment
+[40/142] [desktop] › tests/profile-journey.spec.js:65:1 › a missing organization image preserves its identity and academic layout
+[41/142] [desktop] › tests/profile-journey.spec.js:76:3 › education and community remain readable and keyboard accessible at 1440px
+[42/142] [desktop] › tests/profile-journey.spec.js:76:3 › education and community remain readable and keyboard accessible at 1280px
+[43/142] [desktop] › tests/profile-journey.spec.js:76:3 › education and community remain readable and keyboard accessible at 768px
+[44/142] [desktop] › tests/profile-journey.spec.js:76:3 › education and community remain readable and keyboard accessible at 390px
+[45/142] [desktop] › tests/profile-journey.spec.js:76:3 › education and community remain readable and keyboard accessible at 360px
+[46/142] [desktop] › tests/projects.spec.js:7:1 › homepage and archive publish exactly the canonical projects and links
+[47/142] [desktop] › tests/projects.spec.js:24:1 › old detail slugs use the existing not found page
+[48/142] [desktop] › tests/projects.spec.js:32:3 › c2g: diagrams, source downloads, milestones and chapter navigation
+[49/142] [desktop] › tests/projects.spec.js:32:3 › clara: diagrams, source downloads, milestones and chapter navigation
+[50/142] [desktop] › tests/projects.spec.js:32:3 › soar-lite: diagrams, source downloads, milestones and chapter navigation
+[51/142] [desktop] › tests/projects.spec.js:32:3 › codecraft: diagrams, source downloads, milestones and chapter navigation
+[52/142] [desktop] › tests/projects.spec.js:77:1 › c2g decisions and evidence stay accessible through deep links
+[53/142] [desktop] › tests/projects.spec.js:89:1 › an unavailable SVG displays readable source and download recovery
+[54/142] [desktop] › tests/projects.spec.js:101:3 › all projects fit at 360px with scrollable technical content
+[55/142] [desktop] › tests/projects.spec.js:101:3 › all projects fit at 390px with scrollable technical content
+[56/142] [desktop] › tests/projects.spec.js:101:3 › all projects fit at 768px with scrollable technical content
+[57/142] [desktop] › tests/projects.spec.js:101:3 › all projects fit at 1280px with scrollable technical content
+[58/142] [desktop] › tests/technical-expertise.spec.js:17:3 › technical skills deepening › all identities and all 512 original skills are preserved, initially concealed
+[59/142] [desktop] › tests/technical-expertise.spec.js:35:3 › technical skills deepening › every category exposes its complete ordered list through the associated trigger
+[60/142] [desktop] › tests/technical-expertise.spec.js:52:3 › technical skills deepening › hover previews include their content and pinning survives pointer exit
+[61/142] [desktop] › tests/technical-expertise.spec.js:86:3 › technical skills deepening › Enter, Space, Tab and Escape work without moving focus
+[62/142] [desktop] › tests/technical-expertise.spec.js:107:3 › technical skills deepening › touch uses taps and never depends on simulated hover
+[63/142] [desktop] › tests/technical-expertise.spec.js:123:3 › technical skills deepening › rapid pointer switching settles without stuck layers or hover-driven scrolling
+[64/142] [desktop] › tests/technical-expertise.spec.js:140:3 › technical skills deepening › motion traces a rule, unfolds, staggers and then settles
+[65/142] [desktop] › tests/technical-expertise.spec.js:167:3 › technical skills deepening › reduced motion reveals everything immediately without decorative movement
+[66/142] [desktop] › tests/technical-expertise.spec.js:183:5 › technical skills deepening › stable columns and complete reveals fit at 1440px
+[67/142] [desktop] › tests/technical-expertise.spec.js:183:5 › technical skills deepening › stable columns and complete reveals fit at 1280px
+[68/142] [desktop] › tests/technical-expertise.spec.js:183:5 › technical skills deepening › stable columns and complete reveals fit at 1024px
+[69/142] [desktop] › tests/technical-expertise.spec.js:183:5 › technical skills deepening › stable columns and complete reveals fit at 768px
+[70/142] [desktop] › tests/technical-expertise.spec.js:183:5 › technical skills deepening › stable columns and complete reveals fit at 390px
+[71/142] [desktop] › tests/technical-expertise.spec.js:183:5 › technical skills deepening › stable columns and complete reveals fit at 360px
+(node:46334) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[72/142] [mobile] › tests/intro-hero.spec.js:12:1 › the introduction preserves the exact biography and connects to projects
+(node:46345) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[73/142] [mobile] › tests/intro-hero.spec.js:30:1 › social links open their configured destinations in a separate tab
+[74/142] [mobile] › tests/intro-hero.spec.js:49:1 › pointer previews return to the chosen discipline without moving the biography
+[75/142] [mobile] › tests/intro-hero.spec.js:78:1 › keyboard focus previews paths and Enter and Space select explanations
+[76/142] [mobile] › tests/intro-hero.spec.js:103:1 › touch selection works while every discipline remains visible
+[77/142] [mobile] › tests/intro-hero.spec.js:120:1 › reduced motion keeps the introduction and final linework immediately available
+[78/142] [mobile] › tests/intro-hero.spec.js:133:3 › the engineering portrait is composed and readable at 1440px
+[79/142] [mobile] › tests/intro-hero.spec.js:133:3 › the engineering portrait is composed and readable at 1280px
+[80/142] [mobile] › tests/intro-hero.spec.js:133:3 › the engineering portrait is composed and readable at 1024px
+[81/142] [mobile] › tests/intro-hero.spec.js:133:3 › the engineering portrait is composed and readable at 768px
+[82/142] [mobile] › tests/intro-hero.spec.js:133:3 › the engineering portrait is composed and readable at 390px
+[83/142] [mobile] › tests/intro-hero.spec.js:133:3 › the engineering portrait is composed and readable at 360px
+[84/142] [mobile] › tests/living-systems.spec.js:6:1 › the studio uses original named companions and three intentional canvas widths
+[85/142] [mobile] › tests/living-systems.spec.js:24:1 › progress reflects the scroll range and the footer returns keyboard focus to the page
+[86/142] [mobile] › tests/living-systems.spec.js:38:1 › all project illustrations are finite, replayable and keyboard operable
+[87/142] [mobile] › tests/living-systems.spec.js:62:1 › reduced motion responds immediately and can change during a diagram run
+[88/142] [mobile] › tests/living-systems.spec.js:80:1 › changing routes disconnects old observed elements and cancels pending diagram work
+[89/142] [mobile] › tests/living-systems.spec.js:104:1 › mobile schematics retain readable stage labels and both character silhouettes
+[90/142] [mobile] › tests/portfolio.spec.js:15:3 › loads, fits, and is accessible: /
+[91/142] [mobile] › tests/portfolio.spec.js:15:3 › loads, fits, and is accessible: /projects
+[92/142] [mobile] › tests/portfolio.spec.js:15:3 › loads, fits, and is accessible: /writing
+[93/142] [mobile] › tests/portfolio.spec.js:15:3 › loads, fits, and is accessible: /contact
+[94/142] [mobile] › tests/portfolio.spec.js:15:3 › loads, fits, and is accessible: /projects/c2g
+[95/142] [mobile] › tests/portfolio.spec.js:15:3 › loads, fits, and is accessible: /projects/clara
+[96/142] [mobile] › tests/portfolio.spec.js:15:3 › loads, fits, and is accessible: /projects/soar-lite
+[97/142] [mobile] › tests/portfolio.spec.js:15:3 › loads, fits, and is accessible: /projects/codecraft
+[98/142] [mobile] › tests/portfolio.spec.js:15:3 › loads, fits, and is accessible: /writing/where-a-module-should-end
+[99/142] [mobile] › tests/portfolio.spec.js:15:3 › loads, fits, and is accessible: /writing/following-data-through-an-application
+[100/142] [mobile] › tests/portfolio.spec.js:15:3 › loads, fits, and is accessible: /not-a-page
+[101/142] [mobile] › tests/portfolio.spec.js:15:3 › loads, fits, and is accessible: /projects/unknown
+[102/142] [mobile] › tests/portfolio.spec.js:15:3 › loads, fits, and is accessible: /writing/unknown
+[103/142] [mobile] › tests/portfolio.spec.js:32:1 › filters work with keyboard and reset to all projects
+[104/142] [mobile] › tests/portfolio.spec.js:48:1 › navigation, case studies, history, and focus work
+[105/142] [mobile] › tests/portfolio.spec.js:78:1 › sample articles, contents links, code, and configured contact links
+[106/142] [mobile] › tests/portfolio.spec.js:93:1 › small screens and long code do not overflow the page
+[107/142] [mobile] › tests/portfolio.spec.js:104:1 › 404 recovers through a working home link
+[108/142] [mobile] › tests/portfolio.spec.js:113:1 › production portrait and skip link preserve the current route
+[109/142] [mobile] › tests/profile-journey.spec.js:3:1 › homepage presents formal education, independent learning, then all four community roles
+[110/142] [mobile] › tests/profile-journey.spec.js:48:1 › verified institutional images load from the deployment base and keep their monochrome treatment
+[111/142] [mobile] › tests/profile-journey.spec.js:65:1 › a missing organization image preserves its identity and academic layout
+[112/142] [mobile] › tests/profile-journey.spec.js:76:3 › education and community remain readable and keyboard accessible at 1440px
+[113/142] [mobile] › tests/profile-journey.spec.js:76:3 › education and community remain readable and keyboard accessible at 1280px
+[114/142] [mobile] › tests/profile-journey.spec.js:76:3 › education and community remain readable and keyboard accessible at 768px
+[115/142] [mobile] › tests/profile-journey.spec.js:76:3 › education and community remain readable and keyboard accessible at 390px
+[116/142] [mobile] › tests/profile-journey.spec.js:76:3 › education and community remain readable and keyboard accessible at 360px
+[117/142] [mobile] › tests/projects.spec.js:7:1 › homepage and archive publish exactly the canonical projects and links
+[118/142] [mobile] › tests/projects.spec.js:24:1 › old detail slugs use the existing not found page
+[119/142] [mobile] › tests/projects.spec.js:32:3 › c2g: diagrams, source downloads, milestones and chapter navigation
+[120/142] [mobile] › tests/projects.spec.js:32:3 › clara: diagrams, source downloads, milestones and chapter navigation
+[121/142] [mobile] › tests/projects.spec.js:32:3 › soar-lite: diagrams, source downloads, milestones and chapter navigation
+[122/142] [mobile] › tests/projects.spec.js:32:3 › codecraft: diagrams, source downloads, milestones and chapter navigation
+[123/142] [mobile] › tests/projects.spec.js:77:1 › c2g decisions and evidence stay accessible through deep links
+[124/142] [mobile] › tests/projects.spec.js:89:1 › an unavailable SVG displays readable source and download recovery
+[125/142] [mobile] › tests/projects.spec.js:101:3 › all projects fit at 360px with scrollable technical content
+[126/142] [mobile] › tests/projects.spec.js:101:3 › all projects fit at 390px with scrollable technical content
+[127/142] [mobile] › tests/projects.spec.js:101:3 › all projects fit at 768px with scrollable technical content
+[128/142] [mobile] › tests/projects.spec.js:101:3 › all projects fit at 1280px with scrollable technical content
+[129/142] [mobile] › tests/technical-expertise.spec.js:17:3 › technical skills deepening › all identities and all 512 original skills are preserved, initially concealed
+[130/142] [mobile] › tests/technical-expertise.spec.js:35:3 › technical skills deepening › every category exposes its complete ordered list through the associated trigger
+[131/142] [mobile] › tests/technical-expertise.spec.js:52:3 › technical skills deepening › hover previews include their content and pinning survives pointer exit
+[132/142] [mobile] › tests/technical-expertise.spec.js:86:3 › technical skills deepening › Enter, Space, Tab and Escape work without moving focus
+[133/142] [mobile] › tests/technical-expertise.spec.js:107:3 › technical skills deepening › touch uses taps and never depends on simulated hover
+[134/142] [mobile] › tests/technical-expertise.spec.js:123:3 › technical skills deepening › rapid pointer switching settles without stuck layers or hover-driven scrolling
+[135/142] [mobile] › tests/technical-expertise.spec.js:140:3 › technical skills deepening › motion traces a rule, unfolds, staggers and then settles
+[136/142] [mobile] › tests/technical-expertise.spec.js:167:3 › technical skills deepening › reduced motion reveals everything immediately without decorative movement
+[137/142] [mobile] › tests/technical-expertise.spec.js:183:5 › technical skills deepening › stable columns and complete reveals fit at 1440px
+[138/142] [mobile] › tests/technical-expertise.spec.js:183:5 › technical skills deepening › stable columns and complete reveals fit at 1280px
+[139/142] [mobile] › tests/technical-expertise.spec.js:183:5 › technical skills deepening › stable columns and complete reveals fit at 1024px
+[140/142] [mobile] › tests/technical-expertise.spec.js:183:5 › technical skills deepening › stable columns and complete reveals fit at 768px
+[141/142] [mobile] › tests/technical-expertise.spec.js:183:5 › technical skills deepening › stable columns and complete reveals fit at 390px
+[142/142] [mobile] › tests/technical-expertise.spec.js:183:5 › technical skills deepening › stable columns and complete reveals fit at 360px
+  6 skipped
+  136 passed (3.4m)

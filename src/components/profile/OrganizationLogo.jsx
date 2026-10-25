@@ -7,7 +7,7 @@ export default function OrganizationLogo({ organization, className = '' }) {
   const showLogo = organization.logo && !unavailable;
 
   return (
-    <span className={`organization-logo organization-logo--${organization.id} ${className}`} aria-hidden="true">
+    <span className={`organization-logo organization-logo--${organization.id} ${className}`} aria-hidden="true" style={{ '--logo-width': organization.visualWidth, '--logo-height': organization.visualHeight }}>
       {showLogo ? (
         <img
           className={organization.logoTreatment === 'ink' ? 'organization-logo-ink' : undefined}

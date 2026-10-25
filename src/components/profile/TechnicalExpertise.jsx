@@ -13,11 +13,11 @@ export default function TechnicalExpertise() {
 
   return (
     <section
-      className="home-section technical-expertise"
+      id="skills" data-section className="home-section technical-expertise canvas-standard"
       aria-labelledby="technical-expertise"
       onKeyDown={(event) => { if (event.key === 'Escape') close(); }}
     >
-      <SectionHeading id="technical-expertise">TECHNICAL EXPERTISE &amp; SKILLS</SectionHeading>
+      <SectionHeading id="technical-expertise" number="03" eyebrow="The engineering index">TECHNICAL EXPERTISE &amp; SKILLS</SectionHeading>
       <div className="expertise-intro">
         <p>Languages, systems, and the practices behind the software.</p>
         <span>{technicalExpertise.length} categories</span>

@@ -22,28 +22,32 @@ function CaseStudyReader({ data, project }) {
         <h2 id="at-a-glance" className="section-label">At a glance</h2>
         <dl>{project.highlights.map((item) => <div key={item.label}><dt>{item.label}</dt><dd>{item.value}</dd></div>)}</dl>
       </section>
-      <CaseStudyToc chapters={data.chapters} appendices={[...data.appendices, sourceChapter]} />
-      <div className="article-content case-study-content">
-        {data.chapters.map((chapter) => <Chapter key={chapter.id} chapter={chapter} data={data} />)}
-        {data.appendices.map((appendix) => (
-          <details className="case-study-appendix" key={appendix.id}>
-            <summary id={appendix.id} data-chapter>{appendix.title}</summary>
-            {appendix.chapters.map((chapter) => <Chapter key={chapter.id} chapter={chapter} data={data} appendix />)}
-          </details>
-        ))}
-      </div>
-      <section className="source-section publication-sources" aria-labelledby={sourceChapter.id}>
-        <h2 id={sourceChapter.id} tabIndex="-1" data-chapter>{sourceChapter.title}</h2>
-        <p>This publication preserves the supplied engineering record. Product test results are reported from that record; they were not rerun as part of building this portfolio.</p>
-        <div className="inline-links">
-          <a className="text-link" href={project.repositoryUrl}>GitHub repository ↗</a>
-          {project.demoUrl && <a className="text-link" href={project.demoUrl}>Live demo ↗</a>}
+      <div className="case-study-reading-layout">
+        <CaseStudyToc chapters={data.chapters} appendices={[...data.appendices, sourceChapter]} />
+        <div className="case-study-manuscript">
+          <div className="article-content case-study-content">
+            {data.chapters.map((chapter) => <Chapter key={chapter.id} chapter={chapter} data={data} />)}
+            {data.appendices.map((appendix) => (
+              <details className="case-study-appendix" key={appendix.id}>
+                <summary id={appendix.id} data-chapter>{appendix.title}</summary>
+                {appendix.chapters.map((chapter) => <Chapter key={chapter.id} chapter={chapter} data={data} appendix />)}
+              </details>
+            ))}
+          </div>
+          <section className="source-section publication-sources" aria-labelledby={sourceChapter.id}>
+            <h2 id={sourceChapter.id} tabIndex="-1" data-chapter>{sourceChapter.title}</h2>
+            <p>This publication preserves the supplied engineering record. Product test results are reported from that record; they were not rerun as part of building this portfolio.</p>
+            <div className="inline-links">
+              <a className="text-link" href={project.repositoryUrl}>GitHub repository ↗</a>
+              {project.demoUrl && <a className="text-link" href={project.demoUrl}>Live demo ↗</a>}
+            </div>
+            <p className="source-download-label">Original documentation</p>
+            <ul className="source-files">{data.sources.map((source) => <li key={source.filename}><a href={assetUrl(source.url)} download>{source.filename}</a></li>)}</ul>
+            <p className="source-revision">{data.diagrams.length} source diagrams. Original Mermaid text is available with every figure. Upstream source revisions and verification boundaries are retained in the narrative and evidence notes.</p>
+          </section>
+          <div className="article-end case-study-end"><Link className="text-link" to="/projects">← Back to projects</Link><Link className="text-link" to="#case-study-top">Back to top ↑</Link></div>
         </div>
-        <p className="source-download-label">Original documentation</p>
-        <ul className="source-files">{data.sources.map((source) => <li key={source.filename}><a href={assetUrl(source.url)} download>{source.filename}</a></li>)}</ul>
-        <p className="source-revision">{data.diagrams.length} source diagrams. Original Mermaid text is available with every figure. Upstream source revisions and verification boundaries are retained in the narrative and evidence notes.</p>
-      </section>
-      <div className="article-end case-study-end"><Link className="text-link" to="/projects">← Back to projects</Link><Link className="text-link" to="#case-study-top">Back to top ↑</Link></div>
+      </div>
     </>
   );
 }

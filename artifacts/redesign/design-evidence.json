@@ -1,0 +1,123 @@
+{
+  "contract": "docs/REDESIGN_PLAN.md: source-backed engineering studio, 80rem/66rem/46rem canvases, original vector companions, preserved routes/content, keyboard/touch controls and reduced-motion behavior.",
+  "targetViewports": [
+    "1536x1000",
+    "1440x1000",
+    "1280x1000",
+    "1024x1000",
+    "768x1000",
+    "390x844",
+    "360x844"
+  ],
+  "accessibility": {
+    "status": "pass",
+    "evidence": "Existing axe WCAG A/AA route checks, keyboard focus/navigation, original skill disclosure tests and new diagram keyboard/reduced-motion tests pass; touch contexts verify tap disclosure. SVG characters have unique accessible names; decorative linework is hidden from assistive technology."
+  },
+  "responsive": {
+    "status": "pass",
+    "evidence": "Production captures at all seven target widths report no document overflow and no page errors. Desktop and touch contexts are separate. Tablet annotations, phone portrait sizing and mobile diagram keys were refined after visual inspection."
+  },
+  "contentStates": {
+    "loading": {
+      "status": "pass",
+      "evidence": "Held the lazy ProjectDetailPage module request in Chromium: Loading project\u2026 status was visible, then releasing it produced the complete study and contents navigation."
+    },
+    "empty": {
+      "status": "not-applicable",
+      "reason": "The static archive has four canonical projects and each offered category has a member; the writing index has two retained sample drafts. There is no user-provided query or removable content producing an empty result. Existing reusable empty-state components remain intact."
+    },
+    "error": {
+      "status": "pass",
+      "evidence": "Repository tests abort an organization image and a source SVG: the named institutional monogram and complete Mermaid source/download recovery stay available; unknown routes expose a working home link."
+    },
+    "partial": {
+      "status": "pass",
+      "evidence": "All four project qualifications remain visible on case-study covers, including c2g G6 PARTIAL, SOAR simulated containment and CodeCraft browser inference limitations; original evidence notes are preserved."
+    },
+    "success": {
+      "status": "pass",
+      "evidence": "Four canonical projects and detail routes load, category filters update results, all 23 categories expose their complete ordered skills, and diagram activation settles with a persistent explanatory status."
+    },
+    "permission": {
+      "status": "not-applicable",
+      "reason": "Static portfolio has no authentication, permission request, remote submission or privileged action. SOAR approval is explicitly an illustrative simulated control."
+    }
+  },
+  "renderedEvidence": [
+    {
+      "viewport": "1536x1000",
+      "artifact": "home-1536.png",
+      "observation": "Wide hero uses the desktop canvas; portrait, BIT, linework and discipline controls are balanced; complete homepage has distinct section measures."
+    },
+    {
+      "viewport": "1440x1000",
+      "artifact": "home-1440.png",
+      "observation": "Editorial opening, alternating large project exhibits and standard-width skills/journey composition; no horizontal overflow."
+    },
+    {
+      "viewport": "1280x1000",
+      "artifact": "home-1280.png",
+      "observation": "Wide composition retains readable headline lines, full portrait and clear primary action without clipping."
+    },
+    {
+      "viewport": "1024x1000",
+      "artifact": "home-1024.png",
+      "observation": "Larger portrait and removed small annotations prevent overlap; diagrams remain prominent and the section index is omitted at this width."
+    },
+    {
+      "viewport": "768x1000",
+      "artifact": "home-768.png",
+      "observation": "Tablet compositions reflow to full-width diagrams and two-column skills; portrait and BIT remain visible and annotations do not collide."
+    },
+    {
+      "viewport": "390x844",
+      "artifact": "home-390.png",
+      "observation": "Touch viewport retains BIT/PACKET and all four diagrams, readable stage keys, mobile navigation and complete content."
+    },
+    {
+      "viewport": "360x844",
+      "artifact": "home-360.png",
+      "observation": "Narrow touch viewport preserves the intended headline lines, at least 208px portrait, diagrams, skill controls and no horizontal overflow."
+    },
+    {
+      "viewport": "1440x1000",
+      "artifact": "skills-expanded.png",
+      "observation": "Pinned category retains the complete ordered list in an independent column."
+    },
+    {
+      "viewport": "390x844",
+      "artifact": "skills-mobile.png",
+      "observation": "Touch hint, tap-pinned list and readable skill names at 390px."
+    },
+    {
+      "viewport": "1440x1000",
+      "artifact": "community-desktop.png",
+      "observation": "Alternating true institutional logos with optical sizing and visible cities."
+    },
+    {
+      "viewport": "1440x1000",
+      "artifact": "archive-1440.png",
+      "observation": "Compact archive rows complement the homepage exhibits."
+    },
+    {
+      "viewport": "1440x1000",
+      "artifact": "case-diagram-1440.png",
+      "observation": "Sticky chapter rail, measured prose and source diagram breakout with fit/source/download controls."
+    },
+    {
+      "viewport": "390x844",
+      "artifact": "contact-390.png",
+      "observation": "Personal closing, original BIT illustration and unchanged configured social/contact destinations."
+    },
+    {
+      "viewport": "1440x1000",
+      "artifact": "footer-desktop.png",
+      "observation": "Restrained closing line, social links and keyboard back-to-top control."
+    },
+    {
+      "viewport": "390x844",
+      "artifact": "mobile-menu.png",
+      "observation": "Open mobile navigation is fully inside the configured 390px viewport; its strict width check avoids the inflated-innerWidth mobile overflow trap."
+    }
+  ]
+}

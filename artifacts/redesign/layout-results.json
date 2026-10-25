@@ -1,0 +1,86 @@
+{
+  "report": [
+    {
+      "viewport": "1536x1000",
+      "artifact": "home-1536.png",
+      "overflow": false
+    },
+    {
+      "viewport": "1440x1000",
+      "artifact": "home-1440.png",
+      "overflow": false
+    },
+    {
+      "viewport": "1280x1000",
+      "artifact": "home-1280.png",
+      "overflow": false
+    },
+    {
+      "viewport": "1024x1000",
+      "artifact": "home-1024.png",
+      "overflow": false
+    },
+    {
+      "viewport": "768x1000",
+      "artifact": "home-768.png",
+      "overflow": false
+    },
+    {
+      "viewport": "390x844",
+      "artifact": "home-390.png",
+      "overflow": false
+    },
+    {
+      "route": "/",
+      "width": 390,
+      "state": "mobile menu open",
+      "overflow": false
+    },
+    {
+      "viewport": "360x844",
+      "artifact": "home-360.png",
+      "overflow": false
+    },
+    {
+      "route": "/projects",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "route": "/projects",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "route": "/projects/clara",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "route": "/projects/clara",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "route": "/writing",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "route": "/writing",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "route": "/contact",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "route": "/contact",
+      "width": 390,
+      "overflow": false
+    }
+  ],
+  "errors": []
+}

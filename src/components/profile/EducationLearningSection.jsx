@@ -8,7 +8,7 @@ import '../../styles/profile-journey.css';
 
 function EducationEntry({ entry }) {
   return (
-    <article className="academic-entry" aria-labelledby={entry.id}>
+    <article className="academic-entry" data-reveal aria-labelledby={entry.id}>
       <div className="academic-insignia"><OrganizationLogo organization={entry.organization} /></div>
       <div className="academic-content">
         <div className="journey-kicker">
@@ -26,7 +26,7 @@ function EducationEntry({ entry }) {
 
 function LearningEntry({ entry }) {
   return (
-    <article className="independent-entry" aria-labelledby={entry.id}>
+    <article className="independent-entry" data-reveal aria-labelledby={entry.id}>
       <div className="independent-heading">
         <OrganizationLogo organization={entry.organization} />
         <div>
@@ -46,8 +46,8 @@ function LearningEntry({ entry }) {
 
 export default function EducationLearningSection() {
   return (
-    <section className="home-section education-learning" aria-labelledby="education">
-      <SectionHeading id="education">Education & learning</SectionHeading>
+    <section id="journey" data-section className="home-section education-learning canvas-standard" aria-labelledby="education">
+      <SectionHeading id="education" number="04" eyebrow="An ongoing education">Education & learning</SectionHeading>
       {profile.education.map((entry) => <EducationEntry key={entry.id} entry={entry} />)}
       {learning.map((entry) => <LearningEntry key={entry.id} entry={entry} />)}
     </section>

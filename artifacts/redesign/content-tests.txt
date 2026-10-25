@@ -1,0 +1,19 @@
+
+> sultan-portfolio@1.0.0 test:content
+> node --test scripts/tests/*.test.mjs
+
+✔ canonical collection has exactly four projects and only the documented demo (3.559561ms)
+✔ c2g: complete narrative, original sources and rendered diagrams (550.497854ms)
+✔ clara: complete narrative, original sources and rendered diagrams (253.942697ms)
+✔ soar-lite: complete narrative, original sources and rendered diagrams (242.620396ms)
+✔ codecraft: complete narrative, original sources and rendered diagrams (256.43848ms)
+✔ c2g: every separately supplied .mmd diagram is represented (32.381759ms)
+✔ soar-lite: every separately supplied .mmd diagram is represented (22.475677ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1777.962906

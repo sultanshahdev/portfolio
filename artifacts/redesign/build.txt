@@ -1,0 +1,29 @@
+
+> sultan-portfolio@1.0.0 build
+> npm run content:check && vite build
+
+
+> sultan-portfolio@1.0.0 content:check
+> node scripts/build-case-studies.mjs --check
+
+c2g: 21 chapters, 19 cached SVG diagrams
+clara: 20 chapters, 7 cached SVG diagrams
+soar-lite: 20 chapters, 12 cached SVG diagrams
+codecraft: 23 chapters, 16 cached SVG diagrams
+vite v7.3.7 building client environment for production...
+transforming...
+✓ 2253 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                               1.22 kB │ gzip:   0.55 kB
+dist/assets/source-sans-3-latin-wght-normal-BqRLTx4X.woff2   28.74 kB
+dist/assets/lora-latin-wght-normal-BiLcIKcI.woff2            37.79 kB
+dist/assets/lora-latin-wght-italic-DBI-iqMr.woff2            40.77 kB
+dist/assets/index-BCVPDIz9.css                               64.69 kB │ gzip:  12.46 kB
+dist/assets/clara-BUSEi_Eg.js                                51.04 kB │ gzip:  17.81 kB
+dist/assets/soar-lite-DW5HGyI4.js                            77.91 kB │ gzip:  26.05 kB
+dist/assets/codecraft-xYxFKsPw.js                            78.91 kB │ gzip:  25.47 kB
+dist/assets/c2g-DFUdX8-y.js                                 103.29 kB │ gzip:  34.96 kB
+dist/assets/ProjectDetailPage-Dlh5OOKc.js                   169.60 kB │ gzip:  52.14 kB
+dist/assets/index-kAdrqM4q.js                               348.27 kB │ gzip: 111.84 kB
+✓ built in 3.92s

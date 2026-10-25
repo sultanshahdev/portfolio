@@ -102,6 +102,8 @@ test('keyboard focus previews paths and Enter and Space select explanations', as
 
 test('touch selection works while every discipline remains visible', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'mobile', 'Touch behavior uses the mobile project.');
+  // Isolate document-layout stability from the independent scroll reveal transform.
+  await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('./#/');
   await page.evaluate(() => document.fonts.ready);
   const biographyTop = () => page.locator('.intro-body').evaluate((element) => element.getBoundingClientRect().top + scrollY);
@@ -141,17 +143,20 @@ for (const [width, height] of [[1440, 1000], [1280, 1000], [1024, 1000], [768, 1
     expect(frame.x).toBeGreaterThanOrEqual(column.x);
     expect(frame.x + frame.width).toBeLessThanOrEqual(column.x + column.width);
     const headline = page.locator('.intro-headline');
-    expect(await headline.locator('span').evaluateAll((lines) => lines.every((line) => line.scrollWidth <= line.clientWidth && line.clientHeight < 70))).toBe(true);
+    // Expressive type scales with the wide canvas; every intended line must remain one line.
+    expect(await headline.locator('span').evaluateAll((lines) => lines.every((line) => line.scrollWidth <= line.clientWidth && line.clientHeight <= parseFloat(getComputedStyle(line).lineHeight) + 1))).toBe(true);
     for (const label of labels) {
       const button = node(page, label);
       expect((await button.boundingBox()).height).toBeGreaterThanOrEqual(44);
       await expect(button).toBeVisible();
     }
     if (width < 640) {
-      // The biography starts within roughly one phone screen of the introduction.
-      const start = await page.locator('.intro-composition').boundingBox();
+      // The mobile studio keeps its portrait and discipline controls, then flows directly into the biography.
+      const disciplines = await page.locator('.engineering-disciplines').boundingBox();
+      const narrative = await page.locator('.intro-narrative').boundingBox();
       const reading = await page.locator('.intro-body').boundingBox();
-      expect(reading.y - start.y).toBeLessThan(height * 1.15);
+      expect(narrative.y - (disciplines.y + disciplines.height)).toBeLessThanOrEqual(64);
+      expect(reading.y - narrative.y).toBeLessThan(160);
     }
     await testInfo.attach(`hero-${width}`, { body: await page.screenshot(), contentType: 'image/png' });
   });

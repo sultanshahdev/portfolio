@@ -13,5 +13,9 @@
   --radius: 0.25rem;
   --font-serif: 'Lora Variable', Georgia, 'Times New Roman', serif;
   --font-sans: 'Source Sans 3 Variable', system-ui, sans-serif;
-  --content-width: 48rem;
+  --content-width: 80rem;
+  --standard-width: 66rem;
+  --reading-width: 46rem;
+  --gutter: clamp(1.25rem, 4vw, 3rem);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
