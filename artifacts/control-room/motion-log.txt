@@ -1,0 +1,14 @@
+{
+  "partial": 24,
+  "handAnimations": [
+    "pixel-key-led",
+    "pixel-arrange-a",
+    "pixel-arrange-b",
+    "pixel-key-left",
+    "pixel-key-right"
+  ],
+  "paused": 100,
+  "unchanged": true,
+  "active": "backend",
+  "reducedAnimations": 0
+}

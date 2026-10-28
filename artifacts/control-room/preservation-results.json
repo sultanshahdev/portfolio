@@ -1,0 +1,8 @@
+{
+  "changedExistingFiles": [
+    "src/components/profile/EngineeringDisciplines.jsx",
+    "src/components/mascots/PixelMascot.jsx",
+    "tests/mascots.spec.js"
+  ],
+  "protectedFilesUnchanged": true
+}

@@ -140,18 +140,28 @@ test.describe('technical skills deepening', () => {
   test('motion traces a rule, unfolds, staggers and then settles', async ({ page }, testInfo) => {
     await page.emulateMedia({ reducedMotion: 'no-preference' });
     await trigger(page, 0).focus();
-    await page.keyboard.press('Enter');
-    const samples = await category(page, 0).evaluate(async (element) => {
+    // Arm the recorder before activation: mobile key dispatch can return after
+    // most of the transition has finished. Keep the same motion assertions.
+    await category(page, 0).evaluate((element) => {
       const panel = element.querySelector('.expertise-reveal');
       const items = panel.querySelectorAll('li');
-      const start = performance.now();
-      const rows = [];
-      do {
-        rows.push({ time: performance.now() - start, height: panel.getBoundingClientRect().height, first: Number(getComputedStyle(items[0]).opacity), last: Number(getComputedStyle(items[items.length - 1]).opacity) });
-        await new Promise(requestAnimationFrame);
-      } while (performance.now() - start < 550);
-      return rows;
+      element.motionSamples = new Promise(resolve => {
+        const observer = new MutationObserver(async () => {
+          if (!element.classList.contains('is-expanded')) return;
+          observer.disconnect();
+          const start = performance.now();
+          const rows = [];
+          do {
+            rows.push({ time: performance.now() - start, height: panel.getBoundingClientRect().height, first: Number(getComputedStyle(items[0]).opacity), last: Number(getComputedStyle(items[items.length - 1]).opacity) });
+            await new Promise(requestAnimationFrame);
+          } while (performance.now() - start < 550);
+          resolve(rows);
+        });
+        observer.observe(element, { attributes: true, attributeFilter: ['class'] });
+      });
     });
+    await page.keyboard.press('Enter');
+    const samples = await category(page, 0).evaluate(element => element.motionSamples);
     await testInfo.attach('motion samples', { body: JSON.stringify(samples), contentType: 'application/json' });
     const settled = samples.at(-1);
     expect(samples.some((row) => row.height > 0 && row.height < settled.height - 1)).toBe(true);

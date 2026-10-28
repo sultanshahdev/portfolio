@@ -1,0 +1,25 @@
+ M src/components/layout/Footer.jsx
+ M src/components/mascots/MascotScene.jsx
+ M src/components/profile/EducationLearningSection.jsx
+ M src/components/profile/Intro.jsx
+ M src/components/profile/SkillCategory.jsx
+ M src/components/profile/SkillIcon.jsx
+ M src/components/projects/ProjectExhibitDiagram.jsx
+ M src/main.jsx
+ M tests/mascots.spec.js
+ M tests/technical-expertise.spec.js
+?? artifacts/control-room/
+?? artifacts/engineering-lab/
+?? docs/ENGINEERING_LAB_DESIGN.md
+?? docs/ENGINEERING_LAB_PROGRESS.md
+?? scripts/review-engineering-lab.mjs
+?? scripts/tests/lab.test.mjs
+?? src/components/experiments/
+?? src/components/illustrations/
+?? src/components/lab/
+?? src/data/lab.js
+?? src/lib/compression.js
+?? src/lib/labCommands.js
+?? src/styles/engineering-lab.css
+?? src/styles/experiments.css
+?? tests/engineering-lab.spec.js

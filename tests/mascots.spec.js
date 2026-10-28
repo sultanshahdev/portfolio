@@ -28,11 +28,13 @@ test('eight residents occupy their intended sections without adding focus stops'
 test('each domain has a finite accessory action and hover can replay it', async ({ page }, info) => {
   test.skip(info.project.name === 'mobile', 'Real hover actions run with a fine pointer.');
   await page.goto('./#/');
+  // Pause the control room's separate typing loop while checking finite gestures.
+  await page.getByRole('button', { name: 'Pause code animation' }).click();
   const cases = [
     ['pixel', '.discipline-resident .mascot-cameo', 'pixel-arrange-a'],
     ['archie', '.hero-resident .mascot-cameo', 'archie-unfold'],
     ['relay', '[data-project="c2g"] .mascot-cameo', 'relay-deliver'],
-    ['keeper', '[data-project="clara"] .mascot-cameo', 'keeper-open'],
+    ['keeper', '[data-project="clara"] [data-character="keeper"]', 'keeper-open'],
     ['sentinel', '[data-project="soar-lite"] .mascot-cameo', 'sentinel-inspect'],
     ['scout', '[data-project="codecraft"] .mascot-cameo', 'scout-inspect'],
     ['daemon', '.expertise-category [data-character="daemon"]', 'daemon-request', 'BACKEND FRAMEWORKS'],

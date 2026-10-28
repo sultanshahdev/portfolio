@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Play, RotateCcw, ShieldCheck } from 'lucide-react';
 import Mascot from '../mascots/Mascot.jsx';
 import { projectResidents } from '../../data/mascots.js';
+import ProjectLabBench from '../lab/ProjectLabBench.jsx';
 
 function Window({ x, y, width = 142, label, children, active = false }) {
   return <g className={active ? 'exhibit-node is-lit' : 'exhibit-node'} transform={`translate(${x} ${y})`}>
@@ -117,8 +118,9 @@ export default function ProjectExhibitDiagram({ project, compact = false }) {
   return <div ref={figure} className={`project-exhibit exhibit-${project.slug}${compact ? ' exhibit-compact' : ''}`} data-phase={phase} data-mascot-scope>
     <figure className="exhibit-figure" aria-label={`${project.title}: ${title}`}>
     <div className="exhibit-caption"><span>{title}</span><span aria-hidden="true">FIG. {String(['c2g', 'clara', 'soar-lite', 'codecraft'].indexOf(project.slug) + 1).padStart(2, '0')}</span></div>
-    <div className="exhibit-art-frame"><div key={iteration} className={`exhibit-art${phase === 'running' ? ' is-running' : ''}`}><Component completed={phase === 'complete'} /></div><span className="project-resident"><Mascot character={projectResidents[project.slug]} size="100%" /></span></div>
+    <div className="exhibit-art-frame"><div key={iteration} className={`exhibit-art${phase === 'running' ? ' is-running' : ''}`}><Component completed={phase === 'complete'} /></div>{compact && <span className="project-resident"><Mascot character={projectResidents[project.slug]} size="100%" /></span>}</div>
     <ol className="diagram-stage-key" aria-label="Illustrated stages">{mobileStages[project.slug].map(stage => <li key={stage}>{stage}</li>)}</ol>
+    {!compact && <ProjectLabBench slug={project.slug} phase={phase} />}
     <figcaption>{project.visual.caption}{project.slug === 'soar-lite' && <strong> No firewall or network traffic is blocked.</strong>}</figcaption>
     </figure>
     {!compact && <div className="exhibit-controls"><button type="button" onClick={activate} disabled={phase === 'running'}>{project.slug === 'soar-lite' ? <ShieldCheck size={14} aria-hidden="true" /> : phase === 'complete' ? <RotateCcw size={13} aria-hidden="true" /> : <Play size={13} aria-hidden="true" />}{label}</button><span role="status">{phase === 'running' ? 'Tracing the illustration…' : phase === 'complete' ? done : ready}</span></div>}

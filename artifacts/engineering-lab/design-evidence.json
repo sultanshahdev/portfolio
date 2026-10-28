@@ -1,0 +1,39 @@
+{
+  "contract": "docs/ENGINEERING_LAB_DESIGN.md: preserve the existing editorial portfolio, add original hardware and finite illustrated flows, keep optional native browser experiments accessible, retain all canonical content and the /portfolio/ deployment base.",
+  "targetViewports": ["1440x1000", "768x1000", "390x844", "320x780"],
+  "accessibility": {
+    "status": "pass",
+    "evidence": "Playwright exercised Enter, Space, Tab, Escape, native details, focus containment/restoration, live output, and changed reduced-motion preferences. Axe found no WCAG A/AA violations in the lab including expanded artwork and blueprint. Existing route accessibility checks are retained. Decorative drawings add no focus stops; meaningful SVGs have unique titles."
+  },
+  "responsive": {
+    "status": "pass",
+    "evidence": "review-results.json records no page/dialog overflow at all four target viewports, four projects and 23 categories, working gzip and console controls, restored focus and no browser/resource errors. Automated layout tests also cover 360, 1024 and 1280px. Reviewed mobile stage keys and wrapping technical annotations."
+  },
+  "contentStates": {
+    "loading": { "status": "pass", "evidence": "The on-demand module request is absent before opening and loaded once on first opening. The native dialog retains a close control and status fallback. Compression's pending state disables submission; its delayed-stream test verifies pending work and prevents stale results." },
+    "empty": { "status": "pass", "evidence": "An empty input measures zero UTF-8 bytes and the actual gzip framing, with an undefined-percentage explanation. The clear command empties console output and retains the input." },
+    "error": { "status": "pass", "evidence": "Injected native stream failures clear compressed measurements and show a retry message. Restoring the native constructor allows a successful retry; a corrupt decompression stream is rejected by the algorithm test." },
+    "partial": { "status": "pass", "evidence": "With CompressionStream removed, accurate UTF-8 sizes remain, compressed measurements stay unavailable, and a browser-support explanation replaces invented results. Missing DecompressionStream does not claim a verified round trip." },
+    "success": { "status": "pass", "evidence": "Native gzip sizes match independent Node zlib output for empty, short, repeated and multilingual input. Browser round trips restore every byte. Whitelisted console responses come from canonical data; source-like input is displayed as escaped text." },
+    "permission": { "status": "not-applicable", "reason": "These are local static interactions: no privileged device access, arbitrary execution, backend operations, or external service is involved." }
+  },
+  "renderedEvidence": [
+    { "viewport": "1440x1000", "artifact": "hero-1440.png", "observation": "The existing headline, Lora/Source Sans typography, grayscale portrait, project link, social links and Archie retain their composition. The workshop begins beneath the original hero." },
+    { "viewport": "1440x1000", "artifact": "workshop-1440.png", "observation": "Shallow dimensional planes, enclosure shading, drive bays, contacts and cables form an original miniature lab. Daemon operates the rack; controls and illustrated-flow labels remain separate and readable." },
+    { "viewport": "768x1000", "artifact": "workshop-768.png", "observation": "The tablet composition keeps the introduction beside the complete lab without cutting off hardware or controls." },
+    { "viewport": "390x844", "artifact": "workshop-390.png", "observation": "The composition stacks into a complete compact world. Tiny in-scene labels are omitted while the readable external route caption and touch controls preserve meaning." },
+    { "viewport": "320x780", "artifact": "compression-320.png", "observation": "The dark instrument fits the narrow dialog. Input uses 16px text, metrics wrap into two columns, and the measured difference and explanation remain readable." },
+    { "viewport": "1440x1000", "artifact": "c2g-1440.png", "observation": "The existing three-replica diagram stays visible above a small hardware bench. Relay dispatches beside Peer A; the project copy and genuine links retain their original placement." },
+    { "viewport": "1440x1000", "artifact": "clara-1440.png", "observation": "The original decoder/store diagram remains intact. The new bench labels Client, TCP, RESP2 and Store, with Daemon at the rack and Keeper and memory at the keyspace." },
+    { "viewport": "1440x1000", "artifact": "soar-lite-1440.png", "observation": "The human approval stage and simulated response remain explicit in the existing diagram and control. Sentinel works at the illustrated gateway below it." },
+    { "viewport": "390x844", "artifact": "codecraft-390.png", "observation": "The original source-inspection diagram, readable stage key and project links remain. Scout examines the source board; the actual example snippet highlights its return expression and is labeled illustrative." },
+    { "viewport": "1440x1000", "artifact": "instruments-1440.png", "observation": "The optional warm dialog contains two navy screens. Gzip shows a measured and verified result; the console lists the four actual projects. The close control stays prominent." },
+    { "viewport": "390x844", "artifact": "console-390.png", "observation": "The compact console wraps project names, retains its input and command buttons, and keeps its output scrollable inside the mobile instrument." },
+    { "viewport": "1440x1000", "artifact": "artifacts-1440.png", "observation": "All ten original illustrations share filled surfaces, consistent contours, shadows, restrained hardware details and readable external captions. These are dimensional miniatures rather than generic outline icons." },
+    { "viewport": "1440x1000", "artifact": "skills-1440.png", "observation": "Both established skill columns remain, with custom domain glyphs and Forge beside a deployment unit inside the working disclosure. All 23 categories are preserved." },
+    { "viewport": "390x844", "artifact": "education-390.png", "observation": "Qualification, university mark and self-directed learning content remain prominent. An optional compiler note introduces a meaningful expression tree without crowding the education entries." },
+    { "viewport": "390x844", "artifact": "community-390.png", "observation": "Institutional logos and all four community entries retain their readable mobile timeline; illustration remains restrained." },
+    { "viewport": "390x844", "artifact": "contact-390.png", "observation": "The existing contact links remain clear. Relay carries a packet toward Pixel's component window in the closing scene." },
+    { "viewport": "1440x1000", "artifact": "blueprint-1440.png", "observation": "The keyboard-operable disclosure reveals the actual static frontend architecture with Archie and short component-boundary explanations." }
+  ]
+}

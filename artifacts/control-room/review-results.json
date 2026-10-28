@@ -1,0 +1,107 @@
+{
+  "results": [
+    {
+      "width": 1440,
+      "height": 682.140625,
+      "pageOverflow": false,
+      "codeWidth": 669,
+      "codeFont": "13px",
+      "pixel": {
+        "x": 553.84375,
+        "y": 650.03125,
+        "width": 144,
+        "height": 156,
+        "top": 650.03125,
+        "right": 697.84375,
+        "bottom": 806.03125,
+        "left": 553.84375
+      }
+    },
+    {
+      "width": 1280,
+      "height": 678.890625,
+      "pageOverflow": false,
+      "codeWidth": 608,
+      "codeFont": "13px",
+      "pixel": {
+        "x": 487.125,
+        "y": 648.609375,
+        "width": 144,
+        "height": 156,
+        "top": 648.609375,
+        "right": 631.125,
+        "bottom": 804.609375,
+        "left": 487.125
+      }
+    },
+    {
+      "width": 1024,
+      "height": 671.59375,
+      "pageOverflow": false,
+      "codeWidth": 474,
+      "codeFont": "13px",
+      "pixel": {
+        "x": 400.796875,
+        "y": 674.703125,
+        "width": 114,
+        "height": 126,
+        "top": 674.703125,
+        "right": 514.796875,
+        "bottom": 800.703125,
+        "left": 400.796875
+      }
+    },
+    {
+      "width": 768,
+      "height": 836.703125,
+      "pageOverflow": false,
+      "codeWidth": 555,
+      "codeFont": "13px",
+      "pixel": {
+        "x": 26.71875,
+        "y": 741.390625,
+        "width": 160,
+        "height": 172,
+        "top": 741.390625,
+        "right": 186.71875,
+        "bottom": 913.390625,
+        "left": 26.71875
+      }
+    },
+    {
+      "width": 390,
+      "height": 951.359375,
+      "pageOverflow": false,
+      "codeWidth": 348,
+      "codeFont": "13px",
+      "pixel": {
+        "x": 16,
+        "y": 267.09375,
+        "width": 108,
+        "height": 120,
+        "top": 267.09375,
+        "right": 124,
+        "bottom": 387.09375,
+        "left": 16
+      }
+    },
+    {
+      "width": 360,
+      "height": 973.453125,
+      "pageOverflow": false,
+      "codeWidth": 318,
+      "codeFont": "13px",
+      "pixel": {
+        "x": 16,
+        "y": 395.03125,
+        "width": 108,
+        "height": 120,
+        "top": 395.03125,
+        "right": 124,
+        "bottom": 515.03125,
+        "left": 16
+      }
+    }
+  ],
+  "errors": []
+}

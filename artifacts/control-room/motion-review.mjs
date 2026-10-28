@@ -1,0 +1,32 @@
+import { chromium, expect } from '@playwright/test';
+import fs from 'node:fs/promises';
+const browser = await chromium.launch();
+const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+const result = {};
+try {
+  await page.goto('http://127.0.0.1:4173/portfolio/#/');
+  const room = page.locator('.engineering-control-room');
+  const display = page.locator('.discipline-code-console');
+  await display.scrollIntoViewIfNeeded();
+  await expect(display).toHaveAttribute('data-code-running', 'true');
+  await expect.poll(async () => Number(await display.getAttribute('data-code-count'))).toBeGreaterThan(15);
+  result.partial = Number(await display.getAttribute('data-code-count'));
+  result.handAnimations = await room.locator('.discipline-resident').evaluate(el => el.getAnimations({ subtree: true }).map(animation => animation.animationName));
+  await room.screenshot({ path: 'artifacts/control-room/typing-1440.png', style: '.site-header,.section-index,.page-progress{visibility:hidden}' });
+  await expect(display).toHaveAttribute('data-code-phase', 'holding');
+  await page.getByRole('button', { name: 'Pause code animation' }).click();
+  await room.screenshot({ path: 'artifacts/control-room/paused-1440.png', style: '.site-header,.section-index,.page-progress{visibility:hidden}' });
+  result.paused = Number(await display.getAttribute('data-code-count'));
+  await page.waitForTimeout(500);
+  result.unchanged = result.paused === Number(await display.getAttribute('data-code-count'));
+  await page.getByRole('button', { name: 'Resume code animation' }).click();
+  await page.getByRole('button', { name: 'Backend Engineering', exact: true }).click();
+  await expect(page.locator('.control-code-file')).toHaveText('health.js');
+  result.active = await room.getAttribute('data-active');
+  await display.scrollIntoViewIfNeeded();
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await expect(display).toHaveAttribute('data-code-running', 'false');
+  result.reducedAnimations = await room.evaluate(el => el.getAnimations({ subtree: true }).length);
+  console.log(JSON.stringify(result, null, 2));
+  await fs.writeFile('artifacts/control-room/motion-results.json', JSON.stringify(result, null, 2) + '\n');
+} finally { await browser.close(); }

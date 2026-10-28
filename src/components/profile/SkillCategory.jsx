@@ -1,7 +1,10 @@
 import Mascot from '../mascots/Mascot.jsx';
+import EngineeringArtifact from '../illustrations/EngineeringArtifact.jsx';
 import { skillResidents } from '../../data/mascots.js';
 import { memo } from 'react';
 import SkillIcon from './SkillIcon.jsx';
+
+const residentTools = { pixel: 'terminal', daemon: 'server', keeper: 'storage', forge: 'container', sentinel: 'gateway', archie: 'parser' };
 
 function SkillCategory({ category, number, expanded, pinned, onPreview, onLeave, onToggle, onFocus }) {
   const headingId = `expertise-${category.id}`;
@@ -35,7 +38,7 @@ function SkillCategory({ category, number, expanded, pinned, onPreview, onLeave,
       <div id={panelId} className="expertise-reveal" aria-hidden={!expanded} inert={!expanded}>
         <div className="expertise-clip">
           <div className={`expertise-panel-body${skillResidents[category.id] ? ' has-resident' : ''}`}>
-            {skillResidents[category.id] && <span className="skill-resident"><Mascot character={skillResidents[category.id]} size="100%" /></span>}
+            {skillResidents[category.id] && <span className="skill-resident"><Mascot character={skillResidents[category.id]} size="100%" /><EngineeringArtifact kind={residentTools[skillResidents[category.id]]} className="skill-artifact" /></span>}
             <p className="expertise-panel-meta"><span>{category.skills.length} skills</span><span>{pinned ? 'Kept open' : ''}</span></p>
             <ul className="expertise-skills" role="list">
               {category.skills.map((skill, index) => (

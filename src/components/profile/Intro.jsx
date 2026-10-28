@@ -4,6 +4,7 @@ import TextLink from '../ui/TextLink.jsx';
 import About from './About.jsx';
 import StudioSchematic from '../studio/StudioSchematic.jsx';
 import EngineeringDisciplines from './EngineeringDisciplines.jsx';
+import LabEntry from '../lab/LabEntry.jsx';
 import '../../styles/intro-hero.css';
 
 const socialIcons = { GitHub: CodeXml, LinkedIn: ContactRound };
@@ -28,6 +29,7 @@ export default function Intro() {
         <div className="intro-portrait-column"><StudioSchematic /></div>
       </div>
       <div className="hero-bottom"><p className="studio-caption"><span aria-hidden="true">⌘</span> Interfaces, protocols, and everything between.</p><TextLink to="/#work" className="scroll-invitation">Step inside Selected Work <ArrowDown size={16} aria-hidden="true" /></TextLink></div>
+      <LabEntry />
       <EngineeringDisciplines />
       <div className="intro-narrative canvas-standard" data-reveal><div className="narrative-margin"><p className="section-label">01 / A connected practice</p><h2>Curiosity, from<br />the surface<br /><em>to the system.</em></h2><span className="narrative-line" aria-hidden="true" /></div><div className="intro-body"><About /></div></div>
     </section>

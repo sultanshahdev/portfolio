@@ -9,6 +9,7 @@ import './styles/layout.css';
 import './styles/projects.css';
 import './styles/studio.css';
 import './styles/mascots.css';
+import './styles/engineering-lab.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

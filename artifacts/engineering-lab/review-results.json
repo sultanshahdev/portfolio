@@ -1,0 +1,41 @@
+{
+  "results": [
+    {
+      "viewport": "1440x1000",
+      "projects": 4,
+      "categories": 23,
+      "overflow": false,
+      "console": "projects",
+      "compression": "gzip round trip verified",
+      "focusRestored": true
+    },
+    {
+      "viewport": "768x1000",
+      "projects": 4,
+      "categories": 23,
+      "overflow": false,
+      "console": "projects",
+      "compression": "gzip round trip verified",
+      "focusRestored": true
+    },
+    {
+      "viewport": "390x844",
+      "projects": 4,
+      "categories": 23,
+      "overflow": false,
+      "console": "projects",
+      "compression": "gzip round trip verified",
+      "focusRestored": true
+    },
+    {
+      "viewport": "320x780",
+      "projects": 4,
+      "categories": 23,
+      "overflow": false,
+      "console": "projects",
+      "compression": "gzip round trip verified",
+      "focusRestored": true
+    }
+  ],
+  "errors": []
+}

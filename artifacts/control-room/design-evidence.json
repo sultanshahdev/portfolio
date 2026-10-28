@@ -1,0 +1,97 @@
+{
+  "contract": "artifacts/control-room/DESIGN.md: preserve the existing hero and portfolio; replace only the discipline strip with coordinated nodes, Pixel workstation and illustrative code playback. No execution, new dependencies or external service.",
+  "targetViewports": [
+    "1440x1000",
+    "1280x1000",
+    "1024x1000",
+    "768x1000",
+    "390x844",
+    "360x844"
+  ],
+  "accessibility": {
+    "status": "pass",
+    "evidence": "Native node buttons retain labels, aria-pressed, description associations, focus states, keyboard and touch interaction. Axe passed on the feature. Animated characters are aria-hidden; a separate completed-code representation has no character live announcements. Pause/resume and keyboard scrolling are present. Dynamic reduced motion displays complete code and zero animations."
+  },
+  "responsive": {
+    "status": "pass",
+    "evidence": "All six rendered sizes fit without page overflow. 1440 through 768 use four readable nodes; 390 and 360 use a 2x2 diagram. Code remains 13px and can scroll within the screen. Caption and explanation space is reserved across selections. Existing portrait/hero captures at 1440 and 390 are pixel-identical to the prior lab review."
+  },
+  "contentStates": {
+    "loading": {
+      "status": "not-applicable",
+      "reason": "The local data and SVG artwork are synchronously bundled with the existing homepage; this display performs no asynchronous data fetch."
+    },
+    "empty": {
+      "status": "pass",
+      "evidence": "The empty buffer is an intentional short typing start/gap with a cursor; completed code remains available to assistive technology. Reselecting a node mounts its initial empty buffer, verified before the next character can arrive."
+    },
+    "partial": {
+      "status": "pass",
+      "evidence": "Real-time review captured character-by-character text and typing hands. The keyboard pause test freezes exactly that partial buffer, then resumes. Hidden-document and offscreen tests show an unchanged buffer and zero pending display timers."
+    },
+    "success": {
+      "status": "pass",
+      "evidence": "The full example holds for reading, then moves to a second example within the selected discipline. Native playback tests verify the real reading interval, loop and clean restart. Every discipline selects the expected full source and matching description/path."
+    },
+    "error": {
+      "status": "not-applicable",
+      "reason": "No code is evaluated and there is no user input, network call or fallible external service. Example strings and artwork are deterministic local data validated by the four-discipline tests."
+    },
+    "permission": {
+      "status": "not-applicable",
+      "reason": "No device, backend, shell, privileged operation or external application is accessed by this UI."
+    }
+  },
+  "renderedEvidence": [
+    {
+      "viewport": "1440x1000",
+      "artifact": "room-1440.png",
+      "observation": "The two-tier composition has stronger typography, original filled engineering schematics, coordinated wire paths, explanatory copy, a contained navy code display and Pixel at the keyboard. Wide nodes stay balanced and the workstation uses the available canvas."
+    },
+    {
+      "viewport": "1280x1000",
+      "artifact": "room-1280.png",
+      "observation": "The two-tier composition has stronger typography, original filled engineering schematics, coordinated wire paths, explanatory copy, a contained navy code display and Pixel at the keyboard. Wide nodes stay balanced and the workstation uses the available canvas."
+    },
+    {
+      "viewport": "1024x1000",
+      "artifact": "room-1024.png",
+      "observation": "The two-tier composition has stronger typography, original filled engineering schematics, coordinated wire paths, explanatory copy, a contained navy code display and Pixel at the keyboard. Wide nodes stay balanced and the workstation uses the available canvas."
+    },
+    {
+      "viewport": "768x1000",
+      "artifact": "room-768.png",
+      "observation": "The two-tier composition has stronger typography, original filled engineering schematics, coordinated wire paths, explanatory copy, a contained navy code display and Pixel at the keyboard. Wide nodes stay balanced and the workstation uses the available canvas."
+    },
+    {
+      "viewport": "390x844",
+      "artifact": "room-390.png",
+      "observation": "The two-tier composition has stronger typography, original filled engineering schematics, coordinated wire paths, explanatory copy, a contained navy code display and Pixel at the keyboard. Mobile uses a compact 2x2 system and a full-width readable screen."
+    },
+    {
+      "viewport": "360x844",
+      "artifact": "room-360.png",
+      "observation": "The two-tier composition has stronger typography, original filled engineering schematics, coordinated wire paths, explanatory copy, a contained navy code display and Pixel at the keyboard. Mobile uses a compact 2x2 system and a full-width readable screen."
+    },
+    {
+      "viewport": "1440x1000",
+      "artifact": "typing-1440.png",
+      "observation": "A real partial code buffer is visible, with a restrained cursor and separate hand gestures. The character is seated at a dimensional keyboard and physically connected to the instrument."
+    },
+    {
+      "viewport": "1440x1000",
+      "artifact": "paused-1440.png",
+      "observation": "Completed source remains visible after pausing. The display reports paused state without fictional hardware telemetry."
+    },
+    {
+      "viewport": "1440x1000",
+      "artifact": "security-1440.png",
+      "observation": "The selected policy gateway, burgundy route, mode label, description and ownership example agree. Routing avoids the node labels. The example explicitly states the limited scope of the check."
+    },
+    {
+      "viewport": "1440x1000",
+      "artifact": "hero-1440.png",
+      "observation": "Pixel comparison against the previous lab hero capture is identical, confirming the existing headline, portrait, typography and controls have not been redesigned."
+    }
+  ]
+}

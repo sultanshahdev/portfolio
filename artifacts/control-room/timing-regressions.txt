@@ -1,0 +1,58 @@
+
+> sultan-portfolio@1.0.0 test
+> playwright test --grep pointer previews return|the code types|pause and resume|leaving the viewport --repeat-each=3
+
+
+Running 24 tests using 2 workers
+
+(node:34719) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:34720) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   2 [desktop] › tests/control-room.spec.js:105:1 › pause and resume retain the buffer and pause persists across discipline changes (3.5s)
+  ✓   3 [desktop] › tests/control-room.spec.js:128:1 › leaving the viewport or hiding the document suspends playback and route changes release its timer (2.6s)
+  ✓   4 [desktop] › tests/intro-hero.spec.js:49:1 › pointer previews return to the chosen discipline without moving the biography (3.3s)
+  ✓   1 [desktop] › tests/control-room.spec.js:71:1 › the code types, holds for reading and loops within the selected layer (9.8s)
+(node:34941) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:34952) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   6 [desktop] › tests/control-room.spec.js:105:1 › pause and resume retain the buffer and pause persists across discipline changes (4.7s)
+  ✓   7 [desktop] › tests/control-room.spec.js:128:1 › leaving the viewport or hiding the document suspends playback and route changes release its timer (3.1s)
+  ✓   5 [desktop] › tests/control-room.spec.js:71:1 › the code types, holds for reading and loops within the selected layer (10.2s)
+(node:35279) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   8 [desktop] › tests/intro-hero.spec.js:49:1 › pointer previews return to the chosen discipline without moving the biography (3.6s)
+(node:35368) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  10 [desktop] › tests/control-room.spec.js:105:1 › pause and resume retain the buffer and pause persists across discipline changes (3.7s)
+  ✓  11 [desktop] › tests/control-room.spec.js:128:1 › leaving the viewport or hiding the document suspends playback and route changes release its timer (2.7s)
+  ✓   9 [desktop] › tests/control-room.spec.js:71:1 › the code types, holds for reading and loops within the selected layer (10.0s)
+(node:35522) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  12 [desktop] › tests/intro-hero.spec.js:49:1 › pointer previews return to the chosen discipline without moving the biography (3.2s)
+(node:35537) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  14 [mobile] › tests/control-room.spec.js:105:1 › pause and resume retain the buffer and pause persists across discipline changes (3.0s)
+  ✓  15 [mobile] › tests/control-room.spec.js:128:1 › leaving the viewport or hiding the document suspends playback and route changes release its timer (2.4s)
+  -  16 [mobile] › tests/intro-hero.spec.js:49:1 › pointer previews return to the chosen discipline without moving the biography
+(node:35741) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  13 [mobile] › tests/control-room.spec.js:71:1 › the code types, holds for reading and loops within the selected layer (9.4s)
+(node:35853) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  18 [mobile] › tests/control-room.spec.js:105:1 › pause and resume retain the buffer and pause persists across discipline changes (3.0s)
+  ✓  19 [mobile] › tests/control-room.spec.js:128:1 › leaving the viewport or hiding the document suspends playback and route changes release its timer (2.1s)
+  -  20 [mobile] › tests/intro-hero.spec.js:49:1 › pointer previews return to the chosen discipline without moving the biography
+(node:35984) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  17 [mobile] › tests/control-room.spec.js:71:1 › the code types, holds for reading and loops within the selected layer (9.4s)
+(node:35999) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  22 [mobile] › tests/control-room.spec.js:105:1 › pause and resume retain the buffer and pause persists across discipline changes (3.1s)
+  ✓  23 [mobile] › tests/control-room.spec.js:128:1 › leaving the viewport or hiding the document suspends playback and route changes release its timer (2.2s)
+  -  24 [mobile] › tests/intro-hero.spec.js:49:1 › pointer previews return to the chosen discipline without moving the biography
+  ✓  21 [mobile] › tests/control-room.spec.js:71:1 › the code types, holds for reading and loops within the selected layer (9.1s)
+
+  3 skipped
+  21 passed (1.1m)

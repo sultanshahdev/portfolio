@@ -1,0 +1,102 @@
+.lab-drawer-content { padding: 1.6rem; }
+.lab-instruments { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1.6rem; align-items: start; }
+.lab-instruments > section { min-width: 0; }
+.instrument-heading { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
+.instrument-heading .section-label { font-size: 0.625rem; }
+.instrument-heading h3 { font: 400 1.65rem var(--font-serif); margin-top: 0.4rem; letter-spacing: -0.04em; }
+.instrument-stamp { color: hsl(var(--muted-foreground)); font: 0.65rem/1.5 ui-monospace, monospace; max-width: 6rem; text-align: right; }
+.instrument-intro { font: 0.875rem/1.65 var(--font-sans); color: hsl(var(--muted-foreground)); margin: 0.8rem 0 1rem; min-height: 4.3em; }
+.diagnostic-screen { --screen-text: 40 18% 90%; --screen-muted: 220 12% 75%; color: hsl(var(--screen-text)); background: hsl(var(--primary)); border: 1px solid hsl(var(--primary)); padding: 1rem; border-radius: 3px; font: 0.75rem/1.6 ui-monospace, monospace; }
+.screen-title { display: flex; justify-content: space-between; gap: 0.6rem; border-bottom: 1px solid hsl(var(--screen-text) / 0.18); padding-bottom: 0.65rem; margin-bottom: 1rem; font-size: 0.625rem; color: hsl(var(--screen-muted)); }
+.screen-title i { display: inline-block; width: 5px; height: 5px; border-radius: 50%; margin-right: 0.4rem; background: hsl(140 18% 70%); }
+.diagnostic-screen label:not(.sr-only) { display: flex; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.4rem; font-size: 0.75rem; }
+.diagnostic-screen label > span { color: hsl(var(--screen-muted)); font-size: 0.625rem; }
+.diagnostic-screen textarea { width: 100%; min-height: 8.7rem; resize: vertical; border: 1px solid hsl(var(--screen-text) / 0.35); color: hsl(var(--screen-text)); background: hsl(220 30% 15%); padding: 0.7rem; font: 0.75rem/1.6 ui-monospace, monospace; border-radius: 1px; }
+.diagnostic-screen :focus-visible { outline-color: hsl(40 28% 76%); outline-offset: 3px; }
+.compression-flow { display: flex; justify-content: space-between; align-items: center; gap: 0.35rem; margin-block: 0.85rem; color: hsl(var(--screen-muted)); font-size: 0.625rem; }
+.compression-flow svg { flex-shrink: 0; }
+.compression-metrics { display: grid; grid-template-columns: 1fr 1fr 1.25fr; gap: 0.8rem; margin: 1rem 0; padding-top: 0.8rem; border-top: 1px solid hsl(var(--screen-text) / 0.18); }
+.compression-metrics dt { color: hsl(var(--screen-muted)); font-size: 0.65rem; }
+.compression-metrics dd { margin: 0.3rem 0 0; font-size: 1.5rem; line-height: 1.3; font-variant-numeric: tabular-nums; }
+.compression-metrics dd > span { font-size: 0.75rem; }
+.compression-metrics .metric-difference { font-size: 0.875rem; padding-top: 0.25rem; }
+.metric-difference small { display: block; font-size: 0.625rem; color: hsl(var(--screen-muted)); line-height: 1.6; margin-top: 0.3rem; }
+.instrument-actions { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.screen-button { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 44px; padding: 0.55rem 0.7rem; border: 1px solid hsl(var(--screen-text) / 0.5); color: hsl(var(--primary)); background: hsl(var(--screen-text)); font: 0.75rem/1.5 var(--font-sans); }
+.screen-button:hover { background: white; }
+.screen-button:disabled { cursor: wait; opacity: 0.55; }
+.screen-button--quiet { background: transparent; color: hsl(var(--screen-text)); border-color: transparent; }
+.screen-button--quiet:hover { background: hsl(var(--screen-text) / 0.08); }
+.instrument-status { color: hsl(140 18% 76%); font: 0.6875rem/1.65 ui-monospace, monospace; min-height: 3.3em; margin-top: 0.8rem; overflow-wrap: anywhere; }
+.instrument-status.is-error { color: hsl(0 45% 83%); }
+.instrument-note { font: 0.75rem/1.7 var(--font-sans); color: hsl(var(--muted-foreground)); margin-top: 0.75rem; }
+.console-output { height: 18.25rem; overflow-y: auto; overflow-wrap: anywhere; scrollbar-color: hsl(220 12% 50%) transparent; padding: 0.2rem 0.2rem 0.75rem; }
+.console-welcome { color: hsl(var(--screen-muted)); }
+.console-welcome span { color: hsl(var(--screen-text)); }
+.console-entry + .console-entry { margin-top: 1rem; }
+.console-echo { color: hsl(140 18% 76%); margin-bottom: 0.4rem; }
+.console-entry pre { white-space: pre-wrap; overflow-wrap: anywhere; margin: 0; font: inherit; }
+.console-prompt { display: flex; align-items: center; gap: 0.6rem; border-block: 1px solid hsl(var(--screen-text) / 0.25); }
+.console-prompt > span { color: hsl(140 18% 76%); }
+.console-prompt input { flex: 1; min-width: 0; width: 100%; min-height: 44px; padding: 0.5rem 0; color: hsl(var(--screen-text)); background: transparent; border: 0; border-radius: 0; font: inherit; }
+.console-prompt input::placeholder { color: hsl(var(--screen-muted)); }
+.console-prompt button { min-width: 44px; background: transparent; color: hsl(var(--screen-text)); border: 0; }
+.console-prompt button:hover { background: hsl(var(--screen-text) / 0.08); }
+.console-shortcuts { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.3rem; }
+.console-shortcuts button { min-height: 44px; padding: 0.3rem 0.5rem; background: transparent; color: hsl(var(--screen-muted)); border: 0; text-decoration: underline; text-underline-offset: 4px; font: 0.6875rem ui-monospace, monospace; }
+.console-shortcuts button:hover { color: white; }
+.engineering-blueprint, .artifact-cabinet { margin-top: 1.5rem; border-block: 1px solid hsl(var(--border)); font-family: var(--font-sans); }
+.engineering-blueprint > summary, .artifact-cabinet > summary { min-height: 52px; cursor: pointer; padding: 0.85rem 0.5rem; font: 0.875rem/1.5 var(--font-sans); color: hsl(var(--primary)); }
+.engineering-blueprint > summary:hover, .artifact-cabinet > summary:hover { color: hsl(var(--accent)); }
+.blueprint-glyph { display: inline-block; width: 24px; vertical-align: middle; margin: 0 0.55rem; }
+.blueprint-glyph svg { display: block; stroke: currentColor; stroke-width: 1.5; }
+.blueprint-glyph svg path:last-child { fill: hsl(var(--secondary)); }
+.blueprint-index, .artifact-cabinet > summary > span:last-child { float: right; font: 0.6875rem/1.7 ui-monospace, monospace; color: hsl(var(--muted-foreground)); }
+.blueprint-body { padding: 0.5rem 1rem 1rem; background-image: radial-gradient(hsl(var(--border)) 0.6px, transparent 0.6px); background-size: 12px 12px; }
+.blueprint-heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.blueprint-heading h3 { font: 400 1.35rem var(--font-serif); margin-top: 0.4rem; }
+.blueprint-heading .section-label { font-size: 0.625rem; }
+.blueprint-flow { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.5rem; counter-reset: blueprint; }
+.blueprint-flow li { counter-increment: blueprint; position: relative; padding: 0.75rem; border: 1px solid hsl(var(--border)); background: hsl(var(--background)); }
+.blueprint-flow li::before { content: '0' counter(blueprint); display: block; font: 0.625rem ui-monospace, monospace; color: hsl(var(--accent)); margin-bottom: 0.4rem; }
+.blueprint-flow li + li::after { content: '→'; position: absolute; left: -1.2rem; top: 45%; color: hsl(var(--accent)); }
+.blueprint-flow strong { display: block; font-size: 0.8125rem; }
+.blueprint-flow span { display: block; font-size: 0.75rem; color: hsl(var(--muted-foreground)); margin-top: 0.3rem; }
+.blueprint-footnote { display: flex; gap: 1rem; justify-content: space-between; flex-wrap: wrap; font: 0.75rem/1.6 var(--font-sans); color: hsl(var(--muted-foreground)); }
+.artifact-catalog { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 1rem; padding: 1rem 0; }
+.artifact-catalog figure { min-width: 0; margin: 0; border-bottom: 1px solid hsl(var(--border)); padding-bottom: 1rem; }
+.artifact-catalog figcaption { padding-inline: 0.5rem; }
+.artifact-catalog figcaption > span { display: block; color: hsl(var(--primary)); font-size: 0.8125rem; }
+.artifact-catalog small { display: block; margin-top: 0.3rem; font-size: 0.6875rem; }
+@media (prefers-reduced-motion: no-preference) {
+  .engineering-blueprint[open] .archie-blueprint { transform-origin: 80px 114px; animation: archie-unfold 1000ms var(--ease-out) both; }
+  .engineering-blueprint[open] .archie-blocks { animation: archie-align 1000ms ease both; }
+}
+@media (max-width: 899px) {
+  .lab-instruments { grid-template-columns: 1fr; gap: 2rem; }
+  .instrument-intro { min-height: 0; }
+  .console-output { height: 15rem; }
+  .artifact-catalog { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .blueprint-flow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .blueprint-flow li:nth-child(3)::after { display: none; }
+}
+@media (max-width: 639px) {
+  .lab-drawer-content { padding: 1.1rem 0.8rem; }
+  .instrument-heading h3 { font-size: 1.45rem; }
+  .diagnostic-screen { padding: 0.8rem; }
+  .diagnostic-screen textarea, .console-prompt input { font-size: 1rem; }
+  .diagnostic-screen label:not(.sr-only) { flex-wrap: wrap; }
+  .compression-flow { flex-wrap: wrap; justify-content: start; }
+  .compression-flow > span:nth-last-child(1), .compression-flow > svg:nth-last-child(2) { display: none; }
+  .compression-metrics { gap: 0.5rem; grid-template-columns: 1fr 1fr; }
+  .compression-metrics > div:last-child { grid-column: 1 / -1; }
+  .compression-metrics .metric-difference { display: flex; align-items: baseline; gap: 0.6rem; flex-wrap: wrap; }
+  .screen-title { flex-wrap: wrap; }
+  .artifact-catalog { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; }
+  .blueprint-index, .artifact-cabinet > summary > span:last-child { display: none; }
+  .blueprint-glyph { margin-inline: 0.25rem; width: 20px; }
+  .engineering-blueprint > summary { font-size: 0.8125rem; }
+  .blueprint-body { padding-inline: 0.5rem; }
+  .blueprint-flow { grid-template-columns: 1fr; gap: 1.2rem; }
+  .blueprint-flow li + li::after, .blueprint-flow li:nth-child(3)::after { display: block; content: '↓'; left: 50%; top: -1.4rem; }
+}

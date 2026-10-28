@@ -1,5 +1,7 @@
 import MascotFrame, { Face, Shadow } from './MascotFrame.jsx';
+import PixelWorkstation from './PixelWorkstation.jsx';
 export default function PixelMascot({ pose = 'working', ...props }) {
+  if (pose === 'workstation') return <PixelWorkstation {...props} />;
   return <MascotFrame character="pixel" pose={pose} {...props}>
     <Shadow />
     <path d="m56 115-7 18h14l6-17m24-1 7 18h14l-10-20" className="coat-fill ink-line" />

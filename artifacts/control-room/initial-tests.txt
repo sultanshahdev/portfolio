@@ -1,0 +1,61 @@
+
+> sultan-portfolio@1.0.0 test
+> playwright test tests/intro-hero.spec.js --project=desktop
+
+
+Running 12 tests using 2 workers
+
+(node:22893) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:22892) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop] › tests/intro-hero.spec.js:30:1 › social links open their configured destinations in a separate tab (3.6s)
+  ✓   2 [desktop] › tests/intro-hero.spec.js:12:1 › the introduction preserves the exact biography and connects to projects (3.8s)
+  ✓   4 [desktop] › tests/intro-hero.spec.js:78:1 › keyboard focus previews paths and Enter and Space select explanations (4.0s)
+  -   5 [desktop] › tests/intro-hero.spec.js:103:1 › touch selection works while every discipline remains visible
+  ✘   3 [desktop] › tests/intro-hero.spec.js:49:1 › pointer previews return to the chosen discipline without moving the biography (5.1s)
+  ✓   6 [desktop] › tests/intro-hero.spec.js:120:1 › reduced motion keeps the introduction and final linework immediately available (2.1s)
+(node:23209) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   7 [desktop] › tests/intro-hero.spec.js:133:3 › the engineering portrait is composed and readable at 1280px (2.7s)
+  ✓   8 [desktop] › tests/intro-hero.spec.js:133:3 › the engineering portrait is composed and readable at 1440px (2.9s)
+  ✓   9 [desktop] › tests/intro-hero.spec.js:133:3 › the engineering portrait is composed and readable at 1024px (2.3s)
+  ✓  10 [desktop] › tests/intro-hero.spec.js:133:3 › the engineering portrait is composed and readable at 768px (2.3s)
+  ✓  11 [desktop] › tests/intro-hero.spec.js:133:3 › the engineering portrait is composed and readable at 390px (2.4s)
+  ✓  12 [desktop] › tests/intro-hero.spec.js:133:3 › the engineering portrait is composed and readable at 360px (2.1s)
+
+
+  1) [desktop] › tests/intro-hero.spec.js:49:1 › pointer previews return to the chosen discipline without moving the biography 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 1161.171875
+    Received: 809.171875
+
+      59 |   await page.mouse.move(1, 1);
+      60 |   await expect(diagram).toHaveAttribute('data-active', 'frontend');
+    > 61 |   expect((await page.locator('.intro-body').boundingBox()).y).toBe(position.y);
+         |                                                               ^
+      62 |
+      63 |   // Keyboard activation wins over a pointer left above another discipline.
+      64 |   const backend = node(page, 'Backend Engineering');
+        at /home/sultan/Desktop/repos/portfolio/tests/intro-hero.spec.js:61:63
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/intro-hero-pointer-preview-401dc-ithout-moving-the-biography-desktop/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/intro-hero-pointer-preview-401dc-ithout-moving-the-biography-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/intro-hero-pointer-preview-401dc-ithout-moving-the-biography-desktop/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/intro-hero-pointer-preview-401dc-ithout-moving-the-biography-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [desktop] › tests/intro-hero.spec.js:49:1 › pointer previews return to the chosen discipline without moving the biography 
+  1 skipped
+  10 passed (20.2s)
